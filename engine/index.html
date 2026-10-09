@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- THE 80 · theme init (must sit in <head>, before any CSS, to avoid a flash) -->
+<script>(function(){try{var t=localStorage.getItem('the80-theme');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The 80 Engine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<style>
+/* ===== THE 80 · SHARED DESIGN TOKENS — identical on every page ===== */
+:root{
+  color-scheme:light dark;
+  --ground:#ffffff; --surface:#f7f7f8; --surface-2:#f0f0f2;
+  --border:#e3e3e6; --border-2:#d3d3d8;
+  --ink:#16161a; --ink-2:#55555c; --ink-3:#86868e;
+  --accent:#1a5cff; --dem:#1a5cff; --gop:#c0392b;
+  --accent-soft:#eef3ff; --accent-line:#cfddff;
+  --terra:#a84b2f; --terra-soft:#faf0ec; --terra-line:#e8cdc2;
+  --good:#0e7a3d; --good-soft:#ecf7f0; --good-line:#bfe5cd;
+  --warn:#8a5a00; --warn-soft:#fdf4e3; --warn-line:#f0dcb0;
+  --bad:#b3261e; --bad-soft:#fdeceb; --bad-line:#f3c1be;
+  --gop-soft:#fbeeec; --gop-line:#efc9c3;
+  --zebra:#fbfbfc; --grid:#e6e6ea; --bar-n:#9a9aa4;
+  --r:10px; --maxw:1180px; --prose:66ch; --toggle-gutter:64px;
+  --font-ui:"Libre Franklin",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  --font-body:"Source Serif 4","Iowan Old Style",Georgia,serif;
+}
+:root[data-theme="light"]{color-scheme:light}
+:root[data-theme="dark"]{color-scheme:dark}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#141416; --surface:#1c1c1f; --surface-2:#232327;
+    --border:#2e2e33; --border-2:#3b3b42;
+    --ink:#f2f2f3; --ink-2:#a9a9b1; --ink-3:#7a7a83;
+    --accent:#6f9bff; --dem:#6f9bff; --gop:#e8705f;
+    --accent-soft:#16233f; --accent-line:#2c4478;
+    --terra:#d9805c; --terra-soft:#2c1c16; --terra-line:#5a3325;
+    --good:#4cbc7b; --good-soft:#12261a; --good-line:#245a38;
+    --warn:#d9a441; --warn-soft:#2a2113; --warn-line:#5a4520;
+    --bad:#ee7b72; --bad-soft:#2c1a17; --bad-line:#5a2f29;
+    --gop-soft:#2c1a17; --gop-line:#5a2f29;
+    --zebra:#19191c; --grid:#2b2b31; --bar-n:#7f7f8a;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#141416; --surface:#1c1c1f; --surface-2:#232327;
+  --border:#2e2e33; --border-2:#3b3b42;
+  --ink:#f2f2f3; --ink-2:#a9a9b1; --ink-3:#7a7a83;
+  --accent:#6f9bff; --dem:#6f9bff; --gop:#e8705f;
+  --accent-soft:#16233f; --accent-line:#2c4478;
+  --terra:#d9805c; --terra-soft:#2c1c16; --terra-line:#5a3325;
+  --good:#4cbc7b; --good-soft:#12261a; --good-line:#245a38;
+  --warn:#d9a441; --warn-soft:#2a2113; --warn-line:#5a4520;
+  --bad:#ee7b72; --bad-soft:#2c1a17; --bad-line:#5a2f29;
+  --gop-soft:#2c1a17; --gop-line:#5a2f29;
+  --zebra:#19191c; --grid:#2b2b31; --bar-n:#7f7f8a;
+}
+/* ===== THE 80 · theme toggle (top right, fixed) ===== */
+.theme-toggle{
+  position:fixed;top:calc(env(safe-area-inset-top,0px) + 9px);right:14px;z-index:1000;
+  width:40px;height:40px;padding:0;border-radius:999px;
+  border:1px solid var(--border-2);background:var(--surface);color:var(--ink);
+  display:inline-flex;align-items:center;justify-content:center;cursor:pointer;
+  box-shadow:0 1px 4px rgba(0,0,0,.14);
+}
+.theme-toggle:hover{border-color:var(--accent);color:var(--accent)}
+.theme-toggle:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.theme-toggle svg{width:20px;height:20px;display:block}
+.theme-toggle .i-sun{display:none}
+.theme-toggle[data-mode="dark"] .i-sun{display:block}
+.theme-toggle[data-mode="dark"] .i-moon{display:none}
+@media print{.theme-toggle{display:none}}
+/* ===== THE 80 · SHARED TOP BAR (identical look on every page) ===== */
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{background:var(--ground);color:var(--ink);font-family:var(--font-body);font-size:17px;line-height:1.62;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4,nav,th,table,figcaption,.label,.tag,.ui{font-family:var(--font-ui)}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:3px}
+.topbar{
+  position:sticky;top:env(safe-area-inset-top,0px);z-index:60;
+  background:color-mix(in srgb,var(--ground) 92%,transparent);
+  backdrop-filter:saturate(1.6) blur(10px);-webkit-backdrop-filter:saturate(1.6) blur(10px);
+  border-bottom:1px solid var(--border);
+}
+.topbar .inner{max-width:var(--maxw);margin:0 auto;padding:9px var(--toggle-gutter) 9px 24px}
+.topbar .barrow{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.topbar .barrow+.barrow,.topbar .barrow+nav,.topbar nav+.barrow{margin-top:7px;padding-top:7px;border-top:1px solid var(--border)}
+.wordmark{font-family:var(--font-ui);font-weight:800;font-size:13px;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;color:var(--ink);text-decoration:none}
+.wordmark span{color:var(--ink-3);font-weight:600}
+.sitelinks{display:flex;gap:4px;margin-left:auto;flex-wrap:wrap}
+.sitelinks a{font-family:var(--font-ui);font-size:11.5px;font-weight:600;letter-spacing:.03em;color:var(--ink-3);text-decoration:none;padding:4px 9px;border-radius:6px;white-space:nowrap}
+.sitelinks a:hover{color:var(--accent);background:var(--accent-soft)}
+/* section nav pills — same look as the prospectus group tabs */
+.topbar nav{display:flex;gap:4px;flex-wrap:wrap;align-items:center}
+.topbar nav button,.topbar nav a{
+  font-family:var(--font-ui);font-size:12.5px;font-weight:700;letter-spacing:.02em;line-height:1.4;
+  color:var(--ink-2);text-decoration:none;background:transparent;cursor:pointer;
+  padding:5px 11px;border-radius:7px;white-space:nowrap;border:1px solid transparent;
+}
+.topbar nav button:hover,.topbar nav a:hover{color:var(--accent);background:var(--accent-soft)}
+.topbar nav button.active,.topbar nav a.on,.topbar nav button[aria-selected="true"]{background:var(--ink);color:var(--ground);border-color:var(--ink)}
+@media (max-width:640px){.topbar .inner{padding-left:14px}.topbar nav button,.topbar nav a{min-height:36px}}
+/* legacy names used by this page, resolved at use-time so dark mode flows through */
+:root{--bg:var(--ground);--text:var(--ink);--text-2:var(--ink-2);--text-3:var(--ink-3);--muted:var(--ink-2);--label:var(--ink-3);--green:var(--good);--green-soft:var(--good-soft);--red:var(--bad);--red-soft:var(--bad-soft);--amber:var(--warn);--amber-soft:var(--warn-soft);--radius:var(--r);--font:var(--font-body);--on-accent:#fff}
+:root[data-theme="dark"]{--on-accent:#0b0b0d}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--on-accent:#0b0b0d}}
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-size: 16px; line-height: 1.55; }
+  button, .tag, .stat, .inf-kpi-value, .inf-slider-value, .inf-total-strip, .tier, .phase-pill, .bigmonth, .card-title, .chip, .rchip, .tl-marks, summary, .step .t { font-family: var(--font-ui); }
+  .card, .callout, .step .d, details, td, .inf-slider-hint, .slider-label { font-family: var(--font-ui); }
+  .next-row { margin-top: 40px; padding-top: 22px; border-top: 1px solid var(--border); display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+  .next-btn { font-family: var(--font-ui); font-size: 14px; font-weight: 700; letter-spacing: .02em; color: var(--ground); background: var(--ink); border: 1px solid var(--ink); border-radius: 8px; padding: 10px 18px; cursor: pointer; text-decoration: none; display: inline-block; }
+  .next-btn:hover { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+  .next-btn.alt { background: transparent; color: var(--ink); border-color: var(--border-2); }
+  .next-btn.alt:hover { background: var(--accent-soft); color: var(--accent); border-color: var(--accent); }
+  .next-row.final { justify-content: flex-start; }
+  main { max-width: 1120px; margin: 0 auto; padding: 32px 24px 80px; }
+  section.page { display: none; }
+  section.page.active { display: block; }
+  h1 { font-size: 27px; line-height: 1.25; margin: 6px 0 14px; font-weight: 700; }
+  h2 { font-size: 19px; margin: 34px 0 12px; font-weight: 650; }
+  h3 { font-size: 16px; margin: 20px 0 6px; font-weight: 650; }
+  p { margin: 0 0 12px; }
+  .lead { color: var(--text-2); font-size: 16px; max-width: 70ch; }
+  .small { font-size: 13px; color: var(--text-2); }
+  .tiny { font-size: 12px; color: var(--text-3); }
+  .grid { display: grid; gap: 16px; margin: 14px 0; }
+  .g2 { grid-template-columns: 1fr 1fr; }
+  .g3 { grid-template-columns: repeat(3, 1fr); }
+  .g4 { grid-template-columns: repeat(4, 1fr); }
+  @media (max-width: 860px) { .g2, .g3, .g4 { grid-template-columns: 1fr; } .grid[style] { grid-template-columns: 1fr !important; } }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; }
+  .card.plain { background: var(--bg); }
+  .card .card-title {
+    font-size: 12px; font-weight: 650; text-transform: uppercase; letter-spacing: .05em;
+    color: var(--text-3); margin-bottom: 10px;
+    display: flex; justify-content: space-between; align-items: center; gap: 8px;
+  }
+  .tag {
+    display: inline-block; font-size: 11px; font-weight: 650; padding: 2px 10px;
+    border-radius: 999px; background: var(--accent-soft); color: var(--accent);
+    text-transform: none; letter-spacing: 0;
+  }
+  .tag.dim { background: var(--surface-2); color: var(--text-2); }
+  .tag.pend { background: var(--amber-soft); color: var(--amber); }
+  .tag.new { background: var(--terra-soft); color: var(--terra); }
+  ul.dash { list-style: none; margin: 6px 0; }
+  ul.dash li { padding-left: 18px; position: relative; margin-bottom: 8px; }
+  ul.dash li::before { content: "—"; position: absolute; left: 0; color: var(--text-3); }
+  ul.dot { list-style: none; margin: 6px 0; }
+  ul.dot li { padding-left: 18px; position: relative; margin-bottom: 8px; }
+  ul.dot li::before { content: "•"; position: absolute; left: 0; color: var(--text-3); }
+  ul.dot.tight li, ul.dash.tight li { margin-bottom: 4px; font-size: 13.5px; }
+  ul.check { list-style: none; margin: 6px 0; }
+  ul.check li { padding-left: 22px; position: relative; margin-bottom: 6px; font-size: 13.5px; }
+  ul.check li::before { content: "✓"; position: absolute; left: 0; color: var(--green); font-weight: 700; }
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; margin: 10px 0 6px; font-size: 13.5px; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--text-3); background: var(--surface); }
+  tr:not([class^="tone-"]):nth-child(even) td { background: var(--zebra); }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  tr.tone-success td { background: var(--green-soft); }
+  tr.tone-warning td { background: var(--amber-soft); }
+  tr.tone-info td { background: var(--accent-soft); }
+  tr.tone-success td:first-child { border-left: 3px solid var(--green); }
+  tr.tone-warning td:first-child { border-left: 3px solid var(--amber); }
+  tr.tone-info td:first-child { border-left: 3px solid var(--accent); }
+  .callout { border-radius: var(--radius); padding: 14px 18px; margin: 18px 0; font-size: 14px; border: 1px solid var(--border); }
+  .callout .callout-title { font-weight: 700; margin-bottom: 4px; }
+  .callout.info { background: var(--accent-soft); border-color: var(--accent-line); }
+  .callout.info .callout-title { color: var(--accent); }
+  .callout.warning { background: var(--amber-soft); border-color: var(--warn-line); }
+  .callout.warning .callout-title { color: var(--amber); }
+  .callout.success { background: var(--green-soft); border-color: var(--good-line); }
+  .callout.success .callout-title { color: var(--green); }
+  .callout.terra { background: var(--terra-soft); border-color: var(--terra-line); }
+  .callout.terra .callout-title { color: var(--terra); }
+  .stat { text-align: left; }
+  .stat .v { font-size: 24px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .stat .v.accent { color: var(--accent); }
+  .stat .l { font-size: 12px; color: var(--text-3); margin-top: 2px; }
+  .step { display: flex; gap: 12px; margin-bottom: 16px; }
+  .step .n {
+    width: 28px; height: 28px; border-radius: 999px; background: var(--accent); color: var(--on-accent);
+    display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 650; flex-shrink: 0;
+  }
+  .step .t { font-weight: 650; }
+  .step .d { font-size: 13px; color: var(--text-2); }
+  a.jump { color: var(--accent); cursor: pointer; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 26px 0; }
+  .footer-note { margin-top: 40px; padding-top: 16px; border-top: 1px solid var(--border); }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .chip { font-size: 12.5px; border: 1px solid var(--border); background: var(--bg); border-radius: 999px; padding: 3px 11px; }
+  .tier { border-left: 3px solid var(--accent); padding-left: 14px; margin: 22px 0 8px; }
+  .tier .tn { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+  .tier .td { font-size: 13px; color: var(--text-2); }
+  .tl-marks { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-3); margin-top: 2px; }
+  .phase-pill { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; padding: 3px 10px; border-radius: 999px; background: var(--accent); color: var(--on-accent); }
+  .bigmonth { font-size: 32px; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1.1; }
+  details { border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 14px; margin-bottom: 8px; background: var(--surface); }
+  details summary { cursor: pointer; font-weight: 650; font-size: 14px; }
+  details[open] summary { margin-bottom: 8px; }
+  input[type="range"]:not(.inf-slider) { width: 100%; accent-color: var(--accent); margin: 6px 0; }
+  .slider-label { display: flex; justify-content: space-between; align-items: baseline; font-size: 14px; margin-top: 14px; gap: 10px; }
+  .slider-label .val { font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; }
+  .presets { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0 4px; }
+  .presets button {
+    border: 1px solid var(--border); background: var(--surface); color: var(--text-2);
+    border-radius: 999px; padding: 5px 14px; font-size: 13px; cursor: pointer; font-family: var(--font-ui);
+  }
+  .presets button:hover { border-color: var(--accent); color: var(--accent); }
+  .presets button.active { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+
+  /* ---- budget model, after the Organizers-tab pattern ---- */
+  .inf-presets { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 22px; }
+  .inf-preset {
+    padding: 10px 18px; border: 1px solid var(--border); border-radius: 999px; background: transparent;
+    color: var(--text-3); font-size: 14px; font-weight: 500; cursor: pointer; font-family: var(--font-ui);
+    transition: background .15s, border-color .15s, color .15s;
+  }
+  .inf-preset:hover { border-color: var(--accent); color: var(--accent); }
+  .inf-preset.active { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+  .inf-inputs { padding: 22px 24px 20px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); }
+  .inf-inputs-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+  .inf-inputs-kicker { font-size: 13px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--text-3); }
+  .inf-inputs-live { font-size: 12px; color: var(--accent); font-weight: 500; }
+  .inf-slider-row + .inf-slider-row { margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--border); }
+  .inf-slider-label { display: flex; justify-content: space-between; align-items: baseline; font-size: 17px; color: var(--text); font-weight: 500; margin-bottom: 8px; gap: 12px; }
+  .inf-slider-value { font-size: 20px; font-weight: 800; color: var(--accent); font-variant-numeric: tabular-nums; letter-spacing: -.01em; white-space: nowrap; }
+  .inf-slider { -webkit-appearance: none; appearance: none; width: 100%; height: 6px; background: var(--border); border-radius: 3px; outline: none; margin: 4px 0 8px; }
+  .inf-slider::-webkit-slider-runnable-track { height: 6px; border-radius: 3px; background: transparent; }
+  .inf-slider::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none; width: 18px; height: 18px; border-radius: 50%;
+    background: var(--accent); border: 2px solid var(--surface); box-shadow: 0 1px 3px rgba(0,0,0,.15);
+    margin-top: -6px; cursor: pointer;
+  }
+  .inf-slider::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%; background: var(--accent); border: 2px solid var(--surface); cursor: pointer; }
+  .inf-slider-hint { font-size: 12px; line-height: 1.5; color: var(--text-3); margin: 4px 0 0; }
+  .inf-reset-row { display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); }
+  .inf-reset-btn, .inf-fill-btn {
+    border: 1px solid var(--border); border-radius: 999px; color: var(--text-2); font-size: 12px; font-weight: 500;
+    cursor: pointer; padding: 6px 14px; font-family: var(--font-ui); transition: background .15s, border-color .15s, color .15s;
+  }
+  .inf-reset-btn { background: var(--accent-soft); }
+  .inf-reset-btn:hover { background: var(--accent-line); border-color: var(--accent); color: var(--accent); }
+  .inf-fill-btn { background: var(--terra-soft); }
+  .inf-fill-btn:hover { background: var(--terra-line); border-color: var(--terra); color: var(--terra); }
+  .inf-kpis { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 16px; margin-top: 22px; }
+  .inf-kpis.inf-kpis-4 { grid-template-columns: repeat(4, minmax(0,1fr)); }
+  @media (max-width: 1000px) { .inf-kpis.inf-kpis-4 { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+  @media (max-width: 860px) { .inf-kpis, .inf-kpis.inf-kpis-4 { grid-template-columns: 1fr; } }
+  .inf-total-strip {
+    display: flex; justify-content: space-between; align-items: center; gap: 16px;
+    margin-top: 16px; padding: 18px 24px; border-radius: 10px;
+    border: 1px solid var(--accent-line); background: var(--accent-soft);
+  }
+  .inf-total-strip .its-l { font-size: 13px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); }
+  .inf-total-strip .its-v { font-size: 46px; font-weight: 800; line-height: 1; color: var(--accent); font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+  @media (max-width: 500px) { .inf-total-strip .its-v { font-size: 34px; } }
+  .inf-kpi { padding: 20px 22px 16px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); }
+  .inf-kpi-value { font-size: 40px; font-weight: 800; line-height: 1; color: var(--text); letter-spacing: -.02em; margin: 0 0 10px; font-variant-numeric: tabular-nums; }
+  @media (max-width: 500px) { .inf-kpi-value { font-size: 32px; } }
+  .inf-kpi-label { font-size: 14px; line-height: 1.4; color: var(--text-2); margin: 0; }
+  .inf-kpi-total { border-color: var(--accent-line); background: var(--accent-soft); }
+  .inf-kpi-total .inf-kpi-value { color: var(--accent); }
+  .inf-table-wrap { border: 1px solid var(--border); border-radius: 10px; background: var(--surface); overflow-x: auto; }
+  table.inf-table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; margin: 0; }
+  .inf-table thead th { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--text-3); text-align: left; padding: 14px 18px; border-bottom: 1px solid var(--border); background: transparent; }
+  .inf-table thead th.num { text-align: right; }
+  .inf-table tbody th { font-size: 14px; font-weight: 500; text-align: left; padding: 14px 18px; color: var(--text); border-top: 1px solid var(--border); background: transparent; text-transform: none; letter-spacing: 0; }
+  .inf-table tbody td { font-size: 13px; padding: 14px 18px; color: var(--text-2); border-top: 1px solid var(--border); border-bottom: none; background: transparent; }
+  .inf-table tbody td.num { text-align: right; color: var(--text); font-weight: 500; }
+  .inf-table tbody tr.inf-table-total th, .inf-table tbody tr.inf-table-total td { font-weight: 700; color: var(--text); background: var(--accent-soft); }
+  .inf-table tbody tr.dimmed th, .inf-table tbody tr.dimmed td { opacity: .45; }
+  .roster { margin-top: 22px; }
+  .roster.off { display: none; }
+  .roster-group { margin-bottom: 14px; }
+  .roster-group .rg-h { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-3); margin-bottom: 6px; }
+  .roster-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .rchip { font-size: 12.5px; border: 1px solid var(--border); background: var(--bg); border-radius: 999px; padding: 4px 12px; }
+  .rchip b { font-variant-numeric: tabular-nums; color: var(--text-2); font-weight: 600; }
+
+/* TOPBAR-MOBILE: a wrapped 10-tab bar is too tall to pin on a phone */
+@media (max-width:640px){.topbar{position:static}}
+</style>
+</head>
+<body>
+<!-- THE 80 · theme toggle: place immediately after <body> -->
+<button type="button" class="theme-toggle" id="theme-toggle" data-mode="light" aria-label="Switch to dark mode" title="Switch to dark mode">
+  <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+  <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+</button>
+
+<div class="topbar"><div class="inner">
+  <div class="barrow">
+    <a class="wordmark" href="../#book">The 80 <span>/ Engine</span></a>
+    <span class="sitelinks"><a href="../#book">&larr; Prospectus</a><a href="../#godeeper">Go Deeper</a></span>
+  </div>
+  <nav id="nav"></nav>
+</div></div>
+
+<main>
+
+<!-- ============ THE SETUP ============ -->
+<section class="page active" id="setup">
+  <div class="grid" style="grid-template-columns: 1.4fr 1fr; align-items: center;">
+    <div>
+      <span class="tag">The setup</span>
+      <h1>Every cycle, Democrats build consultant-driven campaigns and then disband them</h1>
+      <p class="lead">The consultants move on. The relationships lapse. The audience scatters. Whatever was learned is gone by January. The 80 is building permanent capability instead — a communications operation that works on state politics every day, between elections as well as during them.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">The model in one sentence</div>
+      <p style="font-weight:600; margin-bottom:0;">A permanent HQ team that drives strategy and tactics around whatever each state team needs at that moment.</p>
+    </div>
+  </div>
+
+
+  <h2>What this is</h2>
+  <div class="grid g3">
+    <div class="card">
+      <div class="card-title">A permanent HQ team</div>
+      <p class="small" style="margin-bottom:0;">Drives strategy and tactics around whatever each state team needs at that moment. It holds the argument, the brand, and the institutional memory.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">State teams</div>
+      <p class="small" style="margin-bottom:0;">Built for action and activation in the states where we work — executing against a strategy, not writing one by committee from Washington.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">Local influence teams</div>
+      <p class="small" style="margin-bottom:0;">Trusted local voices, community leaders, and aligned organizations who carry the message in the places where they already have standing.</p>
+    </div>
+  </div>
+
+  <h2>Four commitments</h2>
+  <div class="grid g2">
+    <div class="card plain" style="border:1px solid var(--border);">
+      <div class="card-title" style="color:var(--accent);">01</div>
+      <p style="font-weight:650; margin-bottom:4px;">We don't go dark between elections.</p>
+      <p class="small" style="margin-bottom:0;">The value is in showing up every day for years — sustained attention, institutional memory, and a team that remembers what worked last time.</p>
+    </div>
+    <div class="card plain" style="border:1px solid var(--border);">
+      <div class="card-title" style="color:var(--accent);">02</div>
+      <p style="font-weight:650; margin-bottom:4px;">The work happens in states, not Washington.</p>
+      <p class="small" style="margin-bottom:0;">National provides the strategy, the tools, and the scale. What gets said, and how, is shaped by the state it's said in.</p>
+    </div>
+    <div class="card plain" style="border:1px solid var(--border);">
+      <div class="card-title" style="color:var(--accent);">03</div>
+      <p style="font-weight:650; margin-bottom:4px;">One argument, in the language of every place we work.</p>
+      <p class="small" style="margin-bottom:0;">The same center-left case everywhere, spoken in the culture, history, and idiom of each place — not translated, native.</p>
+    </div>
+    <div class="card plain" style="border:1px solid var(--border);">
+      <div class="card-title" style="color:var(--accent);">04</div>
+      <p style="font-weight:650; margin-bottom:4px;">Belonging before persuasion.</p>
+      <p class="small" style="margin-bottom:0;">People form durable civic connections through shared experience, not through another political pitch. We build the social world first.</p>
+    </div>
+  </div>
+
+  <h2>Three parts, one system</h2>
+  <div class="grid g3">
+    <div class="card" style="background: var(--accent-soft); border-color:var(--accent-line);">
+      <div class="card-title" style="color:var(--accent);">The 80 Engine <span class="tag">This section</span></div>
+      <p class="small" style="margin-bottom:0;"><strong>Creates and sharpens the story.</strong> The content, media, and technology that amplify center-left messaging and rebuild the Democratic Party brand.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">Influencer Network</div>
+      <p class="small" style="margin-bottom:0;"><strong>Carries the story through trusted voices.</strong> The advocate and creator network. It takes its direction from the Engine and operates as its own program.</p>
+      <p class="tiny" style="margin-bottom:0;">See Section 3.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">The80 Live <span class="tag new">Proposed</span></div>
+      <p class="small" style="margin-bottom:0;"><strong>Creates belonging, access, and a visible local community.</strong> Year-round, locally rooted social and cultural experiences in battleground communities.</p>
+    </div>
+  </div>
+  <p class="tiny">Online, we build reach. In person, we build belonging. Through access, we build a network of trusted voices that wants to stay engaged.</p>
+
+  <h2>What's in this section</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th style="width:26%;">Part</th><th>What it covers</th></tr></thead>
+      <tbody>
+        <tr><td><a class="jump" href="#budget"><strong>1. The Budget</strong></a></td><td>What the national team costs, what each state costs, and who is on the payroll</td></tr>
+        <tr><td><a class="jump" href="#what"><strong>2. What You're Funding</strong></a></td><td>The six capabilities in four tiers, and The80 Live</td></tr>
+        <tr><td><a class="jump" href="#state"><strong>3. Invest in a State</strong></a></td><td>A year in one state and the pilot loop</td></tr>
+        <tr><td><a class="jump" href="#timeline"><strong>4. What Happens When</strong></a></td><td>The first twenty-four months, month by month</td></tr>
+        <tr><td><a class="jump" href="#how"><strong>5. How It Works</strong></a></td><td>How work moves from signal to activation</td></tr>
+        <tr><td><a class="jump" href="#proof"><strong>6. Accountability</strong></a></td><td>The year-one scorecard</td></tr>
+        <tr><td><a class="jump" href="#questions"><strong>7. Questions</strong></a></td><td>What we get asked, and the honest answers</td></tr>
+        <tr><td><a class="jump" href="#glossary"><strong>8. Glossary</strong></a></td><td>The terms, in plain English</td></tr>
+        <tr><td><a class="jump" href="#next"><strong>9. Next Steps</strong></a></td><td>What has to happen from here</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="tiny">Related sections of the donor book: Civic &amp; Political (Section 1) · The Influencer Network (Section 3).</p>
+  <div class="next-row"><button type="button" class="next-btn" data-next="budget">Next: The Budget &rarr;</button></div>
+</section>
+
+<!-- ============ BUDGET ============ -->
+<section class="page" id="budget">
+  <span class="tag">The budget</span>
+  <h1>What it costs to build The 80 Engine</h1>
+  <p class="lead">Move the slider to build the organization one step at a time. Each state brings a director and a full creative team. The last step adds the national team that runs across all of them. These figures are people only — salaries and benefits.</p>
+
+
+  <div class="inf-presets" id="bud-presets">
+    <button class="inf-preset" data-bud="0" type="button">Nothing yet</button>
+    <button class="inf-preset" data-bud="1" type="button">One state</button>
+    <button class="inf-preset" data-bud="6" type="button">Six states</button>
+    <button class="inf-preset active" data-bud="7" type="button">Full deployment</button>
+  </div>
+
+  <div class="inf-inputs">
+    <div class="inf-inputs-head">
+      <span class="inf-inputs-kicker">Inputs</span>
+      <span class="inf-inputs-live">Live model</span>
+    </div>
+
+    <div class="inf-slider-row">
+      <div class="inf-slider-label">
+        <span>Build the organization</span>
+        <span class="inf-slider-value" id="bud-step-val">6 states + national team</span>
+      </div>
+      <input type="range" id="bud-step" min="0" max="7" step="1" value="7" class="inf-slider">
+      <div class="tl-marks" style="margin-top:6px;">
+        <span>Nothing</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6 states</span><span>+ National</span>
+      </div>
+      <p class="inf-slider-hint">Start at nothing. Add one state, then another, up to six — each adds $1.25M for a state director and a seven-person contract creative team. The final step adds the national team at $3.165M, which supports all six states.</p>
+    </div>
+
+    <div class="inf-reset-row">
+      <button id="bud-reset" class="inf-reset-btn" type="button">Snap to zero</button>
+      <button id="bud-fill" class="inf-fill-btn" type="button">Snap to full</button>
+    </div>
+  </div>
+
+  <div class="inf-kpis inf-kpis-4">
+    <div class="inf-kpi">
+      <p class="inf-kpi-value" id="bud-k2-v">$1.5M</p>
+      <p class="inf-kpi-label" id="bud-k2-l">State directors — 6 × $250K</p>
+    </div>
+    <div class="inf-kpi">
+      <p class="inf-kpi-value" id="bud-k3-v">$5.9M</p>
+      <p class="inf-kpi-label" id="bud-k3-l">Contract creative teams — 6 × $984K</p>
+    </div>
+    <div class="inf-kpi">
+      <p class="inf-kpi-value" id="bud-k4-v">$84K</p>
+      <p class="inf-kpi-label" id="bud-k4-l">Healthcare &amp; benefits — 6 directors</p>
+    </div>
+    <div class="inf-kpi">
+      <p class="inf-kpi-value" id="bud-k1-v">$3.165M</p>
+      <p class="inf-kpi-label" id="bud-k1-l">National team — 16 full-time roles</p>
+    </div>
+  </div>
+
+  <div class="inf-total-strip">
+    <span class="its-l">Total annual</span>
+    <span class="its-v" id="bud-tot-v">$10.65M</span>
+  </div>
+
+  <h2>Line items at current settings</h2>
+  <div class="inf-table-wrap">
+    <table class="inf-table">
+      <thead>
+        <tr><th>Line</th><th>Basis</th><th class="num">Annual cost</th></tr>
+      </thead>
+      <tbody>
+        <tr id="bud-r-dir"><th scope="row">State directors</th><td id="bud-li-dir">6 × $250K salary — one per state</td><td class="num" id="bud-li-dir-v">$1.5M</td></tr>
+        <tr id="bud-r-con"><th scope="row">Contract creative teams (1099)</th><td id="bud-li-con">6 × $984K — seven roles per state at $82K per month</td><td class="num" id="bud-li-con-v">$5.9M</td></tr>
+        <tr id="bud-r-ben"><th scope="row">Healthcare &amp; benefits</th><td id="bud-li-ben">6 × $14K — state directors. 1099 contractors carry their own.</td><td class="num" id="bud-li-ben-v">$84K</td></tr>
+        <tr id="bud-r-nat"><th scope="row">National team</th><td id="bud-li-nat">16 full-time roles — leadership, strategy, operations and the national creative team</td><td class="num" id="bud-li-nat-v">$3.165M</td></tr>
+        <tr class="inf-table-total"><th scope="row">Total</th><td id="bud-li-note">People only — salaries and benefits</td><td class="num" id="bud-li-tot-v">$10.65M</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="roster" id="bud-roster">
+    <h2 style="margin-top:26px;">The national team</h2>
+    <p class="small">Who is working on this the day investors commit.</p>
+    <div class="roster-group">
+      <div class="rg-h">Leadership</div>
+      <div class="roster-chips">
+        <span class="rchip">CEO <b>$500K</b></span>
+        <span class="rchip">Chief Creative Officer <b>$400K</b></span>
+        <span class="rchip">Executive Support <b>$65K</b></span>
+      </div>
+    </div>
+    <div class="roster-group">
+      <div class="rg-h">Strategy, operations and state relationships</div>
+      <div class="roster-chips">
+        <span class="rchip">Head of Research &amp; Narrative Strategy <b>$230K</b></span>
+        <span class="rchip">Head of Media &amp; Technology <b>$200K</b></span>
+        <span class="rchip">Head of State Client Management <b>$200K</b></span>
+        <span class="rchip">Director of Finance <b>$170K</b></span>
+        <span class="rchip">Director of Operations <b>$150K</b></span>
+        <span class="rchip">Project Manager <b>$120K</b></span>
+      </div>
+    </div>
+    <div class="roster-group">
+      <div class="rg-h">National creative team</div>
+      <div class="roster-chips">
+        <span class="rchip">Senior Writer <b>$230K</b></span>
+        <span class="rchip">Senior Art Director <b>$230K</b></span>
+        <span class="rchip">Senior Content / Video Creator <b>$180K</b></span>
+        <span class="rchip">Mid-Level Writer <b>$150K</b></span>
+        <span class="rchip">Mid-Level Designer <b>$150K</b></span>
+        <span class="rchip">Mid-Level Content / Video Creator <b>$100K</b></span>
+        <span class="rchip">Social Media Manager <b>$100K</b></span>
+      </div>
+    </div>
+    <p class="tiny">All full-time roles are W2 and fully remote. Figures shown are base salary.</p>
+  </div>
+
+  <h2>Who the people are in each state, and what they do</h2>
+  <p class="small">Every state funded gets the same eight people. The director is a full-time employee; the creative team is contracted, which is what lets a state scale up around a moment and back down afterwards.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Role</th><th>What they do</th><th>Basis</th><th class="num">Annual</th></tr></thead>
+      <tbody>
+        <tr class="tone-info"><td><strong>State Director</strong></td><td>Owns the state. Holds the relationships with local leaders, partners and candidates, turns state needs into briefs, runs the team, and is accountable for what happens in that state.</td><td>W2 · $250,000 salary</td><td class="num">$250,000</td></tr>
+        <tr><td>Senior Writer</td><td>Sets the words. Writes the state narrative, message pillars, op-eds, scripts and the language everyone else works from.</td><td>1099 · $15,000 / month</td><td class="num">$180,000</td></tr>
+        <tr><td>Senior Art Director</td><td>Sets the look. Owns the visual system for the state so the work reads as local rather than national material with a state name dropped in.</td><td>1099 · $15,000 / month</td><td class="num">$180,000</td></tr>
+        <tr><td>Senior Content / Video Creator</td><td>Makes the highest-value video and audio — the pieces built to travel, and the material creators use in their own voice.</td><td>1099 · $15,000 / month</td><td class="num">$180,000</td></tr>
+        <tr><td>Mid-Level Writer</td><td>Carries the daily volume. Social copy, rapid response, partner toolkits, and the continuous editorial drumbeat.</td><td>1099 · $10,000 / month</td><td class="num">$120,000</td></tr>
+        <tr><td>Mid-Level Designer</td><td>Produces against the system — graphics, templates, partner assets, and everything that has to ship this week.</td><td>1099 · $10,000 / month</td><td class="num">$120,000</td></tr>
+        <tr><td>Mid-Level Content / Video Creator</td><td>Shoots and edits the steady supply of short-form video and on-the-ground content from events and communities.</td><td>1099 · $10,000 / month</td><td class="num">$120,000</td></tr>
+        <tr><td>Social Media Manager</td><td>Runs the channels day to day. Publishes, listens, engages, flags what needs a response, and reports what landed.</td><td>1099 · $7,000 / month</td><td class="num">$84,000</td></tr>
+        <tr><td>Healthcare &amp; benefits</td><td>Employer-paid medical, dental and vision for the state director. Contractors carry their own.</td><td>1 × $14,000</td><td class="num">$14,000</td></tr>
+        <tr class="tone-success"><td><strong>Total per state</strong></td><td>Eight people, working the state continuously</td><td></td><td class="num"><strong>$1,248,000</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout terra">
+    <div class="callout-title">What these figures do not include</div>
+    Software, travel and equipment · paid media and advertising · The80 Live event production · candidate travel · legal retainers and compliance counsel · polling and primary research · office space. Advocate and creator program costs sit with the Influencer Network in Section 3. <strong>These numbers are the people who do the work, not the money they put behind it.</strong>
+  </div>
+
+  <p class="tiny">Source: The 80 Engine 2027 staff plan. The state director's fully loaded cost including software, equipment and travel is $274,600; the people-only figure shown here is $264,000. Change any assumption in the workbook and these figures move with it.</p>
+  <div class="next-row"><button type="button" class="next-btn" data-next="what">Next: What You&rsquo;re Funding &rarr;</button></div>
+</section>
+
+<!-- ============ WHAT YOU'RE FUNDING ============ -->
+<section class="page" id="what">
+  <span class="tag">What you're funding</span>
+  <h1>Research, strategy, creative and design, tactics and operations</h1>
+  <p class="lead">Six capabilities in four tiers. Everything the operation can be asked to do sits in one of them.</p>
+
+
+  <div class="tier">
+    <div class="tn">Research</div>
+    <div class="td">What's actually true in a place, and whether we're gaining ground.</div>
+  </div>
+  <div class="card">
+    <div class="card-title">01 — Research &amp; Intelligence</div>
+    <p class="small" style="margin-bottom:0;">Audience and cultural intelligence, message testing, and brand tracking. Establishes the baseline at the start so movement can be proved later.</p>
+  </div>
+
+  <div class="tier">
+    <div class="tn">Strategy</div>
+    <div class="td">The argument, and the words everyone uses to make it.</div>
+  </div>
+  <div class="card">
+    <div class="card-title">02 — Narrative &amp; Communications Strategy</div>
+    <p class="small" style="margin-bottom:0;">Turns research into the actual case — culture strategy, positioning, narrative systems and messaging, and the toolkits partners and candidates work from.</p>
+  </div>
+
+  <div class="tier">
+    <div class="tn">Tactics</div>
+    <div class="td">How the argument looks and feels where it lands.</div>
+  </div>
+  <div class="card">
+    <div class="card-title">03 — Regionally Distinctive Creative &amp; Design</div>
+    <p class="small" style="margin-bottom:0;">Campaign platforms, creative concepts, identity systems, and creative direction — built so the work reads as local rather than national material with a state name dropped in.</p>
+  </div>
+
+  <div class="tier">
+    <div class="tn">Operations</div>
+    <div class="td">Getting it made, getting it out, and getting people together.</div>
+  </div>
+  <div class="grid g3">
+    <div class="card">
+      <div class="card-title">04 — Content &amp; Production</div>
+      <p class="small" style="margin-bottom:0;">The continuous supply of video, audio, images, and social content — including material shaped for creators to use in their own voice. Plus editorial and rapid response.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">05 — Digital &amp; Live Experiences and Activation</div>
+      <p class="small" style="margin-bottom:0;">Putting the story into the physical world — experiential activations, community engagement, partnerships, and events people show up to. This is where <strong>The80 Live</strong> sits.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">06 — Media &amp; Technology</div>
+      <p class="small" style="margin-bottom:0;">Distribution and measurement — social strategy, audience targeting, media planning and buying, optimization, and analytics.</p>
+    </div>
+  </div>
+
+  <h2>The80 Live <span class="tag new">Proposed extension</span></h2>
+  <p class="lead" style="font-size:15px;">The80 Live is the state-based live experience platform of The 80. It creates year-round, locally rooted social and cultural experiences that build belonging, surface trusted voices, and strengthen civic norms in battleground communities.</p>
+  <p class="small"><em>Belonging before persuasion. Human connection before mobilization.</em> People are more likely to form durable civic connections through shared experience than through another political pitch. The aim is a richer, more welcoming, big-tent social world around the center-left — one that reflects the proposition that we agree on more than we do not.</p>
+
+  <div class="grid g2">
+    <div class="card">
+      <div class="card-title">The80 Community <span class="tag dim">Public</span></div>
+      <p class="small">Broad, public-facing, locally rooted events designed to create connection without a hard political ask.</p>
+      <ul class="dot tight">
+        <li>Fairs, neighborhood gatherings, community days, music, food, dancing, local festivals, family events, maker and cultural experiences</li>
+        <li>Programming shaped by local customs, venues, artists, creators, civic groups, and community traditions</li>
+        <li>No solicitation and no heavy pitch — the event should be worth attending on its own merits</li>
+        <li>Civic and educational programming can be incorporated where appropriate, without turning the gathering into a seminar</li>
+      </ul>
+      <p class="tiny" style="margin-bottom:0;">The emotional objective is to make civic life feel social, normal, generous, and welcoming.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">The80 Access <span class="tag dim">Invitation only</span></div>
+      <p class="small">Curated experiences that deepen relationships with the influencer, creator, activist, ambassador, and trusted-voice network.</p>
+      <ul class="dot tight">
+        <li>Candidate conversations, creator briefings, small dinners, private salons, backstage gatherings, policy briefings, early access to emerging leaders</li>
+        <li>More explicitly tied to political objectives and, where appropriate, candidate-specific activity</li>
+        <li>The value is not content or compensation — it is access, community, status, information, relationships, and experiences</li>
+        <li>Participants speak in their own voice rather than functioning as scripted surrogates</li>
+      </ul>
+      <p class="tiny" style="margin-bottom:0;">This turns the influencer platform from a CRM into a real community.</p>
+    </div>
+  </div>
+
+  <div class="callout info">
+    <div class="callout-title">The80 Moments — where the two meet</div>
+    In some states a larger cultural moment can combine both lanes: a public event or festival with a separate invitation-only experience layered around it. A state fair weekend with public programming plus a private creator and candidate gathering. A music-and-manufacturing weekend with public events and a creator dinner. A recurring evening series with a public cultural gathering and a private salon. The public experience builds community; the private experience deepens relationships; creators generate content; the Engine amplifies what comes out of the whole ecosystem.
+  </div>
+
+  <p class="small"><strong>The operating distinction:</strong> community events build the movement; access events activate and deepen the network. The two sit under one brand while keeping separate objectives, audiences, and compliance treatment — with entity structure designed in from the outset rather than solved after events are conceived.</p>
+
+  <h3>Who leads it</h3>
+  <div class="grid g2">
+    <div class="card plain" style="border:1px solid var(--border);">
+      <div class="card-title">Head of Live, Culture &amp; Community <span class="tag new">Proposed</span></div>
+      <p class="small">Owns the national concept, brand, standards, playbooks, and calendar logic. Integrates live programming with the Engine, the influencer network, and Civic &amp; Political. Builds partnership and sponsorship frameworks and repeatable formats. Recruits and coaches state leads while preserving local autonomy.</p>
+      <p class="tiny" style="margin-bottom:0;"><strong>Profile:</strong> not primarily a political operative — a cultural producer, movement builder, experiential strategist, festival operator, or hospitality executive who understands politics but knows how to create social gravity.</p>
+    </div>
+    <div class="card plain" style="border:1px solid var(--border);">
+      <div class="card-title">State Executive Producer <span class="tag new">Proposed</span></div>
+      <p class="small">Owns the state's live calendar and cultural partnerships. Produces events shaped by local customs, communities, artists, venues, food, music, and civic life. Builds relationships with local creators, organizers, and community leaders. Treats energy, repeat participation, and local relevance as core performance measures.</p>
+      <p class="tiny" style="margin-bottom:0;"><strong>Profile:</strong> need not come from campaigns — a strong candidate might come from a music festival, cultural institution, hospitality group, experiential agency, local media company, or community organization.</p>
+    </div>
+  </div>
+
+  <div class="callout info">
+    <div class="callout-title">The Influence 80 Platform</div>
+    Advocates, community voices, and influencers, supported by custom-built technology that gives them access and distribution support and measures participation across the election map. The Engine sets the direction; the platform runs as its own program. <strong>See Section 3.</strong>
+  </div>
+  <div class="next-row"><button type="button" class="next-btn" data-next="state">Next: Invest in a State &rarr;</button></div>
+</section>
+
+<!-- ============ INVEST IN A STATE ============ -->
+<section class="page" id="state">
+  <span class="tag">Invest in a state</span>
+  <h1>What a year in one state looks like</h1>
+  <p class="lead">The most concrete version of where money goes: one state, one director, a full creative team, and a year of continuous work.</p>
+
+
+  <div class="grid g3">
+    <div class="stat"><div class="v accent">$1.25M</div><div class="l">Annual cost of one state</div></div>
+    <div class="stat"><div class="v">8</div><div class="l">People working the state</div></div>
+    <div class="stat"><div class="v">12</div><div class="l">Months of continuous work</div></div>
+  </div>
+
+  <div class="grid" style="grid-template-columns: 1.1fr 1fr;">
+    <div class="card">
+      <div class="card-title">Who your investment puts on the ground</div>
+      <ul class="check">
+        <li><strong>State Director</strong> — owns the state, the relationships, and the plan</li>
+        <li>Senior Writer</li>
+        <li>Senior Art Director</li>
+        <li>Senior Content / Video Creator</li>
+        <li>Mid-Level Writer</li>
+        <li>Mid-Level Designer</li>
+        <li>Mid-Level Content / Video Creator</li>
+        <li>Social Media Manager</li>
+      </ul>
+      <p class="tiny" style="margin-top:10px; margin-bottom:0;">The director is full-time and salaried. The creative team is contracted, which is what lets a state scale up around a moment and back down afterwards. Full cost breakdown and what each person does is on <a class="jump" href="#budget">the budget tab</a>.</p>
+    </div>
+    <div class="card" style="background: var(--green-soft); border-color:var(--good-line);">
+      <div class="card-title" style="color:var(--green);">What exists at the end that didn't before</div>
+      <ul class="dash tight">
+        <li>A written read of the state's politics, culture, media, and economy</li>
+        <li>A state narrative and the messaging to carry it</li>
+        <li>A measured baseline to judge future years against</li>
+        <li>Continuous content in market, week after week</li>
+        <li>Toolkits partners and candidates actually use</li>
+        <li>A map of local voices and organizations worth working with</li>
+        <li>Local voices and creators activated and measured</li>
+        <li>A playbook other states can copy</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>The pilot: proving the whole loop in one place</h2>
+  <p class="small">Rather than build a national apparatus immediately, the model should be tested in one priority state and proved.</p>
+  <div class="grid g3">
+    <div class="card plain" style="border:1px solid var(--border);">
+      <div class="card-title">Stand it up</div>
+      <ul class="dot tight">
+        <li>State director and creative team in place</li>
+        <li>State research and narrative completed</li>
+        <li>Continuous content in market</li>
+        <li>An executive producer engaged for live programming <span class="tag new">Proposed</span></li>
+      </ul>
+    </div>
+    <div class="card plain" style="border:1px solid var(--border);">
+      <div class="card-title">Build the community</div>
+      <ul class="dot tight">
+        <li>Map 20–30 existing local cultural, civic, creator, and venue relationships</li>
+        <li>Launch a small roster of recurring public community events</li>
+        <li>Create two to three invitation-only access experiences for the network</li>
+        <li>Tie programming to the state narrative without making every event political</li>
+      </ul>
+    </div>
+    <div class="card plain" style="border:1px solid var(--border);">
+      <div class="card-title">Decide what scales</div>
+      <ul class="dot tight">
+        <li>Capture content, participation data, repeat attendance</li>
+        <li>Gather partner feedback and network growth</li>
+        <li>At 90–180 days, decide which formats deserve to scale</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout info">
+    <div class="callout-title">Why states are sized to the fight</div>
+    A state team is built around the work in front of it rather than created as a fixed office. The director is permanent; the creative team is contracted. When the fight in a state gets bigger, the team gets bigger. When it doesn't, nobody is paying for standing overhead that has run out of things to do.
+  </div>
+  <div class="next-row"><button type="button" class="next-btn" data-next="timeline">Next: What Happens When &rarr;</button></div>
+</section>
+
+<!-- ============ TIMELINE ============ -->
+<section class="page" id="timeline">
+  <span class="tag">What happens when</span>
+  <h1>The first 24 months</h1>
+  <p class="lead">What exists at each point, and when the first real proof arrives.</p>
+
+
+  <div class="card">
+    <div class="card-title">Month <span class="tag" id="tl-phase-tag">Month 3</span></div>
+    <input type="range" id="tl" min="1" max="24" step="1" value="3">
+    <div class="tl-marks"><span>3</span><span>6</span><span>12</span><span>18</span><span>24</span></div>
+  </div>
+
+  <div class="grid" style="grid-template-columns: 0.8fr 2fr; align-items:start;">
+    <div class="card">
+      <div class="bigmonth" id="tl-month">Month 3</div>
+      <p class="phase-pill" id="tl-phase" style="margin-top:8px;">Stand it up</p>
+    </div>
+    <div class="card plain" style="border:1px solid var(--border);">
+      <div class="card-title">Where things stand</div>
+      <p id="tl-summary" style="margin-bottom:0;"></p>
+    </div>
+  </div>
+
+  <div class="grid g2">
+    <div class="card">
+      <div class="card-title">What's happening</div>
+      <ul class="dot tight" id="tl-actions"></ul>
+    </div>
+    <div class="card" style="background: var(--green-soft); border-color:var(--good-line);">
+      <div class="card-title" style="color:var(--green);">What exists by now</div>
+      <ul class="check" id="tl-outputs"></ul>
+    </div>
+  </div>
+
+  <h2>The short version</h2>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>By</th><th>Where things stand</th></tr></thead>
+    <tbody>
+      <tr><td><strong>3 months</strong></td><td>National leadership and strategy in place, the operating rhythm running, and the first state live with content in market.</td></tr>
+      <tr class="tone-success"><td><strong>6 months</strong></td><td>The model proven in practice, a written impact and learning report, and expansion into another state.</td></tr>
+      <tr><td><strong>12 months</strong></td><td>What worked replicated, capacity added where demand showed up, coverage widened.</td></tr>
+      <tr><td><strong>18 months</strong></td><td>Durable infrastructure — proprietary tools, institutional knowledge, and a repeatable model.</td></tr>
+      <tr><td><strong>24 months</strong></td><td>It continues. Value compounds across states and cycles rather than resetting.</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="next-row"><button type="button" class="next-btn" data-next="how">Next: How It Works &rarr;</button></div>
+</section>
+
+<!-- ============ HOW IT WORKS ============ -->
+<section class="page" id="how">
+  <span class="tag">How it works</span>
+  <h1>From signal to activation</h1>
+  <p class="lead">How work moves through the system — whether it's a two-year state narrative build or a four-hour response to an attack.</p>
+
+
+  <h2>End to end</h2>
+  <div class="grid g4">
+    <div class="card plain" style="border:1px solid var(--border);"><div class="card-title" style="color:var(--accent);">1 — Listen</div><p class="small" style="margin-bottom:0;">Find the real-world issues that move persuadable people.</p></div>
+    <div class="card plain" style="border:1px solid var(--border);"><div class="card-title" style="color:var(--accent);">2 — Strategize</div><p class="small" style="margin-bottom:0;">Turn common ground into a story that sounds native to the place.</p></div>
+    <div class="card plain" style="border:1px solid var(--border);"><div class="card-title" style="color:var(--accent);">3 — Create</div><p class="small" style="margin-bottom:0;">Build the messaging and keep content coming.</p></div>
+    <div class="card plain" style="border:1px solid var(--border);"><div class="card-title" style="color:var(--accent);">4 — Amplify</div><p class="small" style="margin-bottom:0;">Reach, persuade, and convert through voices people already trust.</p></div>
+  </div>
+
+  <div class="callout terra">
+    <div class="callout-title">The flywheel, once live experience is in the model</div>
+    <strong>Listen → Convene → Build community → Surface voices → Create → Amplify → Learn → Convene again.</strong><br>
+    This adds a social layer to the workflow below. The difference is that convening and belonging become recurring <em>inputs</em>, not one-time outputs — every gathering surfaces new voices, new content, and local intelligence that feed the next round of work.
+  </div>
+
+  <h2>The full workflow</h2>
+  <p class="small">Eight steps, each with an owner and a defined output.</p>
+  <div class="step"><div class="n">1</div><div><div class="t">Listen</div><div class="d">Gather signals from the state, the audience, the culture, the media, policy, and past performance. <span class="tiny">Output: a signals brief</span></div></div></div>
+  <div class="step"><div class="n">2</div><div><div class="t">Identify</div><div class="d">Name the opportunity, threat, tension, or audience need. <span class="tiny">Output: an opportunity statement</span></div></div></div>
+  <div class="step"><div class="n">3</div><div><div class="t">Prioritize</div><div class="d">Decide whether it's worth doing — strategic value, urgency, readiness, funding, capacity. <span class="tiny">Output: an approved priority with resources attached</span></div></div></div>
+  <div class="step"><div class="n">4</div><div><div class="t">Strategize</div><div class="d">Set the objective, audience, narrative, messaging, channels, and how success will be measured. <span class="tiny">Output: an integrated brief</span></div></div></div>
+  <div class="step"><div class="n">5</div><div><div class="t">Create</div><div class="d">Make the communications, content, creative, and toolkits — including packages creators can use in their own words. <span class="tiny">Output: campaign assets</span></div></div></div>
+  <div class="step"><div class="n">6</div><div><div class="t">Activate</div><div class="d">Put it out through owned, earned, influencer, partner, field, and paid channels at once. <span class="tiny">Output: a live activation</span></div></div></div>
+  <div class="step"><div class="n">7</div><div><div class="t">Measure</div><div class="d">Track outputs, engagement, whether the narrative moved, and whether behavior changed. <span class="tiny">Output: a performance dashboard</span></div></div></div>
+  <div class="step"><div class="n">8</div><div><div class="t">Learn</div><div class="d">Write down what we learned, update the playbooks, change what we do next. <span class="tiny">Output: updated playbooks</span></div></div></div>
+
+  <div class="callout info">
+    <div class="callout-title">How this connects to the Influencer Network</div>
+    The Engine sets the direction the network follows — the briefs, the messages, the content packages, and the activation priorities. The network's recruitment, management, and measurement run as their own program. <strong>See Section 3.</strong>
+  </div>
+
+  <h2>How work gets chosen</h2>
+  <p class="small">One intake system, four lanes.</p>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Lane</th><th>What it covers</th></tr></thead>
+    <tbody>
+      <tr><td><strong>State platform work</strong></td><td>The long-term build in a state: narrative development, diagnostics, continuous editorial, coalition communications, audience building</td></tr>
+      <tr><td><strong>Planned campaigns &amp; moments</strong></td><td>Time-bound pushes: policy campaigns, legislative moments, candidate support, issue launches, cultural moments</td></tr>
+      <tr><td><strong>Rapid response</strong></td><td>Breaking news, opposition attacks, viral narratives, candidate moments, cultural controversies</td></tr>
+      <tr><td><strong>Effectiveness &amp; infrastructure</strong></td><td>The things that make everything else faster: templates, standards, technology, content libraries, dashboards, training</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="small">How capacity divides across these lanes is <strong>strategy to determine</strong> — it will be set with leadership and reviewed once the operation is live.</p>
+
+  <h2>What this looks like in practice</h2>
+  <details>
+    <summary>Building a state narrative from scratch</summary>
+    <p class="small"><strong>Listen &amp; identify:</strong> review research and data, map the political, cultural, media, and economic context, audit what's already being said, map partners and trusted voices, and name the central tension.</p>
+    <p class="small"><strong>Prioritize &amp; strategize:</strong> select priority audiences and issues, define the affirmative state narrative, build message pillars and proof points, and set guardrails for local expression.</p>
+    <p class="small"><strong>Create &amp; activate:</strong> build the editorial and content system, develop partner and candidate toolkits, launch the first messages, activate local voices, and coordinate earned, owned, and paid.</p>
+    <p class="small" style="margin-bottom:0;"><strong>Measure &amp; learn:</strong> monitor narrative movement, compare messages and channels, scale what works, and update the state playbook.</p>
+  </details>
+  <details>
+    <summary>Responding to an attack or breaking news</summary>
+    <p class="small"><strong>Listen &amp; identify:</strong> monitor news, social, political, and cultural signals plus flags from state teams; confirm the facts; work out the response window; decide whether to respond at all.</p>
+    <p class="small"><strong>Prioritize &amp; strategize:</strong> assess relevance and urgency, check legal implications, confirm who approves, pick the posture, messenger, and channels.</p>
+    <p class="small"><strong>Create &amp; activate:</strong> core message and talking points, social and creative assets, an advocate brief, press materials — then release, amplify, and optimize live.</p>
+    <p class="small" style="margin-bottom:0;"><strong>Measure &amp; learn:</strong> track pickup and spread, watch the opposition's response, and update the rapid-response playbook.</p>
+  </details>
+  <details>
+    <summary>A major moment — a bill, an election, a cultural flashpoint</summary>
+    <p class="small"><strong>Listen &amp; identify:</strong> review audience, cultural, and political intelligence, assess the narrative environment, and pin down the moment and its timing.</p>
+    <p class="small"><strong>Prioritize &amp; strategize:</strong> confirm strategic importance, set budget and resources, assign leadership and an integrated team, and define the objective, audience, and measurement plan up front.</p>
+    <p class="small"><strong>Create &amp; activate:</strong> campaign platform and creative, content system, prepared spokespeople, message testing — then launch across owned, earned, advocate, and paid at once.</p>
+    <p class="small" style="margin-bottom:0;"><strong>Measure &amp; learn:</strong> monitor in real time, optimize, evaluate results, debrief, and decide on follow-on activity.</p>
+  </details>
+  <details>
+    <summary>Continuous editorial — the daily drumbeat</summary>
+    <p class="small"><strong>Daily:</strong> monitor signals; spot emerging opportunities and threats; update the editorial queue; publish; optimize live content; flag anything needing rapid response.</p>
+    <p class="small"><strong>Weekly:</strong> review signals and performance; set editorial priorities; assign content; coordinate with partners and advocates; update the rolling calendar.</p>
+    <p class="small" style="margin-bottom:0;"><strong>Monthly:</strong> review narrative movement; evaluate formats, messages, and messengers; refresh priority themes; retire what isn't working; adjust strategy.</p>
+  </details>
+  <div class="next-row"><button type="button" class="next-btn" data-next="proof">Next: Accountability &rarr;</button></div>
+</section>
+
+<!-- ============ ACCOUNTABILITY ============ -->
+<section class="page" id="proof">
+  <span class="tag">Accountability</span>
+  <h1>The year-one scorecard</h1>
+  <p class="lead">The commitments for the first year. This is the accountability contract — the list to hold up at the twelve-month mark and ask, item by item, whether it happened.</p>
+
+
+  <div class="grid g3">
+    <div class="card">
+      <div class="card-title">Did we build it?</div>
+      <ul class="check">
+        <li>National leadership and operations established</li>
+        <li>Governance and decision rights approved</li>
+        <li>Research, platform, and media interfaces operating</li>
+        <li>National creative team in place</li>
+        <li>Core workflows and templates in use</li>
+        <li>Technology stack selected</li>
+        <li>Measurement dashboard live</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">Did it work in a state?</div>
+      <ul class="check">
+        <li>Target-audience reach achieved</li>
+        <li>Priority states activated</li>
+        <li>State research and narrative strategies completed</li>
+        <li>Continuous editorial running in pilot states</li>
+        <li>State partner ecosystems mapped</li>
+        <li>First creator and media activations completed</li>
+        <li>Brand and narrative baselines established</li>
+        <li>Evidence of audience or partner response documented</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">Did the organization get stronger?</div>
+      <ul class="check">
+        <li>The 80 can deploy an integrated team into a state</li>
+        <li>Partners and candidates can get real research, messaging, and content</li>
+        <li>We can respond quickly to emerging moments</li>
+        <li>Learning transfers between states</li>
+        <li>Funders can see how investment connects to visible activity and outcomes</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>Live community measures <span class="tag new">Proposed</span></h2>
+  <p class="small">If The80 Live is built into the pilot state, these are the measures that come with it.</p>
+  <div class="grid g2">
+    <div class="card">
+      <div class="card-title">Community and participation</div>
+      <ul class="check">
+        <li>Number and quality of recurring local events established</li>
+        <li>Repeat attendance and community growth</li>
+        <li>Number and quality of local partnerships</li>
+        <li>New ambassadors, creators, community leaders, and local voices surfaced</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">Network and narrative effect</div>
+      <ul class="check">
+        <li>Creator, activist, ambassador, and trusted-voice participation</li>
+        <li>Influencer-network participation and retention</li>
+        <li>Content and stories generated from live experiences</li>
+        <li>Post-event civic interest, referrals, and volunteer interest</li>
+        <li>Trust, familiarity, perceived cultural fit, and belonging over time</li>
+        <li>Evidence that live activity strengthens the local narrative environment</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout warning">
+    <div class="callout-title">Performance targets <span class="tag pend">In development</span></div>
+    The quantified KPIs that sit behind this scorecard — reach, persuasion, activation, and narrative movement targets — are being finalized and will be published here.
+  </div>
+  <div class="next-row"><button type="button" class="next-btn" data-next="questions">Next: Questions &rarr;</button></div>
+</section>
+
+<!-- ============ QUESTIONS ============ -->
+<section class="page" id="questions">
+  <span class="tag">Questions</span>
+  <h1>The questions we get, and the honest answers</h1>
+
+
+  <details open>
+    <summary>Why a permanent operation? Why not just fund campaigns when they matter?</summary>
+    <p class="small" style="margin-bottom:0;">Because the value is in continuity. Sustained attention, institutional memory, continuous content, and accumulated learning are things a campaign cycle can't buy on a twelve-week timeline. This exists to build political and cultural momentum <em>between</em> cycles, so that when a cycle arrives there's already an environment to run in.</p>
+  </details>
+  <details>
+    <summary>Isn't this just building another agency?</summary>
+    <p class="small" style="margin-bottom:0;">The design deliberately avoids it. What's permanent is the part that requires context and judgment — strategy, brand, editorial direction, relationships, and accountability for the money. In the states, the director is full-time and the creative team is contracted, which means capacity scales with the work instead of sitting idle between moments.</p>
+  </details>
+  <details>
+    <summary>Who leads it?</summary>
+    <p class="small">A CEO and a Chief Creative Officer, both from day one. The model does not rest on a single hire, and no one person is a point of failure for the whole operation.</p>
+    <p class="small">The rest of the national team covers research and narrative strategy, media and technology, state client management, finance, operations, project management, and a seven-person creative team. The full roster and what each role costs is on <a class="jump" href="#budget">the budget tab</a>.</p>
+    <p class="small" style="margin-bottom:0;">Legal and compliance counsel, and a fundraising and donor communications partner, work directly with the team while sitting elsewhere in The 80.</p>
+  </details>
+  <details>
+    <summary>How are the C3 and C4 kept separate?</summary>
+    <p class="small" style="margin-bottom:0;">By designing the entity structure in at the outset rather than solving it after programs are conceived. Educational and civic programming and candidate-specific or political activity each get clearly defined ownership, objectives, budgets, invitations, staff time, branding, and approval paths. Some activity sits cleanly in one lane; larger combined moments contain clearly separated components. Counsel defines the final operating rules — the strategic point is that the model preserves both kinds of activity rather than forcing everything into one format.</p>
+  </details>
+  <details>
+    <summary>What stops this from growing into something bloated?</summary>
+    <p class="small" style="margin-bottom:0;">Permanent cost gets added on evidence, not ambition. A new permanent role requires demand that has held across multiple quarters, a capability that is strategically central, and a case that outside spending is approaching the cost of doing it internally. A new state requires approved priority, committed funding, identified leadership, and success measures that can actually be set. And the state creative teams are contracted rather than salaried precisely so capacity can come back down.</p>
+  </details>
+  <details>
+    <summary>What does this become in two years?</summary>
+    <p class="small" style="margin-bottom:0;">Durable infrastructure — proprietary capabilities and institutional knowledge, a stronger distribution ecosystem, new revenue streams, a learning system that compounds across states, and a sustainable model for attracting talent. Not just communications infrastructure: social infrastructure for the center-left.</p>
+  </details>
+  <details>
+    <summary>What's the test of whether this worked?</summary>
+    <p class="small" style="margin-bottom:0;">Two things. First, whether The 80 can point an integrated team at a state, produce high-quality work, push it out through the broader influence infrastructure, learn from what happened, and do it again better — that repeatability is the thing being built. Second, and ultimately, whether we win elections in those states at rates better than has historically been normal for them.</p>
+  </details>
+  <div class="next-row"><button type="button" class="next-btn" data-next="glossary">Next: Glossary &rarr;</button></div>
+</section>
+
+<!-- ============ GLOSSARY ============ -->
+<section class="page" id="glossary">
+  <span class="tag">Glossary</span>
+  <h1>Terms, in plain English</h1>
+  <p class="lead">Political communications runs on shorthand. Here's what the terms in this section actually mean.</p>
+
+
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Term</th><th>What it means</th></tr></thead>
+    <tbody>
+      <tr><td>The 80 Engine</td><td>The permanent communications and content operation — the national team plus the state teams it supports</td></tr>
+      <tr><td>Narrative</td><td>The underlying story we're telling about the country and who's on whose side — bigger than any one message or ad</td></tr>
+      <tr><td>Messaging</td><td>The specific words and claims used to carry that story</td></tr>
+      <tr><td>Continuous editorial</td><td>Somebody publishing something every day, not just at campaign time</td></tr>
+      <tr><td>Rapid response</td><td>Answering an attack within hours instead of days</td></tr>
+      <tr><td>State team</td><td>The director and creative team working a single state</td></tr>
+      <tr><td>Local influence teams</td><td>Trusted local voices and community organizations who carry the message where they already have standing</td></tr>
+      <tr><td>Advocates / trusted voices</td><td>Real people with real followings and local credibility — not paid spokespeople</td></tr>
+      <tr><td>Creator-ready assets</td><td>Material shaped so someone can post it in their own voice rather than reading our script</td></tr>
+      <tr><td>The80 Live</td><td>The proposed live experience platform — year-round local events that build belonging rather than make a pitch</td></tr>
+      <tr><td>The80 Community</td><td>Public events anyone can attend, with no political ask</td></tr>
+      <tr><td>The80 Access</td><td>Invitation-only experiences for the creator and advocate network</td></tr>
+      <tr><td>The80 Moments</td><td>A larger cultural moment combining a public event with a private layer around it</td></tr>
+      <tr><td>State Executive Producer</td><td>The proposed person who would run a state's live events and cultural partnerships</td></tr>
+      <tr><td>Belonging before persuasion</td><td>The idea that people connect through shared experience first, and politics second</td></tr>
+      <tr><td>Regionally distinctive</td><td>Work that looks and sounds like it came from that place, not from a national office</td></tr>
+      <tr><td>Baseline</td><td>A measurement taken at the start, so movement can be proved later rather than asserted</td></tr>
+      <tr><td>Brand tracking</td><td>Regular polling on what people think of us and our ideas, over time</td></tr>
+      <tr><td>Persuadable</td><td>A voter whose mind is genuinely not made up</td></tr>
+      <tr><td>Earned media</td><td>Coverage we get because it's newsworthy, as opposed to advertising we pay for</td></tr>
+      <tr><td>Owned channels</td><td>Places we control — our own accounts, lists, sites, and events</td></tr>
+      <tr><td>Paid media</td><td>Advertising</td></tr>
+      <tr><td>Integrated brief</td><td>One document everyone works from, so paid, earned, and creator work all say the same thing</td></tr>
+      <tr><td>Toolkit</td><td>A ready-made packet a partner or candidate can pick up and use without starting over</td></tr>
+      <tr><td>Playbook</td><td>Written instructions for repeating something that worked</td></tr>
+      <tr><td>Pilot state</td><td>The first state where the full model gets tried before it's repeated elsewhere</td></tr>
+      <tr><td>W2 / 1099</td><td>A salaried employee versus a contractor. The state director is salaried; the state creative team is contracted</td></tr>
+      <tr><td>CapEx / OpEx</td><td>One-time purchases like laptops, versus recurring costs like salaries and software</td></tr>
+      <tr><td>Run-rate</td><td>What something costs if every role is filled for a full twelve months</td></tr>
+      <tr><td>C3 / C4</td><td>Two categories of nonprofit under US tax law with different rules about political activity; they must be kept separate</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="next-row"><button type="button" class="next-btn" data-next="next">Next: Next Steps &rarr;</button></div>
+</section>
+
+<!-- ============ NEXT STEPS ============ -->
+<section class="page" id="next">
+  <span class="tag">Next steps</span>
+  <h1>What happens from here</h1>
+  <p class="lead">The sequence that turns this from a plan into an operation.</p>
+
+
+  <div class="callout warning">
+    <div class="callout-title">Draft <span class="tag pend">Pending review</span></div>
+    This page is being finalized. Governance, decision rights, and the mandate approval process are being confirmed.
+  </div>
+
+  <div class="grid g3">
+    <div class="card">
+      <div class="card-title">01 — Confirm the mandate</div>
+      <ul class="dash tight">
+        <li>Approve what this operation is for</li>
+        <li>Confirm governance and decision rights</li>
+        <li>Confirm leadership structure</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">02 — Align the budget</div>
+      <ul class="dash tight">
+        <li>Confirm the 2027 staff plan and the people-only view across all three sections</li>
+        <li>Decide how many states come online, and when</li>
+        <li>Cost The80 Live if it joins the pilot</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">03 — Set the proof points</div>
+      <ul class="dash tight">
+        <li>Confirm the year-one scorecard</li>
+        <li>Finalize performance targets</li>
+        <li>Set the six-month review date</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout success">
+    <div class="callout-title">The first measure of success</div>
+    Whether The 80 can point an integrated team at a state, produce high-quality work, activate it through the broader influence infrastructure, learn from the result, and repeat it with increasing effectiveness — and, in time, win elections in those states at rates better than has historically been normal for them.
+  </div>
+
+  <div class="footer-note">
+    <p class="tiny">The 80 Engine. Budget figures are people only — salaries and benefits drawn from the 2027 staff plan — and are subject to final approval. The80 Live is a proposal for discussion and is not yet costed.</p>
+  </div>
+  <div class="next-row final">
+    <a class="next-btn" href="../#ask">Go to the Prospectus ask &rarr;</a>
+    <a class="next-btn alt" href="../#godeeper">Go Deeper &rarr;</a>
+  </div>
+</section>
+
+</main>
+
+<script>
+(function () {
+
+  /* =====================================================================
+     BUDGET FIGURES — The 80 Engine 2027 staff plan. People only:
+     salaries and benefits. Software, travel and equipment excluded.
+     ===================================================================== */
+  var B = {
+    national:      3165000,   // full national team, 16 full-time roles
+    stateDirector:  250000,   // per state, base salary (W2)
+    stateContract:  984000,   // per state, seven 1099 roles at $82,000/month
+    benefits:        14000    // employer healthcare per full-time employee
+  };
+  B.statePer = B.stateDirector + B.stateContract + B.benefits;  // 1,248,000
+  /* ===================================================================== */
+
+  var SECTIONS = [
+    ["setup", "The Setup", false],
+    ["budget", "The Budget", false],
+    ["what", "What You're Funding", false],
+    ["state", "Invest in a State", false],
+    ["timeline", "What Happens When", false],
+    ["how", "How It Works", false],
+    ["proof", "Accountability", false],
+    ["questions", "Questions", false],
+    ["glossary", "Glossary", false],
+    ["next", "Next Steps", false]
+  ];
+
+  var nav = document.getElementById("nav");
+  SECTIONS.forEach(function (s) {
+    var b = document.createElement("button");
+    b.textContent = s[1];
+    b.setAttribute("data-target", s[0]);
+    if (s[2]) b.className = "pres";
+    b.addEventListener("click", function () { show(s[0]); });
+    nav.appendChild(b);
+  });
+
+  function show(id) {
+    document.querySelectorAll("section.page").forEach(function (el) {
+      el.classList.toggle("active", el.id === id);
+    });
+    document.querySelectorAll("#nav button").forEach(function (b) {
+      b.classList.toggle("active", b.getAttribute("data-target") === id);
+    });
+    if (history.replaceState) history.replaceState(null, "", "#" + id);
+    window.scrollTo(0, 0);
+  }
+
+  document.querySelectorAll(".next-btn[data-next]").forEach(function (b) {
+    b.addEventListener("click", function () { show(b.getAttribute("data-next")); });
+  });
+
+  document.querySelectorAll("a.jump").forEach(function (a) {
+    a.addEventListener("click", function (e) {
+      var href = a.getAttribute("href");
+      if (href && href.charAt(0) === "#" && document.getElementById(href.slice(1))) {
+        e.preventDefault(); show(href.slice(1));
+      }
+    });
+  });
+
+  function fmt(n) {
+    if (n === 0) return "$0";
+    if (n >= 1000000) {
+      var m = n / 1000000;
+      return "$" + (m % 1 === 0 ? m.toFixed(0) : m.toFixed(2).replace(/0+$/, "").replace(/\.$/, "")) + "M";
+    }
+    return "$" + Math.round(n / 1000) + "K";
+  }
+
+  // ---------- budget model ----------
+  // One slider. Step 0 = nothing. Steps 1-6 = that many states.
+  // Step 7 = six states plus the national team.
+  var stepEl = document.getElementById("bud-step");
+
+  function sliderFill(el) {
+    var min = Number(el.min) || 0, max = Number(el.max) || 100, val = Number(el.value) || 0;
+    var pct = max === min ? 0 : ((val - min) / (max - min)) * 100;
+    el.style.background = "linear-gradient(to right, var(--accent) 0%, var(--accent) " + pct +
+      "%, var(--border) " + pct + "%, var(--border) 100%)";
+  }
+
+  function dim(rowId, off) {
+    var r = document.getElementById(rowId);
+    if (r) r.classList.toggle("dimmed", !!off);
+  }
+
+  function recalcBudget() {
+    var step = Number(stepEl.value);
+    var natOn = step === 7;
+    var states = step === 0 ? 0 : Math.min(step, 6);
+    sliderFill(stepEl);
+
+    var natCost = natOn ? B.national : 0;
+    var dirCost = B.stateDirector * states;
+    var conCost = B.stateContract * states;
+    var benCost = B.benefits * states;
+    var total = natCost + dirCost + conCost + benCost;
+
+    // the national figure is quoted at three decimals in the staff plan
+    var natLabel = natOn ? "$3.165M" : "$0";
+
+    var stepLabel;
+    if (step === 0) stepLabel = "Nothing";
+    else if (step === 7) stepLabel = "6 states + national team";
+    else stepLabel = states + (states === 1 ? " state" : " states");
+    document.getElementById("bud-step-val").textContent = stepLabel;
+
+    // KPI boxes
+    document.getElementById("bud-k2-v").textContent = fmt(dirCost);
+    document.getElementById("bud-k2-l").textContent = states === 0
+      ? "State directors \u2014 none funded"
+      : "State directors \u2014 " + states + " \u00D7 $250K";
+
+    document.getElementById("bud-k3-v").textContent = fmt(conCost);
+    document.getElementById("bud-k3-l").textContent = states === 0
+      ? "Contract creative teams \u2014 none funded"
+      : "Contract creative teams \u2014 " + states + " \u00D7 $984K";
+
+    document.getElementById("bud-k4-v").textContent = fmt(benCost);
+    document.getElementById("bud-k4-l").textContent = states === 0
+      ? "Healthcare & benefits \u2014 none funded"
+      : "Healthcare & benefits \u2014 " + states + (states === 1 ? " director" : " directors");
+
+    document.getElementById("bud-k1-v").textContent = natLabel;
+    document.getElementById("bud-k1-l").textContent = natOn
+      ? "National team \u2014 16 full-time roles"
+      : "National team \u2014 added at full deployment";
+
+    document.getElementById("bud-tot-v").textContent = fmt(total);
+
+    // line items
+    document.getElementById("bud-li-dir").textContent = states +
+      " \u00D7 $250K salary \u2014 one per state";
+    document.getElementById("bud-li-dir-v").textContent = fmt(dirCost);
+    document.getElementById("bud-li-con").textContent = states +
+      " \u00D7 $984K \u2014 seven roles per state at $82K per month";
+    document.getElementById("bud-li-con-v").textContent = fmt(conCost);
+    document.getElementById("bud-li-ben").textContent = states +
+      " \u00D7 $14K \u2014 state directors. 1099 contractors carry their own.";
+    document.getElementById("bud-li-ben-v").textContent = fmt(benCost);
+    document.getElementById("bud-li-nat-v").textContent = natLabel;
+    document.getElementById("bud-li-tot-v").textContent = fmt(total);
+    document.getElementById("bud-li-note").textContent = step === 0
+      ? "Nothing funded yet"
+      : "People only \u2014 salaries and benefits";
+
+    dim("bud-r-dir", states === 0);
+    dim("bud-r-con", states === 0);
+    dim("bud-r-ben", states === 0);
+    dim("bud-r-nat", !natOn);
+
+    document.getElementById("bud-roster").classList.toggle("off", !natOn);
+
+    document.querySelectorAll("#bud-presets button").forEach(function (b) {
+      b.classList.toggle("active", Number(b.getAttribute("data-bud")) === step);
+    });
+  }
+
+  stepEl.addEventListener("input", recalcBudget);
+  document.getElementById("bud-reset").addEventListener("click", function () {
+    stepEl.value = 0; recalcBudget();
+  });
+  document.getElementById("bud-fill").addEventListener("click", function () {
+    stepEl.value = stepEl.max; recalcBudget();
+  });
+  document.querySelectorAll("#bud-presets button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      stepEl.value = b.getAttribute("data-bud"); recalcBudget();
+    });
+  });
+
+  // ---------- timeline ----------
+  var MARKS = [
+    { to: 3, label: "Month 3", name: "Stand it up",
+      summary: "National leadership and strategy are in place, the operating rhythm is running, and the first state is live with content in market.",
+      act: ["CEO, Chief Creative Officer, operations and finance onboarded", "Research and narrative strategy and media and technology leads in place", "First state directors start", "Weekly signals and editorial meetings running", "First state research completed", "First state narrative and messaging developed"],
+      out: ["An operating national team", "An active state program", "The first state strategy", "First content and communications in market", "Editorial and rapid-response systems running"] },
+    { to: 6, label: "Month 6", name: "Prove it works",
+      summary: "The model has been tested in practice, written up, and is expanding into a second state. This is the decision point.",
+      act: ["National creative team fully onboarded", "State contract creative teams engaged", "First pilot evaluated and staffing adjusted", "Continuous content deepened", "Second state program launched", "Performance compared across messages, formats, and channels", "Operating economics documented"],
+      out: ["One to two validated state cases", "A written impact and learning report", "State playbooks", "Initial performance evidence", "An updated budget and scale plan"] },
+    { to: 12, label: "Month 12", name: "Replicate and add capacity",
+      summary: "What worked is being repeated elsewhere, and capacity is being added where demand actually showed up.",
+      act: ["State or capability leadership added where justified", "Talent and partner network expanded", "State programs replicated", "Knowledge management and asset systems improved", "Quarterly state portfolio planning established", "Measurement deepened"],
+      out: ["A repeatable state model", "An expanded state portfolio", "Stronger institutional knowledge", "A mature talent network", "An improved measurement system"] },
+    { to: 18, label: "Month 18", name: "Durable infrastructure",
+      summary: "The operation has become infrastructure rather than a project — owned tools, accumulated knowledge, and a model that runs without being reinvented.",
+      act: ["Permanent teams established in the highest-priority states", "Proprietary research, data, or workflow tools developed", "Deeper media and distribution partnerships built", "Multilingual and multicultural capabilities expanded", "National content and learning system developed"],
+      out: ["Durable state and national infrastructure", "Proprietary capabilities and institutional knowledge", "A stronger distribution ecosystem", "A compounding cross-state learning system"] },
+    { to: 24, label: "Month 24", name: "It continues",
+      summary: "The point of the whole design: nothing resets. Knowledge, relationships, and capability carry into the next cycle instead of being rebuilt.",
+      act: ["Long-term talent and career pathways created", "Strategic communications capabilities invested in or acquired", "Revenue streams developed", "Advocate network deepened so participation and referrals compound"],
+      out: ["A sustainable talent model", "New revenue streams", "Defined long-term economics", "Capability that carries into the next cycle instead of resetting"] }
+  ];
+
+  var tlEl = document.getElementById("tl");
+  function recalcTL() {
+    var m = Number(tlEl.value);
+    var p = MARKS[MARKS.length - 1];
+    for (var i = 0; i < MARKS.length; i++) { if (m <= MARKS[i].to) { p = MARKS[i]; break; } }
+    document.getElementById("tl-month").textContent = "Month " + m;
+    document.getElementById("tl-phase").textContent = p.name;
+    document.getElementById("tl-phase-tag").textContent = "By " + p.label.toLowerCase();
+    document.getElementById("tl-summary").textContent = p.summary;
+    document.getElementById("tl-actions").innerHTML = p.act.map(function (x) { return "<li>" + x + "</li>"; }).join("");
+    document.getElementById("tl-outputs").innerHTML = p.out.map(function (x) { return "<li>" + x + "</li>"; }).join("");
+  }
+  tlEl.addEventListener("input", recalcTL);
+
+  // ---------- init ----------
+  recalcBudget();
+  recalcTL();
+
+  var initial = (location.hash || "").slice(1);
+  if (initial && document.getElementById(initial)) { show(initial); } else { show("setup"); }
+})();
+</script>
+<script>
+/* THE 80 · theme toggle logic — one <script> just before </body> */
+(function(){
+  var KEY='the80-theme', root=document.documentElement, btn=document.getElementById('theme-toggle');
+  if(!btn) return;
+  var mq=window.matchMedia?window.matchMedia('(prefers-color-scheme: dark)'):null;
+  function current(){
+    var t=root.getAttribute('data-theme');
+    if(t==='dark'||t==='light') return t;
+    return (mq&&mq.matches)?'dark':'light';
+  }
+  function paint(){
+    var m=current(), next=(m==='dark')?'light':'dark';
+    btn.setAttribute('data-mode',m);
+    btn.setAttribute('aria-label','Switch to '+next+' mode');
+    btn.setAttribute('title','Switch to '+next+' mode');
+    document.dispatchEvent(new CustomEvent('the80-themechange',{detail:{mode:m}}));
+  }
+  btn.addEventListener('click',function(){
+    var n=(current()==='dark')?'light':'dark';
+    root.setAttribute('data-theme',n);
+    try{localStorage.setItem(KEY,n);}catch(e){}
+    paint();
+  });
+  if(mq&&mq.addEventListener) mq.addEventListener('change',paint);
+  paint();
+})();
+</script>
+
+</body>
+</html>

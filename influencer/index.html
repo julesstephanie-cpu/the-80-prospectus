@@ -1,0 +1,1509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- THE 80 · theme init (must sit in <head>, before any CSS, to avoid a flash) -->
+<script>(function(){try{var t=localStorage.getItem('the80-theme');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<title>The 80 — Influencer Network Briefing</title>
+<style>
+/* ============ TOKENS (shared with the Prospectus) ============ */
+:root{
+  color-scheme:light dark;
+  --ground:#ffffff; --surface:#f7f7f8; --surface-2:#f0f0f2;
+  --border:#e3e3e6; --border-2:#d3d3d8;
+  --ink:#16161a; --ink-2:#55555c; --ink-3:#86868e;
+  --accent:#1a5cff; --dem:#1a5cff; --gop:#c0392b;
+  --accent-soft:#eef3ff; --accent-line:#cfddff;
+  --terra:#a84b2f; --terra-soft:#faf0ec; --terra-line:#e8cdc2;
+  --good:#0e7a3d; --good-soft:#ecf7f0; --good-line:#bfe5cd;
+  --warn:#8a5a00; --warn-soft:#fdf4e3; --warn-line:#f0dcb0;
+  --bad:#b3261e; --bad-soft:#fdeceb; --bad-line:#f3c1be;
+  --gop-soft:#fbeeec; --gop-line:#efc9c3;
+  --zebra:#fbfbfc;
+  --r:10px; --maxw:1120px; --prose:66ch;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#141416; --surface:#1c1c1f; --surface-2:#232327;
+    --border:#2e2e33; --border-2:#3b3b42;
+    --ink:#f2f2f3; --ink-2:#a9a9b1; --ink-3:#7a7a83;
+    --accent:#6f9bff; --dem:#6f9bff; --gop:#e8705f;
+    --accent-soft:#16233f; --accent-line:#2c4478;
+    --terra:#d9805c; --terra-soft:#2c1c16; --terra-line:#5a3325;
+    --good:#4cbc7b; --good-soft:#12261a; --good-line:#245a38;
+    --warn:#d9a441; --warn-soft:#2a2113; --warn-line:#5a4520;
+    --bad:#ee7b72; --bad-soft:#2c1a17; --bad-line:#5a2f29;
+    --gop-soft:#2c1a17; --gop-line:#5a2f29;
+    --zebra:#19191c;
+  }
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:90px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{
+  background:var(--ground);color:var(--ink);
+  font-family:"Source Serif 4","Iowan Old Style",Georgia,serif;
+  font-size:17px;line-height:1.62;-webkit-font-smoothing:antialiased;
+}
+.ui,h1,h2,h3,h4,th,.folio,.stat,.tag,figcaption,table,nav,.meta,.small,.tiny,.step .t,.step .d,.callout-title,.card-title{
+  font-family:"Libre Franklin",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+}
+img{max-width:100%;display:block}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:3px}
+
+/* ============ CHROME: tab bar only (no brand line, no date) ============ */
+.topbar{
+  position:sticky;top:0;z-index:50;
+  background:color-mix(in srgb,var(--ground) 92%,transparent);
+  backdrop-filter:saturate(1.6) blur(10px);
+  border-bottom:1px solid var(--border);
+  padding:9px 24px;
+}
+nav{display:flex;flex-wrap:wrap;gap:4px;max-width:var(--maxw);margin:0 auto}
+nav button{
+  font-family:"Libre Franklin",sans-serif;font-size:12.5px;font-weight:700;letter-spacing:.02em;
+  color:var(--ink-2);background:transparent;border:1px solid transparent;border-radius:7px;
+  padding:5px 11px;cursor:pointer;white-space:nowrap;
+}
+nav button:hover{color:var(--accent);background:var(--accent-soft)}
+nav button.active{background:var(--ink);color:var(--ground);border-color:var(--ink)}
+main{max-width:var(--maxw);margin:0 auto;padding:40px 24px 90px}
+section.page{display:none}
+section.page.active{display:block}
+
+/* ============ TYPE ============ */
+h1{font-size:clamp(28px,4.2vw,42px);line-height:1.1;font-weight:800;letter-spacing:-.022em;text-wrap:balance;margin:6px 0 16px}
+h2{font-size:21px;line-height:1.2;font-weight:700;letter-spacing:-.014em;text-wrap:balance;margin:36px 0 12px}
+h3{font-size:16.5px;font-weight:700;letter-spacing:-.005em;margin:20px 0 6px}
+h4{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px}
+p{margin:0 0 12px;text-wrap:pretty}
+.lead{color:var(--ink-2);font-size:clamp(18px,2vw,20px);line-height:1.5;max-width:62ch;margin-bottom:26px}
+.small{font-size:14px;line-height:1.55;color:var(--ink-2)}
+.tiny{font-size:12px;line-height:1.55;color:var(--ink-3)}
+strong{font-weight:700}
+.small strong{color:var(--ink)}
+hr{border:none;border-top:1px solid var(--border);margin:28px 0}
+a.jump{color:var(--accent)}
+
+/* ============ OLD-PAGE COMPONENTS, RE-SKINNED ============ */
+.grid{display:grid;gap:16px;margin:14px 0}
+.grid>*{min-width:0}
+.g2{grid-template-columns:1fr 1fr}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+@media (max-width:860px){.g2,.g3,.g4{grid-template-columns:1fr}}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:17px 20px}
+.card .card-title{
+  font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--ink-3);
+  margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;gap:8px;
+}
+.card p{font-size:15px;max-width:none}
+
+.tag{display:inline-block;font-size:11px;font-weight:700;padding:3px 11px;border-radius:999px;
+  background:var(--accent-soft);color:var(--accent);border:1px solid var(--accent-line);text-transform:none;letter-spacing:0}
+.tag.dim{background:var(--surface-2);color:var(--ink-2);border-color:var(--border)}
+
+ul.dash,ul.dot{list-style:none;margin:6px 0}
+ul.dash li,ul.dot li{padding-left:18px;position:relative;margin-bottom:8px;font-size:16px;line-height:1.55}
+ul.dash li::before{content:"—";position:absolute;left:0;color:var(--ink-3)}
+ul.dot li::before{content:"•";position:absolute;left:0;color:var(--ink-3)}
+
+.tw{border:1px solid var(--border);border-radius:var(--r);overflow-x:auto;background:var(--ground);margin:10px 0 8px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:11px 15px;border-bottom:1px solid var(--border);vertical-align:top}
+th{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-3);background:var(--surface);vertical-align:bottom}
+td{color:var(--ink-2);line-height:1.5}
+td:first-child{color:var(--ink)}
+tr:last-child td{border-bottom:none}
+tr:not([class^="tone-"]):nth-child(even) td{background:var(--zebra)}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+tr.tone-success td{background:var(--good-soft)}
+tr.tone-warning td{background:var(--warn-soft)}
+tr.tone-danger td{background:var(--bad-soft)}
+tr.tone-info td{background:var(--accent-soft)}
+tr.tone-success td:first-child{border-left:3px solid var(--good)}
+tr.tone-warning td:first-child{border-left:3px solid var(--warn)}
+tr.tone-danger td:first-child{border-left:3px solid var(--bad)}
+tr.tone-info td:first-child{border-left:3px solid var(--accent)}
+
+.callout{border:1px solid var(--border);border-left:3px solid var(--ink-3);border-radius:var(--r);background:var(--surface);
+  padding:15px 20px;margin:20px 0;font-size:15.5px;line-height:1.55}
+.callout .callout-title{font-weight:800;font-size:11px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px;color:var(--ink-3)}
+.callout.info,.callout.a{background:var(--accent-soft);border-color:var(--accent-line);border-left-color:var(--accent)}
+.callout.info .callout-title{color:var(--accent)}
+.callout.warning{background:var(--warn-soft);border-color:var(--warn-line);border-left-color:var(--warn)}
+.callout.warning .callout-title{color:var(--warn)}
+.callout.danger{background:var(--bad-soft);border-color:var(--bad-line);border-left-color:var(--bad)}
+.callout.danger .callout-title{color:var(--bad)}
+.callout.success{background:var(--good-soft);border-color:var(--good-line);border-left-color:var(--good)}
+.callout.success .callout-title{color:var(--good)}
+.callout.t{background:var(--terra-soft);border-color:var(--terra-line);border-left-color:var(--terra)}
+
+.stat{text-align:left;border:1px solid var(--border);border-radius:var(--r);background:var(--surface);padding:16px 18px}
+.stat .v{font-size:28px;font-weight:800;letter-spacing:-.03em;line-height:1.05;font-variant-numeric:tabular-nums;display:block}
+.stat .v.accent{color:var(--accent)}
+.stat .l{font-size:12px;font-weight:600;color:var(--ink-3);margin-top:7px;line-height:1.35}
+
+.step{display:flex;gap:13px;margin-bottom:16px}
+.step .n{width:30px;height:30px;border-radius:999px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;
+  font-family:"Libre Franklin",sans-serif;font-size:12.5px;font-weight:800;flex-shrink:0}
+.step .t{font-weight:700;font-size:15.5px;letter-spacing:-.008em;line-height:1.3}
+.step .d{font-size:14px;color:var(--ink-2);line-height:1.5;margin-top:2px}
+
+input[type="range"]{width:100%;accent-color:var(--accent);margin:6px 0}
+.presets{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 4px}
+.presets button{font-family:"Libre Franklin",sans-serif;border:1px solid var(--border);background:var(--surface);color:var(--ink-2);
+  border-radius:999px;padding:5px 14px;font-size:13px;font-weight:600;cursor:pointer}
+.presets button:hover{border-color:var(--accent);color:var(--accent)}
+.presets button.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.slider-label{display:flex;justify-content:space-between;font-family:"Libre Franklin",sans-serif;font-size:14px;margin-top:16px}
+.slider-label .val{font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums}
+.footer-note{margin-top:40px;padding-top:16px;border-top:1px solid var(--border)}
+blockquote{border-left:3px solid var(--accent);background:var(--surface);padding:12px 16px;border-radius:0 var(--r) var(--r) 0;
+  color:var(--ink);font-style:italic;margin:4px 0}
+
+/* ============ CITIZEN JOURNEY ============ */
+.part{padding-top:56px}
+.part:first-child{padding-top:0}
+#citizen h1{margin-top:0}
+#citizen h2{font-size:clamp(24px,3.2vw,34px);font-weight:800;letter-spacing:-.02em;margin:0 0 10px}
+#citizen .lead{max-width:60ch}
+.deeper{margin-top:60px;border-top:2px solid var(--ink);padding-top:14px}
+.deeper p{font-size:15.5px;color:var(--ink-2);max-width:70ch}
+.backlink{display:inline-flex;align-items:center;gap:8px;font-family:"Libre Franklin",sans-serif;font-size:15px;font-weight:700;letter-spacing:-.005em;
+  color:var(--ink);text-decoration:none;border:1px solid var(--border-2);border-radius:999px;padding:10px 20px;background:var(--surface)}
+.backlink:hover{color:var(--accent);border-color:var(--accent);background:var(--accent-soft)}
+/* ============ SECTION MARKERS ============ */
+.folio{display:flex;align-items:baseline;gap:14px;border-top:2px solid var(--ink);padding-top:9px;margin-bottom:30px}
+.folio .no{font-size:11px;font-weight:800;letter-spacing:.18em;color:var(--ink);font-variant-numeric:tabular-nums}
+.folio .nm{font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3)}
+.folio .of{margin-left:auto;font-size:11px;font-weight:500;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.dek{font-family:"Libre Franklin",sans-serif;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--terra);margin-bottom:12px}
+
+.stamp{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--terra-line);background:var(--terra-soft);color:var(--terra);
+  font-family:"Libre Franklin",sans-serif;font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  padding:5px 12px;border-radius:999px;margin-bottom:22px}
+.stamp .dot{width:5px;height:5px;border-radius:999px;background:var(--terra)}
+
+/* ============ COMPONENTS ============ */
+
+
+.pull{border-top:2px solid var(--ink);border-bottom:1px solid var(--border);padding:20px 0;margin:34px 0;max-width:640px}
+.pull q{quotes:none;display:block;font-family:"Libre Franklin",sans-serif;font-size:clamp(19px,2.2vw,24px);line-height:1.3;font-weight:600;letter-spacing:-.015em;text-wrap:balance}
+
+
+/* ============ 01 · SALLY + ADS ============ */
+.sally{display:grid;grid-template-columns:1fr;gap:26px;align-items:start}
+.profile{border:1px solid var(--border);border-top:3px solid var(--terra);border-radius:var(--r);background:var(--surface);padding:22px 24px;display:grid;grid-template-columns:260px repeat(3,minmax(0,1fr));gap:0 26px;align-items:start}
+.pf-top{display:flex;align-items:center;gap:14px}
+.avatar{flex:0 0 58px;width:58px;height:58px;border-radius:50%;background:var(--terra-soft);border:1px solid var(--terra-line);position:relative;overflow:hidden}
+.avatar::before{content:"";position:absolute;left:50%;top:11px;width:19px;height:19px;border-radius:50%;background:var(--terra);transform:translateX(-50%)}
+.avatar::after{content:"";position:absolute;left:50%;top:33px;width:34px;height:30px;border-radius:17px 17px 0 0;background:var(--terra);transform:translateX(-50%)}
+.pf-name{font-family:"Libre Franklin",sans-serif;font-weight:800;font-size:20px;letter-spacing:-.015em;line-height:1.15}
+.pf-sub{font-family:"Libre Franklin",sans-serif;font-size:13px;color:var(--ink-2);line-height:1.4;margin-top:3px}
+.pf-row{padding:2px 0 2px 24px;border-left:1px solid var(--border)}
+.pf-row .k{display:block;font-family:"Libre Franklin",sans-serif;font-size:10.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--terra);margin-bottom:5px}
+.pf-row p{font-size:15px;line-height:1.5;color:var(--ink-2)}
+
+.ads{display:grid;grid-template-columns:1fr;gap:18px}
+.side{border:1px solid var(--border);border-radius:var(--r);overflow:hidden;background:var(--ground);display:flex;flex-direction:column}
+.side header{padding:11px 16px;font-family:"Libre Franklin",sans-serif;font-weight:800;font-size:15px;letter-spacing:-.005em;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.side.gop header{background:var(--gop-soft);color:var(--gop);border-bottom:1px solid var(--gop-line)}
+.side.dem header{background:var(--accent-soft);color:var(--dem);border-bottom:1px solid var(--accent-line)}
+.side .shots{display:grid;gap:14px;padding:16px;flex:1}
+.side .shots{grid-template-columns:repeat(3,minmax(0,1fr))}
+.shot a{display:block}
+.shot img{width:100%;height:auto;border-radius:7px;border:1px solid var(--border)}
+.shot .cap{font-family:"Libre Franklin",sans-serif;font-size:12px;font-weight:600;color:var(--ink-2);margin-top:8px;line-height:1.35;text-align:center}
+.side .tagline{margin:0;text-align:center;white-space:nowrap;font-family:"Libre Franklin",sans-serif;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;border-radius:999px;padding:7px 12px}
+.side.gop .tagline{background:var(--gop-soft);color:var(--gop);border:1px solid var(--gop-line)}
+.side.dem .tagline{background:var(--accent-soft);color:var(--dem);border:1px solid var(--accent-line)}
+.side .tagline span{font-weight:600;letter-spacing:.02em;text-transform:none}
+
+/* ============ 02 · JESS ============ */
+.jess{display:grid;grid-template-columns:260px minmax(0,1fr) minmax(0,1.05fr);gap:26px;align-items:start}
+.phone{border:1px solid var(--border-2);border-radius:26px;padding:8px;background:var(--surface);box-shadow:0 10px 30px rgba(0,0,0,.10)}
+.phone img{width:100%;height:auto;border-radius:19px}
+.cap-top{font-family:"Libre Franklin",sans-serif;font-size:15px;font-weight:700;letter-spacing:-.01em;line-height:1.3;margin-bottom:12px}
+.notecard img{width:100%;height:auto;border-radius:var(--r);border:1px solid var(--border)}
+.why h4{margin-bottom:12px;color:var(--accent)}
+.why ol{list-style:none;display:grid;gap:11px}
+.why li{display:grid;grid-template-columns:36px 1fr;gap:14px;align-items:start;border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;background:var(--surface)}
+.why .n{width:34px;height:34px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font-family:"Libre Franklin",sans-serif;font-weight:800;font-size:14px}
+.why li b{display:block;font-family:"Libre Franklin",sans-serif;font-weight:700;font-size:15.5px;letter-spacing:-.008em;line-height:1.3;margin-bottom:3px}
+.why li span.d{font-size:15px;color:var(--ink-2);line-height:1.5;display:block}
+
+/* ============ 03 · BRIDGE ============ */
+.bridge{display:grid;grid-template-columns:1.2fr 1fr 1.15fr;gap:34px;align-items:start;position:relative}
+.stage{min-width:0;position:relative}
+.stage+.stage::before{content:"";position:absolute;left:-23px;top:15px;width:12px;height:12px;border-top:2px solid var(--ink-3);border-right:2px solid var(--ink-3);transform:rotate(45deg)}
+.stage h3{display:flex;align-items:center;gap:11px;font-size:16px;line-height:1.25;margin-bottom:14px}
+.stage h3 .n{flex:0 0 30px;width:30px;height:30px;border-radius:50%;background:var(--ink);color:var(--ground);display:grid;place-items:center;font-size:13px;font-weight:800}
+.stage .frame img{width:100%;height:auto;border-radius:var(--r);border:1px solid var(--border)}
+.shop{display:grid;grid-template-columns:1fr;gap:12px}
+.shop .who{font-family:"Libre Franklin",sans-serif;font-size:14px;line-height:1.45;color:var(--ink-2)}
+.shop .who b{display:block;color:var(--ink);font-weight:800;font-size:15px;margin-bottom:2px}
+
+.chat{border:1px solid var(--border);border-radius:var(--r);background:var(--surface);padding:16px}
+.place{display:inline-block;font-family:"Libre Franklin",sans-serif;font-size:10.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;background:var(--ground);border:1px solid var(--border-2);color:var(--ink-2);border-radius:999px;padding:4px 11px;margin:0 0 12px}
+.chat .place:not(:first-child){margin-top:20px}
+.bub{max-width:92%;font-family:"Libre Franklin",sans-serif;font-size:14.2px;line-height:1.45;padding:10px 13px;border-radius:14px;margin-bottom:8px;background:var(--ground);border:1px solid var(--border);color:var(--ink)}
+.bub b{font-weight:800}
+.bub.me{margin-left:auto;background:var(--accent-soft);border-color:var(--accent-line)}
+.bub.me b{color:var(--accent)}
+
+/* ============ 04 · WHY IT WORKS ============ */
+.tw{border:1px solid var(--border);border-radius:var(--r);overflow-x:auto;background:var(--ground)}
+table{width:100%;border-collapse:collapse;font-size:15px;min-width:640px}
+th{text-align:left;font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);padding:12px 18px;background:var(--surface);border-bottom:1px solid var(--border)}
+th.gop{color:var(--gop)} th.dem{color:var(--dem)}
+th.ours{color:var(--good);background:var(--good-soft)}
+td{padding:14px 18px;border-bottom:1px solid var(--border);vertical-align:top;color:var(--ink-2)}
+tr:last-child td{border-bottom:none}
+td.row{font-family:"Libre Franklin",sans-serif;font-weight:700;color:var(--ink);width:19%}
+td.ours{background:var(--good-soft);color:var(--ink);font-weight:600}
+.cites{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:22px}
+.cites .card{border-left:3px solid var(--accent);font-size:15.5px;line-height:1.5}
+.cites .card p{font-size:15.5px;margin:0}
+.cites .src{display:block;font-family:"Libre Franklin",sans-serif;font-size:11.5px;font-weight:600;color:var(--ink-3);margin-top:8px}
+.closing{margin:40px 0 18px}
+.closing p{font-family:"Libre Franklin",sans-serif;font-size:clamp(22px,3vw,32px);line-height:1.2;font-weight:800;letter-spacing:-.02em;max-width:26ch;text-wrap:balance}
+.sources{border-top:1px solid var(--border);padding-top:14px;margin-top:8px;max-width:96ch}
+
+
+#citizen .callout p{font-size:17px;line-height:1.5;max-width:none;margin:0}
+#citizen .callout p b{font-family:"Libre Franklin",sans-serif;font-weight:800;letter-spacing:-.01em}
+#citizen .callout{margin:30px 0 0}
+#citizen .card{background:var(--ground)}
+#citizen .card p{font-size:15.5px;max-width:none;margin:0}
+#citizen .tw table{min-width:640px}
+#citizen td.row{font-family:"Libre Franklin",sans-serif}
+#citizen tr:not([class^="tone-"]):nth-child(even) td{background:transparent}
+#citizen td.ours{background:var(--good-soft)!important}
+#citizen .cites .card{border-left:3px solid var(--accent)}
+#citizen .tiny{font-family:"Libre Franklin",sans-serif}
+/* ============ RESPONSIVE ============ */
+@media (max-width:1000px){
+  .profile{grid-template-columns:1fr 1fr;gap:18px 24px}
+  .pf-top{grid-column:1 / -1}
+  .pf-row{padding-left:0;border-left:none;border-top:1px solid var(--border);padding-top:12px}
+  .jess{grid-template-columns:240px 1fr}
+  .jess .why{grid-column:1 / -1}
+  .bridge{grid-template-columns:1fr;gap:42px}
+  .stage+.stage::before{left:14px;top:-30px;transform:rotate(135deg)}
+  .cites{grid-template-columns:1fr}
+}
+@media (max-width:640px){
+  body{font-size:16.5px}
+  .wrap{padding:0 18px}
+  section.wrap{padding-top:50px}
+  .profile{grid-template-columns:1fr}
+  .side .shots{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .side .tagline{white-space:normal}
+  .jess{grid-template-columns:1fr}
+  .phone{max-width:260px;margin:0 auto}
+  .folio .nm{letter-spacing:.12em}
+}
+@media print{.stage+.stage::before{display:none}}
+
+@media (max-width:900px){
+  main{padding:28px 18px 80px}
+}
+@media (max-width:640px){body{font-size:16.5px}}
+
+/* ===== shared chrome additions (match the other three sites) ===== */
+:root{--on-accent:#ffffff;--toggle-gutter:64px}
+:root[data-theme="dark"]{--on-accent:#0b0b0d}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--on-accent:#0b0b0d}}
+.step .n,.presets button.active,.why .n{color:var(--on-accent)!important}
+.topbar{padding:9px var(--toggle-gutter) 9px 24px}
+.topbar .barrow{display:flex;align-items:center;gap:16px;flex-wrap:wrap;max-width:var(--maxw);margin:0 auto 7px;padding-bottom:7px;border-bottom:1px solid var(--border)}
+.wordmark{font-family:"Libre Franklin",sans-serif;font-weight:800;font-size:13px;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;color:var(--ink);text-decoration:none}
+.wordmark span{color:var(--ink-3);font-weight:600}
+.sitelinks{display:flex;gap:4px;margin-left:auto;flex-wrap:wrap}
+.sitelinks a{font-family:"Libre Franklin",sans-serif;font-size:11.5px;font-weight:600;letter-spacing:.03em;color:var(--ink-3);text-decoration:none;padding:4px 9px;border-radius:6px;white-space:nowrap}
+.sitelinks a:hover{color:var(--accent);background:var(--accent-soft)}
+@media (max-width:900px){.topbar{padding-left:14px}}
+@media (max-width:640px){nav button{min-height:36px}}
+.nextrow{margin:42px 0 0;padding-top:16px;border-top:1px solid var(--border);display:flex;justify-content:flex-end}
+.nextrow button{font-family:"Libre Franklin",sans-serif;font-size:13px;font-weight:700;color:var(--accent);background:transparent;border:1px solid var(--border-2);border-radius:8px;padding:9px 16px;cursor:pointer}
+.nextrow button:hover{border-color:var(--accent);background:var(--accent-soft)}
+/* ===== THE 80 · theme toggle (top right, fixed) ===== */
+.theme-toggle{
+  position:fixed;top:calc(env(safe-area-inset-top,0px) + 9px);right:14px;z-index:1000;
+  width:40px;height:40px;padding:0;border-radius:999px;
+  border:1px solid var(--border-2);background:var(--surface);color:var(--ink);
+  display:inline-flex;align-items:center;justify-content:center;cursor:pointer;
+  box-shadow:0 1px 4px rgba(0,0,0,.14);
+}
+.theme-toggle:hover{border-color:var(--accent);color:var(--accent)}
+.theme-toggle:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.theme-toggle svg{width:20px;height:20px;display:block}
+.theme-toggle .i-sun{display:none}
+.theme-toggle[data-mode="dark"] .i-sun{display:block}
+.theme-toggle[data-mode="dark"] .i-moon{display:none}
+@media print{.theme-toggle{display:none}}
+
+/* TOPBAR-MOBILE: a wrapped 10-tab bar is too tall to pin on a phone */
+@media (max-width:640px){.topbar{position:static}}
+</style>
+</head>
+<body>
+<!-- THE 80 · theme toggle: place immediately after <body> -->
+<button type="button" class="theme-toggle" id="theme-toggle" data-mode="light" aria-label="Switch to dark mode" title="Switch to dark mode">
+  <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+  <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+</button>
+
+
+<div class="topbar">
+  <div class="barrow">
+    <a class="wordmark" href="../#book">The 80 <span>/ Influencer Network</span></a>
+    <span class="sitelinks"><a href="../#book">&larr; Prospectus</a><a href="../#godeeper">Go Deeper</a></span>
+  </div>
+  <nav id="nav"></nav>
+</div>
+
+<main>
+
+<!-- ============ BRIEF ============ -->
+<section class="page" id="brief">
+  <div class="grid" style="grid-template-columns: 1.4fr 1fr; align-items: center;">
+    <div>
+      <span class="tag">Presentation brief</span>
+      <h1>Build a member network for the centrist majority</h1>
+      <p class="lead">Recruit advocates and community voices who align with our candidates and programs, give them access and distribution support, and measure participation across every level of the election map.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">Program promise <span class="tag">North star</span></div>
+      <p style="font-weight:600;">“Access, context, and amplification for members who champion our candidates and programs in their own words.”</p>
+    </div>
+  </div>
+
+  <div class="grid g4">
+    <div class="stat"><div class="v">Opt-in</div><div class="l">Membership and data collection</div></div>
+    <div class="stat"><div class="v">3 levels</div><div class="l">Local, state, and national</div></div>
+    <div class="stat"><div class="v">90 days</div><div class="l">Pilot to repeatable program</div></div>
+    <div class="stat"><div class="v">1 record</div><div class="l">Unified member profile</div></div>
+  </div>
+
+  <div class="callout info">
+    <div class="callout-title">Internal planning premise</div>
+    This document treats “80% of Democrats are centrists” as an internal planning assumption for audience sizing and messaging.
+  </div>
+
+  <h2>Operating principles</h2>
+  <div class="grid g3">
+    <div>
+      <h3>Aligned</h3>
+      <p class="small">Membership and access are for people who champion the candidates and programs we support, in their own voice.</p>
+    </div>
+    <div>
+      <h3>Consent-based</h3>
+      <p class="small">Collect geography, topics, and platform handles directly from participants. Do not infer political beliefs from browsing, race, religion, or private data.</p>
+    </div>
+    <div>
+      <h3>Member-controlled voice</h3>
+      <p class="small">Members choose which supported candidates and programs to champion and write in their own words. Cross-posting and boosting require per-account authorization, clear budgets, and a revocation path.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ JOURNEY ============ -->
+<section class="page" id="journey">
+  <h1>Member journey: an outreach-led funnel</h1>
+  <p class="lead">This program is built on direct outreach — we go to advocates where they already publish. Referrals from existing members are the second engine. Events and inbound applications exist, but they are a small minority of recruitment and are never treated as a growth plan.</p>
+
+  <h2>Recruitment mix (planning targets)</h2>
+  <div class="grid g3">
+    <div class="card">
+      <div class="card-title">Direct outreach <span class="tag">~70%</span></div>
+      <p class="small">Relationship owners DM and email researched prospects daily per the <a class="jump" href="#dm">DM Playbooks</a>. This is the engine — proactive, targetable by geography and issue, and fully measurable.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">Member referrals <span class="tag dim">~20%</span></div>
+      <p class="small">Every onboarded advocate is asked for two names at day 30. Referrals convert at 2–3× the cold rate and arrive pre-aligned.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">Events &amp; inbound <span class="tag dim">~10%</span></div>
+      <p class="small">Signups at our own events and people who find the program page. Valuable but passive — never forecast growth from this lane.</p>
+    </div>
+  </div>
+
+  <hr>
+  <h2>The eight steps</h2>
+  <div class="grid g2">
+    <div>
+      <div class="step"><div class="n">1</div><div><div class="t">Discover</div><div class="d">Research-driven prospecting (creator databases, platform search, local press) plus member referrals. Events and inbound are supplementary only.</div></div></div>
+      <div class="step"><div class="n">2</div><div><div class="t">Qualify</div><div class="d">Human review for authenticity, community fit, safety, and stated alignment with the candidates and programs the network supports.</div></div></div>
+      <div class="step"><div class="n">3</div><div><div class="t">Invite</div><div class="d">Personal outreach from a named individual's account explaining access, the alignment expectation, and how members use their own voice.</div></div></div>
+      <div class="step"><div class="n">4</div><div><div class="t">Onboard</div><div class="d">Consent, profile, geography, platform authorization, code of conduct, and preferred opportunities.</div></div></div>
+    </div>
+    <div>
+      <div class="step"><div class="n">5</div><div><div class="t">Activate</div><div class="d">Briefings, Q&amp;As, local events, source material, clips, and optional co-posting.</div></div></div>
+      <div class="step"><div class="n">6</div><div><div class="t">Amplify</div><div class="d">Cross-post selected work or boost it with explicit per-post permission and the member's own aligned commentary.</div></div></div>
+      <div class="step"><div class="n">7</div><div><div class="t">Learn</div><div class="d">Capture aggregate reach, participation, message sentiment results, member feedback, and safety incidents.</div></div></div>
+      <div class="step"><div class="n">8</div><div><div class="t">Retain &amp; refer</div><div class="d">Recognize contribution with better access, training, and leadership roles — then ask every satisfied member for two referrals.</div></div></div>
+    </div>
+  </div>
+
+  <hr>
+  <h2>Two recruitment targets, one standard</h2>
+  <div class="grid g2">
+    <div class="card">
+      <div class="card-title">Advocates (established voices)</div>
+      <ul class="dash">
+        <li>Consistent publishing cadence and an identifiable audience.</li>
+        <li>Reached almost exclusively by direct outreach — DM, email, or manager contact.</li>
+        <li>Offer rapid-response access, production assets, expert briefings, and co-distribution.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">Non-activist community members</div>
+      <ul class="dash">
+        <li>Left-leaning people who care about an issue — environment, economy, schools — but are not politically active.</li>
+        <li>Reached by outreach into interest communities and by member referrals.</li>
+        <li>Offer a low-lift on-ramp: see the <a class="jump" href="#outreach">Outreach</a> section for the dedicated pitch.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="callout info">
+    <div class="callout-title">Do not rank people only by follower count</div>
+    Use a balanced score: audience authenticity, topical relevance, geographic relevance, reliability, conversation quality, safety history, and stated alignment with supported candidates and programs.
+  </div>
+</section>
+
+<!-- ============ OUTREACH ============ -->
+<section class="page" id="outreach">
+  <h1>Outreach system: personal at the front, disciplined underneath</h1>
+  <p class="lead">Every touch lands in the member CRM — options and costs itemized in <a class="jump" href="#software">Software</a>.</p>
+
+  <div class="tw"><table>
+    <tr><th>Stage</th><th>Owner</th><th>System action</th><th>Human action</th><th>Exit criterion</th></tr>
+    <tr><td>Prospect</td><td>Research</td><td>Create profile with source and public handles</td><td>Verify identity and relevance</td><td>No major authenticity or safety concern</td></tr>
+    <tr><td>Approach</td><td>Relationship lead</td><td>Assign owner; start consent-safe sequence</td><td>Send a specific, personal invitation</td><td>Reply or three respectful attempts</td></tr>
+    <tr><td>Conversation</td><td>Relationship lead</td><td>Log interests, geography, and constraints</td><td>15-minute fit call; confirm alignment</td><td>Mutual expectations are clear</td></tr>
+    <tr><td>Onboarding</td><td>Member ops</td><td>Capture agreement, preferences, and access tier</td><td>Orientation and platform connection</td><td>Profile, alignment statement, and consent recorded</td></tr>
+    <tr><td>Active</td><td>Program lead</td><td>Match opportunities by declared preferences</td><td>Offer access tied to supported candidates and programs</td><td>Member accepts or declines</td></tr>
+    <tr><td>Alumni / pause</td><td>Member ops</td><td>Stop outreach and revoke tokens as requested</td><td>Thank them; preserve a return path</td><td>Consent and retention rules applied</td></tr>
+  </table></div>
+
+  <div class="grid g2">
+    <div>
+      <h2>First-contact anatomy</h2>
+      <ul class="dash">
+        <li>Why them: cite one specific public contribution or community connection.</li>
+        <li>What this is: a member network for people who support the candidates and programs we back; amplification may be funded.</li>
+        <li>The condition: membership and access are for people who champion those candidates and programs.</li>
+        <li>What they control: which supported items to champion, what to say in their own words, and whether any post is boosted or cross-posted.</li>
+        <li>What they receive: briefings, candidate access, peer network, source material, training, and distribution support.</li>
+        <li>What happens next: a short fit call to confirm alignment.</li>
+      </ul>
+    </div>
+    <div>
+      <h2>Two pitches, two audiences</h2>
+      <p class="small">The structure is identical; the hook changes. Advocates respond to access and distribution. Non-activists respond to their issue and a low-lift ask.</p>
+    </div>
+  </div>
+
+  <div class="grid g2">
+    <div class="card">
+      <div class="card-title">Pitch: established voices and activists <span class="tag">Advocates</span></div>
+      <blockquote>“Your recent work on [specific local issue] helped people understand the tradeoffs without talking down to them. We are building a member network for people who support [candidate/program] and want briefings and occasional candidate Q&amp;As. You always write in your own words and choose what to back. Would you be open to a 15-minute conversation?”</blockquote>
+    </div>
+    <div class="card">
+      <div class="card-title">Pitch: issue-first community members <span class="tag dim">Non-activists</span></div>
+      <blockquote>“I saw your post about [environment / housing / schools / the economy] — it sounded like it came from actual experience, not talking points. I help run a network of people who care about [issue] and want to actually move it, without becoming full-time political people. Members get plain-English briefings on what's really happening, and occasionally a chance to ask questions directly to the people making decisions. No posting quota, no meetings culture — most members give it an hour or two a month. Can I send you the one-pager?”</blockquote>
+    </div>
+  </div>
+  <div class="callout info">
+    <div class="callout-title">Non-activist conversion keys</div>
+    Lead with their issue, not our candidate. De-emphasize jargon ("advocate," "program," "movement") in the first touch. The ask is "can I send you the one-pager," not a call. Alignment is confirmed on the fit call, not demanded in the first message.
+  </div>
+
+  <h2>Cadence and service levels</h2>
+  <div class="grid g3">
+    <div class="card">
+      <div class="card-title">High-touch prospects</div>
+      <ul class="dash"><li>Named relationship owner</li><li>Personal email or manager contact</li><li>Two follow-ups over 14 days</li><li>Quarterly relationship review</li></ul>
+    </div>
+    <div class="card">
+      <div class="card-title">Community referrals</div>
+      <ul class="dash"><li>Warm introduction</li><li>Mobile application</li><li>Weekly orientation</li><li>Local coordinator follow-up</li></ul>
+    </div>
+    <div class="card">
+      <div class="card-title">Inbound applicants</div>
+      <ul class="dash"><li>Immediate confirmation</li><li>Review within five business days</li><li>Published criteria</li><li>Appeal and reapply path</li></ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DM PLAYBOOKS ============ -->
+<section class="page" id="dm">
+  <h1>DM playbooks: who sends what, where, and how</h1>
+  <p class="lead">Direct messages are the highest-converting outreach channel and the fastest way to get an account restricted. Every send comes from a named human's account, references something specific, and stops the moment someone declines. Volume caps below are conservative operating limits, not platform-published maximums. Prospect lists and outcomes live in the CRM — see <a class="jump" href="#software">Software</a>.</p>
+
+  <h2>Roles</h2>
+  <div class="tw"><table>
+    <tr><th>Role</th><th>Headcount (pilot)</th><th>What they do</th><th>What they never do</th></tr>
+    <tr><td>Relationship owner</td><td>2–3 staff</td><td>Send first-contact DMs from their own personal, named accounts (not the org's brand account — personal outreach converts far better); run fit calls; log every touch</td><td>Share logins, rotate accounts to dodge limits, or use automation to send</td></tr>
+    <tr><td>Member ops</td><td>1</td><td>Build prospect lists; pre-fill CRM records; also send outreach from their own named accounts when volume requires — every sender is a real, named person</td><td>Send from faceless brand accounts or unlogged personal accounts</td></tr>
+    <tr><td>Program lead</td><td>1</td><td>Approves target lists and message angles weekly; handles escalations and press-risk conversations</td><td>Mass-send</td></tr>
+    <tr><td>Compliance</td><td>0.2 (fractional)</td><td>Reviews templates quarterly; approves any boosting language referenced in DMs</td><td>Edit messages mid-conversation</td></tr>
+  </table></div>
+
+  <h2>How outreach is tracked — the software workflow</h2>
+  <p class="small">Messages are sent by hand from personal accounts, but every touch is tracked centrally. The stack below is what a sender touches each day (full pricing in <a class="jump" href="#software">Software</a>).</p>
+  <div class="tw"><table>
+    <tr><th>Step</th><th>Tool</th><th>What happens</th></tr>
+    <tr><td>1. Prospect list</td><td>EveryAction (member CRM)</td><td>Member ops creates a prospect record: name, handles, geography, issue, source, assigned owner. Owners work from their assigned list only — no freelance prospecting.</td></tr>
+    <tr><td>2. Before sending</td><td>GRIN (advocate CRM)</td><td>Owner opens the prospect in GRIN to see recent posts and pull the specific reference for the message. GRIN is the research surface; EveryAction is the record.</td></tr>
+    <tr><td>3. Send</td><td>Native platform app</td><td>Owner sends the DM/email by hand from their own named account. No sending software touches the message — this is what keeps accounts healthy.</td></tr>
+    <tr><td>4. Log</td><td>EveryAction via daily log form</td><td>Same day: owner pastes the thread URL, message version (A/B template code), and outcome (sent / replied / declined / call booked). A 10-field mobile form takes ~30 seconds per touch.</td></tr>
+    <tr><td>5. Sync &amp; dedupe</td><td>Make (automation)</td><td>Nightly job reconciles GRIN activity with EveryAction records, flags prospects contacted twice, and surfaces follow-ups due at day 5–7.</td></tr>
+    <tr><td>6. Review</td><td>Sprout Social inbox + Metabase dashboard</td><td>Program lead reviews reply rates by owner, platform, and template weekly; Metabase shows funnel from first touch to onboarded member.</td></tr>
+  </table></div>
+  <div class="callout info">
+    <div class="callout-title">Why personal accounts, centrally logged</div>
+    Brand-account DMs read as advertising and get filtered; a message from a real person's account with a history and a face converts. The discipline is not the sending account — it is that nothing happens outside the CRM. If it isn't logged in EveryAction same-day, it didn't happen.
+  </div>
+
+  <h2>Instagram</h2>
+  <div class="card">
+    <div class="card-title">Best for: advocates and community voices under 100K followers <span class="tag">Primary channel</span></div>
+    <div class="step"><div class="n">1</div><div><div class="t">Research first</div><div class="d">Member ops assembles 10–15 prospects/day per owner: handle, real name, locale, one specific recent post worth referencing, follower count, and contact alternatives (email in bio, manager).</div></div></div>
+    <div class="step"><div class="n">2</div><div><div class="t">Warm the account</div><div class="d">Owner follows the prospect and leaves one substantive comment on a recent post 24–48 hours before DMing. Cold DMs to non-followers land in Message Requests; prior interaction raises open rates.</div></div></div>
+    <div class="step"><div class="n">3</div><div><div class="t">Send the DM</div><div class="d">From the owner's professional account, 3–4 sentences: specific reference, what the network is, the alignment condition, one ask (a 15-minute call). Max 10–15 new-thread DMs per account per day.</div></div></div>
+    <div class="step"><div class="n">4</div><div><div class="t">Follow up</div><div class="d">One follow-up after 5–7 days with a concrete hook (upcoming briefing topic or event date). A second non-response closes the record as 'no — DM'.</div></div></div>
+    <div class="step"><div class="n">5</div><div><div class="t">Move off-platform</div><div class="d">On any positive reply, offer email or a calendar link immediately. Log handle, thread URL, and outcome in the CRM the same day.</div></div></div>
+  </div>
+
+  <h2>TikTok</h2>
+  <div class="card">
+    <div class="card-title">Best for: mutual follows and comment-first engagement <span class="tag dim">Constrained</span></div>
+    <div class="step"><div class="n">1</div><div><div class="t">Accept the constraint</div><div class="d">TikTok DMs generally require mutual follows. Plan for a comment-first funnel: DM is step three, not step one.</div></div></div>
+    <div class="step"><div class="n">2</div><div><div class="t">Comment publicly</div><div class="d">Owner leaves a substantive comment on the prospect's recent video from the program's or their own account. No pitch in comments — earn the follow-back.</div></div></div>
+    <div class="step"><div class="n">3</div><div><div class="t">Check bio for off-platform contact</div><div class="d">Many TikTok advocates list email or a manager for business inquiries. Email beats DM here; log both attempts.</div></div></div>
+    <div class="step"><div class="n">4</div><div><div class="t">DM after mutual follow</div><div class="d">Once they follow back, send the same 3–4 sentence structure as Instagram. Cap: 10 new threads/day/account.</div></div></div>
+    <div class="step"><div class="n">5</div><div><div class="t">Escalate larger advocates</div><div class="d">Over ~250K followers, route to the program lead for manager outreach by email; TikTok DMs at that tier are noise.</div></div></div>
+  </div>
+
+  <h2>YouTube</h2>
+  <div class="card">
+    <div class="card-title">Best for: business-inquiry email found on channel About pages <span class="tag dim">No native DM</span></div>
+    <div class="step"><div class="n">1</div><div><div class="t">No DM surface</div><div class="d">YouTube retired private messaging. Outreach runs through the channel's business-inquiry email (About tab) or a comment on a recent video.</div></div></div>
+    <div class="step"><div class="n">2</div><div><div class="t">Pull contact emails</div><div class="d">Member ops extracts business emails from About tabs into the prospect list. Channels without one get a pinned substantive comment pointing to the program page.</div></div></div>
+    <div class="step"><div class="n">3</div><div><div class="t">Email with the same anatomy</div><div class="d">Subject: 'Briefings + candidate access — [their topic area]'. Same 4-part body as the DM template. One follow-up at 7 days.</div></div></div>
+    <div class="step"><div class="n">4</div><div><div class="t">Log source</div><div class="d">Record whether contact came from About page, comment, or referral — YouTube-sourced members often need extra orientation on the other platforms.</div></div></div>
+  </div>
+
+  <h2>X (Twitter), Facebook, LinkedIn</h2>
+  <div class="tw"><table>
+    <tr><th>Platform</th><th>DM access</th><th>Playbook</th><th>Daily cap / notes</th></tr>
+    <tr><td>X</td><td>Open DMs only if the account allows them; Premium accounts can DM more broadly</td><td>Reply substantively to a recent post first; DM only accounts with open DMs or Premium; otherwise @-mention once with a link to the program page</td><td>~10–15 new threads/day; rate limits tighten without warning on new accounts</td></tr>
+    <tr><td>Facebook</td><td>Page-to-person DMs only after the person messages the Page first; person-to-person requires friendship</td><td>Route prospects to message the program Page via a comment or post link; respond within Messenger from the Page inbox</td><td>Meta enforces a 24-hour reply window for Pages — staff the inbox daily</td></tr>
+    <tr><td>LinkedIn</td><td>Connection-required; InMail is paid (~$80–160/seat/mo for Recruiter/Sales Navigator tiers)</td><td>Best channel for established activists, operatives, and org leaders — send a connection request with a 2-sentence note, then the standard message after acceptance</td><td>Connection notes capped at 300 characters; ~20 requests/day on free accounts</td></tr>
+  </table></div>
+
+  <h2>Message anatomy and templates</h2>
+  <div class="grid g2">
+    <div class="card">
+      <div class="card-title">First-contact DM (Instagram / TikTok / X)</div>
+      <blockquote>“Hi [name] — your [specific post/video] on [topic] was one of the few takes on this that didn't talk down to people. I run member recruitment for a network that gets community voices briefings and occasional Q&amp;As with [candidates/program leaders]. It's for people who support [candidate/program]. Open to a 15-minute call this week?”</blockquote>
+    </div>
+    <div class="card">
+      <div class="card-title">Follow-up (5–7 days, one time only)</div>
+      <blockquote>“Bumping this once — we're hosting a briefing on [topic/date] and your perspective on [their issue] would be valuable in the room. If it's not a fit, no worries and I won't keep messaging.”</blockquote>
+    </div>
+  </div>
+
+  <h2>Operating guardrails</h2>
+  <div class="grid g3">
+    <div class="card">
+      <div class="card-title">Volume</div>
+      <ul class="dash"><li>10–15 new-thread DMs per account per day, per platform.</li><li>Two contact attempts max, then close the record.</li><li>Three owner accounts × 15/day ≈ 900–1,300 first touches/month.</li></ul>
+    </div>
+    <div class="card">
+      <div class="card-title">Account health</div>
+      <ul class="dash"><li>Named human accounts only — no shared logins, no sending bots, no bought accounts.</li><li>A platform restriction or block wave triggers a 48-hour pause and template review.</li><li>Never rotate to a second account to evade a limit or a block.</li></ul>
+    </div>
+    <div class="card">
+      <div class="card-title">Logging</div>
+      <ul class="dash"><li>Every touch logged same-day: platform, handle, thread URL, message version, outcome.</li><li>Declines and 'stop messaging' requests are honored everywhere, permanently.</li><li>Weekly review: reply rate by platform, template, and owner; kill any template under 5% reply.</li></ul>
+    </div>
+  </div>
+
+  <div class="callout warning">
+    <div class="callout-title">Hard rules</div>
+    No automated sending tools, no scraped follower lists for bulk DMing, no DMs to minors, and no continued contact after a decline. Platform terms restrict unsolicited bulk messaging on every network above — the caps exist to keep accounts in good standing, and legal review covers the templates, not individual messages.
+  </div>
+</section>
+
+<!-- ============ TALKING POINTS ============ -->
+<section class="page" id="talking-points">
+  <h1>Issue briefings: what members actually receive</h1>
+  <p class="lead">This is what a member actually gets: one page, checked facts, a plain-language angle, and two versions of the message so the <a class="jump" href="#listening">sentiment tracking</a> can show us which one people respond to. Advocates rewrite it in their own voice; non-activists can forward it or just show up to the meeting at the bottom. Anything in brackets gets filled in for the member's district before it goes out, and someone on staff re-checks the facts within 72 hours of send, because these things move.</p>
+
+  <h2>How a briefing is built</h2>
+  <div class="grid g2">
+    <div>
+      <div class="step"><div class="n">1</div><div><div class="t">Research pack</div><div class="d">Staff pulls the actual local facts: which utility, which agency, which company, with links to the source documents.</div></div></div>
+      <div class="step"><div class="n">2</div><div><div class="t">Frame</div><div class="d">One sentence that says where we land. The program lead and compliance sign off before anything goes out.</div></div></div>
+      <div class="step"><div class="n">3</div><div><div class="t">Two versions</div><div class="d">One kitchen-table, one accountability. Both are tagged so the message lab in Listening can track which gets better responses.</div></div></div>
+    </div>
+    <div>
+      <div class="step"><div class="n">4</div><div><div class="t">Localize</div><div class="d">Geography routing finds the members who live in the affected district, and the brackets get filled in before send. Nobody gets a generic blast.</div></div></div>
+      <div class="step"><div class="n">5</div><div><div class="t">One ask</div><div class="d">Every briefing ends with one thing to do. Ask for two things and people do neither.</div></div></div>
+    </div>
+  </div>
+
+  <h2>Sample briefing: data centers in Arkansas</h2>
+  <div class="card">
+    <div class="card-title">What the member gets <span class="tag">State level · Arkansas</span></div>
+    <p class="small">Quick version: the legislature passed a tax break for data centers in 2025. Now [utility] wants a rate increase to pay for the power plants these facilities need. People are starting to connect those two facts, and they're right to.</p>
+    <p style="font-weight:650;">Where we land</p>
+    <p class="small">Data centers are fine. Making Arkansans pay for their electricity isn't. And any deal should be public before it's signed.</p>
+    <p style="font-weight:650;">The kitchen-table version</p>
+    <ul class="dot">
+      <li class="small">A big data center can use as much electricity as tens of thousands of homes. Somebody has to pay to build that capacity. Right now the plan is that it's you, through your [utility] bill.</li>
+      <li class="small">The 2025 tax break is already law. What's still worth pushing on is basic: how many permanent jobs, what they pay, and what happens when the tax holiday ends.</li>
+      <li class="small">The biggest facilities also use serious water for cooling, millions of gallons a day at the top end. Arkansas farms. Asking "how much, from where" before construction starts is reasonable.</li>
+      <li class="small">None of this is anti-data-center. If a project is good for [county], the company should be able to say so in public, with numbers.</li>
+      <li class="small">If you do one thing, ask [your state rep / quorum court member] this: "If the power money comes up short, who pays, the company or us?" Get the answer in writing.</li>
+    </ul>
+    <p style="font-weight:650;">The harder version</p>
+    <blockquote>“Your electric bill went up. At the same time, the state gave some of the richest companies on earth a tax break to come use even more electricity, and it didn't ask them to pay for the grid upgrades first. You're allowed to be annoyed about that.”</blockquote>
+    <p style="font-weight:650;">One thing to do</p>
+    <p class="small">Post it in your own words this week, or send it to three people you know in the district. If you want to go further, the [public service commission / quorum court] hearing is [date]. Link is in the portal.</p>
+  </div>
+
+  <h2>Sample briefing: clean water in Michigan</h2>
+  <div class="card">
+    <div class="card-title">What the member gets <span class="tag">State level · Michigan</span></div>
+    <p class="small">Quick version: Michigan has the strictest lead-pipe law in the country. Every lead service line in the state has to be replaced by 2041, and federal infrastructure money is covering a lot of the cost right now. The open question is whether small towns get their applications in before the money runs out.</p>
+    <p style="font-weight:650;">Where we land</p>
+    <p class="small">Nobody is pro-lead. The fight is over speed and money. Either the state and the towns hit the deadline or they let it slide, and letting it slide is a choice.</p>
+    <p style="font-weight:650;">The kitchen-table version</p>
+    <ul class="dot">
+      <li class="small">Benton Harbor replaced every lead line in its system in about a year and a half. It's doable when somebody is actually in charge of it.</li>
+      <li class="small">The Flint lesson wasn't only the water. It was a year of residents saying something was wrong and being told they were wrong. The standard now is simple: trust the water when the test results are public.</li>
+      <li class="small">There's federal money for pipe replacement, but towns have to apply. Whether yours gets any comes down to whether your local officials filed the paperwork. Worth an email to find out.</li>
+      <li class="small">PFAS is the next version of this fight. The forever-chemical contamination around [Rockford / Oscoda] has been sitting there for years.</li>
+      <li class="small">Every year a lead line stays in the ground is another year of risk and a bigger repair bill later. Waiting is the expensive option.</li>
+    </ul>
+    <p style="font-weight:650;">The harder version</p>
+    <blockquote>“It's been more than a decade since Flint, and there are still Michigan kids drinking from lead pipes because replacing them was always in next year's budget. The state only moves when there's a deadline and a fine attached. That's what this law is.”</blockquote>
+    <p style="font-weight:650;">One thing to do</p>
+    <p class="small">Share one of the points above in your own words, or bring it up at your next city council or school board meeting. Meeting links are in the portal.</p>
+  </div>
+
+  <div class="callout info">
+    <div class="callout-title">Why it's set up this way</div>
+    The version tags feed the sentiment tracking in <a class="jump" href="#listening">Listening</a>, so after a few cycles we know whether the kitchen-table or accountability version actually moves people, instead of guessing. Routing by district comes from <a class="jump" href="#geography">Geography</a>; the source pack lives in the portal (Circle) and the briefing goes out by email/SMS from the CRM (EveryAction), both priced in <a class="jump" href="#software">Software</a>. Members pick what they want to use and write it their own way. We don't hand them scripts.
+  </div>
+</section>
+
+<!-- ============ LISTENING ============ -->
+<section class="page" id="listening">
+  <h1>See the conversation—within real platform limits</h1>
+  <div class="callout warning">
+    <div class="callout-title">There is no lawful universal firehose</div>
+    APIs expose different slices of public activity. Private accounts, stories, deleted content, many like identities, and untagged references can be unavailable. Treat listening as incomplete evidence, not total surveillance. Vendor options and pricing for every row below are itemized in <a class="jump" href="#software">Software</a>.
+  </div>
+  <div class="tw"><table>
+    <tr><th>Channel</th><th>What to collect</th><th>Preferred method</th><th>Important limit</th></tr>
+    <tr><td>Instagram</td><td>Owned-post comments and metrics; tags; supported @mentions</td><td>Meta webhooks and Instagram APIs for professional accounts</td><td>Private content and some story/mention surfaces are unavailable; metrics may be delayed</td></tr>
+    <tr><td>TikTok</td><td>Authorized advocate videos; public references found by approved listening tools</td><td>Advocate authorization plus vetted social-listening vendor</td><td>General comment access is restricted; Research API is not a normal campaign CRM feed</td></tr>
+    <tr><td>YouTube</td><td>Video/channel comments, replies, counts, and owned-channel moderation</td><td>YouTube Data API with OAuth for owned actions</td><td>Quota applies; comment threads may require extra calls for all replies</td></tr>
+    <tr><td>Other networks</td><td>Public mentions, owned-post engagement, and authorized account data</td><td>Official APIs or policy-compliant vendor connectors</td><td>Coverage changes frequently; document each connector's terms</td></tr>
+    <tr><td>Web/news/podcasts</td><td>Named references, links, transcripts, and coverage</td><td>Media monitoring plus manual verification</td><td>Automated sentiment is directional and error-prone</td></tr>
+  </table></div>
+
+  <div class="grid g2">
+    <div>
+      <h2>Data flow</h2>
+      <div class="step"><div class="n">1</div><div><div class="t">Ingest</div><div class="d">Webhooks first; scheduled API pulls second; manual URL submission as a fallback.</div></div></div>
+      <div class="step"><div class="n">2</div><div><div class="t">Normalize</div><div class="d">Map platform, post, author, timestamp, engagement counts, and relationship to the program.</div></div></div>
+      <div class="step"><div class="n">3</div><div><div class="t">Match</div><div class="d">Match only known members and declared handles; keep uncertain identities unlinked.</div></div></div>
+      <div class="step"><div class="n">4</div><div><div class="t">Triage</div><div class="d">Route questions, misinformation, threats, member support, and candidate requests to separate queues.</div></div></div>
+      <div class="step"><div class="n">5</div><div><div class="t">Respond</div><div class="d">Human approval for political replies; preserve an audit trail and platform-native context.</div></div></div>
+    </div>
+    <div>
+      <h2>Dashboard views</h2>
+      <ul class="dash">
+        <li>Relationship inbox: all known member posts and direct mentions requiring a response.</li>
+        <li>Content performance: reach and engagement for authorized/cross-posted content, split organic versus boosted.</li>
+        <li>Message lab: post-level and response-level sentiment by message variant (see below).</li>
+        <li>Coverage gaps: geography and topic combinations with no active members—never inferred ideology.</li>
+        <li>Audit view: consent, boost authorization, spend, token access, and retention status.</li>
+      </ul>
+      <h3>Message sentiment program</h3>
+      <p class="small">Every piece of program content carries a message-variant tag (e.g. positive framing vs. contrast framing). The listening stack scores sentiment on the post and on the response comments, so we can see which framing moves each audience. This is aggregate message testing on our own content — standard practice in Sprout Advanced and Brandwatch, both itemized in <a class="jump" href="#software">Software</a>. We do not build covert political-affinity scores on individuals.</p>
+      <ul class="dash">
+        <li>Post-level sentiment: tone of the member's own content by variant, topic, and platform.</li>
+        <li>Response-level sentiment: ratio of positive to negative replies per variant, per audience segment.</li>
+        <li>Weekly readout: which framings earn constructive replies vs. backlash, by geography and issue.</li>
+        <li>Decision rule: a variant must win on response sentiment AND completion/engagement to graduate.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MEETINGS ============ -->
+<section class="page" id="meetings">
+  <h1>Exclusive meetings: deter leaks; never promise prevention</h1>
+  <p class="lead">Any attendee can use a second phone, screen-capture hardware, or handwritten notes. Design the event so a leak is less likely, identifiable where possible, and not catastrophic if it occurs. Platform options and pricing are in <a class="jump" href="#software">Software</a>.</p>
+
+  <div class="grid g3">
+    <div class="stat"><div class="v">Authenticate</div><div class="l">Named attendee and unique access</div></div>
+    <div class="stat"><div class="v">Watermark</div><div class="l">Visible and audio deterrence</div></div>
+    <div class="stat"><div class="v">Minimize</div><div class="l">No truly secret campaign material</div></div>
+  </div>
+
+  <h2>Meeting types and sensitivity tiers</h2>
+  <p class="small">Not all exclusive meetings carry the same risk. Set controls by tier, not by habit — over-securing a lobbyist briefing wastes goodwill, and under-securing a planning session hands the opposition our playbook.</p>
+  <div class="tw"><table>
+    <tr><th>Type</th><th>Example</th><th>Sensitivity</th><th>Required controls</th></tr>
+    <tr class="tone-info"><td>Candidate meet-and-greet</td><td>Advocates ask questions; candidate answers</td><td>Medium — assume anything quotable travels</td><td>Authenticated join, watermark, ground rules, publishable recap</td></tr>
+    <tr class="tone-info"><td>Lobbyist / policy briefing</td><td>A lobbyist explains how they move an issue; members learn the mechanics</td><td>Low–medium — educational content, few secrets</td><td>Authenticated join, watermark; recap shareable at staff discretion</td></tr>
+    <tr class="tone-warning"><td>Activist strategy exchange</td><td>Peer advocates compare what is working in their communities</td><td>Medium — tactics are reusable by opponents</td><td>Authenticated join, watermark, no cloud recording, notes not distributed</td></tr>
+    <tr class="tone-danger"><td>Planning session</td><td>Staff + core members set targeting, budgets, timing, message sequencing</td><td>Highest — this is what the opposition most wants</td><td>Smallest viable invite list, in-person preferred, virtual only with watermark + no recording, verbal decisions, no circulated deck</td></tr>
+  </table></div>
+  <div class="callout warning">
+    <div class="callout-title">Planning sessions are the crown jewels</div>
+    Candidate remarks embarrass; planning documents arm the opposition. Treat every planning session as if a Republican tracker is trying to attend — opposition trackers exist and this is exactly what they look for. Verify each attendee by name at entry, keep strategy verbal where possible, and distribute decisions afterward only as need-to-know action items, never as a full plan.
+  </div>
+
+  <h2>Technical controls</h2>
+  <div class="tw"><table>
+    <tr><th>Control</th><th>Implementation</th><th>What it accomplishes</th><th>Residual risk</th></tr>
+    <tr><td>Identity</td><td>SSO or one-time link, named registration, waiting room, manual approval</td><td>Reduces link sharing and anonymous entry</td><td>Credentials can still be shared</td></tr>
+    <tr><td>Event mode</td><td>Webinar/town-hall mode; attendee cameras/mics off until promoted</td><td>Limits disruption and participant visibility</td><td>Does not stop external recording</td></tr>
+    <tr><td>Recording controls</td><td>Disable participant local recording and cloud recording; restrict third-party bots</td><td>Removes ordinary in-app recording paths</td><td>OS capture and second devices remain</td></tr>
+    <tr><td>Watermarking</td><td>Participant-specific visual watermark; supported audio watermark</td><td>Deters leaks and can help attribute them</td><td>Cropping, transcription, and paraphrase remain</td></tr>
+    <tr><td>Information design</td><td>Assume remarks may become public; embargo only time-sensitive materials</td><td>Lowers harm if content escapes</td><td>Reduces candor unless format is carefully facilitated</td></tr>
+    <tr><td>Policy</td><td>Short event rules, confidentiality terms where appropriate, graduated sanctions</td><td>Sets expectations and response options</td><td>Enforcement and local law vary</td></tr>
+  </table></div>
+
+  <div class="grid" style="grid-template-columns: 1.1fr 1fr;">
+    <div>
+      <h2>Candidate meet-and-greet run of show</h2>
+      <ul class="dash">
+        <li>T−72 hours: verify roster; issue unique links; remind attendees of event rules.</li>
+        <li>T−15 minutes: lock production roles; test watermark; admit authenticated attendees only.</li>
+        <li>Opening: one-minute ground rules; explain whether remarks are on the record, embargoed, or not for publication.</li>
+        <li>Discussion: moderated questions submitted in advance plus live queue; no donor preference.</li>
+        <li>Close: provide approved factual resources, corrections channel, and an optional public recap.</li>
+        <li>T+24 hours: attendance log, incident review, member feedback, and access revocation for no-longer-valid links.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">Safer access model <span class="tag dim">Recommended</span></div>
+      <p style="font-weight:650;">Private questions, public-safe answers.</p>
+      <p class="small">Let members ask candid questions in a controlled room, but brief candidates to answer as if the exchange could become public. Provide a publishable recap afterward so members gain real value without carrying “secret” material.</p>
+      <hr>
+      <p class="tiny">Zoom supports authenticated attendance plus visible and audio watermarking, but even these controls cannot prevent external recording.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ GEOGRAPHY ============ -->
+<section class="page" id="geography">
+  <h1>Segment by election jurisdiction and declared relevance</h1>
+  <div class="callout info">
+    <div class="callout-title">Use the smallest relevant electorate</div>
+    A city-council race should not trigger national outreach. Match opportunities using self-reported home/served geography, platform audience geography available with consent, and declared topics—not inferred ideology or protected traits.
+  </div>
+
+  <h2>Critical mass: how many advocates move a cohort</h2>
+  <p class="small">Working definition: a cohort is meaningfully influenced when at least <strong>25% of target Democratic voters in it are reached 3+ times per month</strong> by advocate content (organic or boosted). The model below converts that threshold into advocate counts. Assumptions: average advocate reaches ~3% of their follower base per post locally (higher trust, tighter geography), falling with audience scale; ~40% audience overlap is discounted; boosting extends a post's reach 3–5×.</p>
+  <div class="tw"><table>
+    <tr><th>Level</th><th>Example cohort</th><th>Target Dem voters</th><th>25% × 3+/mo means reaching</th><th>Advocates needed (organic only)</th><th>Advocates + boosting</th></tr>
+    <tr><td>Local</td><td>City council district, school board, county race</td><td>~8,000–25,000</td><td>~2,000–6,000 people repeatedly</td><td>15–30 local advocates (avg 5K–15K local followers each)</td><td>8–15 advocates + $3K–$8K/mo boosting</td></tr>
+    <tr><td>State</td><td>Governor, state legislature, ballot measure</td><td>~1M–4M</td><td>~250K–1M people repeatedly</td><td>150–300 advocates across regions</td><td>75–150 advocates + $40K–$120K/mo boosting</td></tr>
+    <tr><td>National</td><td>Presidential, national issue campaigns</td><td>~35M–50M (base universe)</td><td>~9M–12M people repeatedly</td><td>2,500–4,000 advocates</td><td>800–1,500 advocates + $500K–$1.5M/mo boosting</td></tr>
+  </table></div>
+  <div class="callout warning">
+    <div class="callout-title">These are planning ratios, not guarantees</div>
+    The 25%/3+ threshold is a campaign-media rule of thumb (message penetration at effective frequency), not a measured constant. Validate against pilot data: the <a class="jump" href="#listening">Listening</a> section's dashboards measure actual unique reach and frequency per cohort, and the <a class="jump" href="#cost">Cost Model</a> sliders let donors see what each tier requires. Adjust advocate counts quarterly as real reach-per-advocate data comes in.
+  </div>
+
+  <h2>How the approach differs by level</h2>
+  <div class="tw"><table>
+    <tr><th>Level</th><th>Program owner</th><th>Member pool</th><th>Typical access</th><th>Content support</th><th>Approval</th></tr>
+    <tr><td>Local</td><td>City/county coordinator</td><td>Residents, local advocates, neighborhood and issue voices</td><td>Site visits, local candidate Q&amp;A, community roundtables</td><td>Local facts, event clips, location-aware cross-posts</td><td>Local lead + compliance guardrails</td></tr>
+    <tr><td>State</td><td>State network director</td><td>Statewide advocates plus local members with state issue relevance</td><td>State candidate briefings, legislative explainers, regional press access</td><td>State issue kits and coordinated publishing windows</td><td>State lead + legal/compliance</td></tr>
+    <tr><td>National</td><td>National program office</td><td>National advocates and selected state/local members</td><td>National candidate town halls, policy experts, convention access</td><td>National source library, broadcast clips, optional boosting</td><td>National editorial ops + legal/compliance</td></tr>
+  </table></div>
+
+  <div class="grid g2">
+    <div>
+      <h2>Routing logic</h2>
+      <ul class="dash">
+        <li>Start with election jurisdiction: precinct/municipality, district, state, or nationwide.</li>
+        <li>Filter to members who explicitly selected that geography or whose public work clearly serves it.</li>
+        <li>Filter by declared topic preference and format capability.</li>
+        <li>Apply frequency caps and conflict rules so members are not flooded.</li>
+        <li>Relationship owner reviews the list before invitations are sent.</li>
+      </ul>
+    </div>
+    <div>
+      <h2>Federated operating model</h2>
+      <ul class="dash">
+        <li>National: owns platform, security, brand standards, vendor contracts, and common metrics.</li>
+        <li>State: owns candidate calendar, state compliance, regional partnerships, and escalation.</li>
+        <li>Local: owns relationships, context, event logistics, and feedback loops.</li>
+        <li>One profile follows the member; access and data visibility follow least-privilege rules.</li>
+        <li>Local teams can nominate; higher tiers cannot silently repurpose a member for another race.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>Conflict rules to encode</h2>
+  <div class="grid g4">
+    <div class="card"><div class="card-title">Residency</div><p class="small">Is the person eligible or genuinely relevant to this jurisdiction?</p></div>
+    <div class="card"><div class="card-title">Candidate neutrality</div><p class="small">If the program is pre-primary, offer comparable access under a written policy.</p></div>
+    <div class="card"><div class="card-title">Frequency</div><p class="small">Cap asks by week and honor “no campaign outreach” preferences.</p></div>
+    <div class="card"><div class="card-title">Data boundary</div><p class="small">Do not expose full member records to every campaign or local chapter.</p></div>
+  </div>
+</section>
+
+<!-- ============ SOFTWARE ============ -->
+<section class="page" id="software">
+  <h1>Software stack: options and costs by capability</h1>
+  <p class="lead">Pricing verified August 2026 from vendor list prices and procurement-data aggregators (Vendr, StackScored, ITQlick). Quote-only vendors show reported contract ranges. All figures are USD; annual billing assumed where it lowers the rate.</p>
+
+  <h2>Member CRM — system of record</h2>
+  <div class="tw"><table>
+    <tr><th>Vendor</th><th>Entry price</th><th>Realistic cost for this program</th><th>Notes</th></tr>
+    <tr><td>Action Network</td><td>$15/mo entry</td><td>$300–$900/mo at program scale</td><td>Purpose-built for advocacy; email/mobile volume drives cost; fast to launch</td></tr>
+    <tr><td>EveryAction</td><td>$99/mo entry</td><td>$500–$1,000/mo (10 users); $8K–$22K first year with onboarding</td><td>Bonterra-owned; strong email + fundraising; custom fields for geography, consent, relationship owner</td></tr>
+    <tr><td>NGP VAN</td><td>$45/user/mo</td><td>$5.4K–$20K+/yr depending on scale; state-party licenses can be one-time fees</td><td>The Democratic standard; voter-file integration is the reason to choose it; requires DNC/state-party relationship</td></tr>
+    <tr><td>NationBuilder</td><td>$34/mo entry</td><td>$3.5K–$12K/yr with add-ons</td><td>Cheapest credible option; weaker for complex consent and multi-team permissions</td></tr>
+    <tr><td>Salesforce + NPC</td><td>$60–$100/user/mo (P10 discounted)</td><td>$15K–$60K/yr all-in with implementation</td><td>Maximum flexibility; requires admin/consulting budget ($10K–$40K setup); overkill for a pilot</td></tr>
+  </table></div>
+  <div class="callout info"><div class="callout-title">Recommendation</div>Pilot on <strong>EveryAction</strong> (~$6K–$12K first year). Migrate to NGP VAN when voter-file matching becomes a requirement, or stay if the program stays pure-membership. Action Network is the leanest credible start (~$4K/yr).</div>
+
+  <h2>Advocate discovery and relationship management</h2>
+  <div class="tw"><table>
+    <tr><th>Vendor</th><th>Pricing</th><th>Advocate scale</th><th>Notes</th></tr>
+    <tr><td>GRIN Lite</td><td>$399/mo ($4,788/yr) — published</td><td>15 advocates / 50 CRM contacts</td><td>Only transparent pricing in category; month-to-month; 30-day trial</td></tr>
+    <tr><td>GRIN Essentials → Growth</td><td>$699–$1,149/mo ($8.4K–$13.8K/yr)</td><td>100–200 advocates / 1K CRM</td><td>Content library, payments module (unused here — program is unpaid), approvals</td></tr>
+    <tr><td>GRIN Complete</td><td>$1,799/mo ($21.6K/yr)</td><td>400 advocates / 4K CRM + API</td><td>API access needed for CRM sync; team roles and permissions</td></tr>
+    <tr><td>Aspire</td><td>Quote only; reported $24K–$72K/yr</td><td>Mid-market</td><td>Strong discovery database (170M+ profiles); DTC-commerce orientation is a mismatch for political use</td></tr>
+    <tr><td>CreatorIQ</td><td>Quote only; reported $36K–$120K+/yr + $8K–$25K implementation</td><td>Enterprise</td><td>Best-in-class for 200+ advocate programs; political-use terms need review; 12-month minimum</td></tr>
+  </table></div>
+  <div class="callout info"><div class="callout-title">Recommendation</div><strong>GRIN Growth at $1,149/mo</strong> covers a 200-advocate pilot with room to grow, and it is the only option you can buy this week without a sales cycle. Its payment features go unused — the value is discovery, vetting, and the advocate CRM. Defer CreatorIQ until the network exceeds ~400 active advocates.</div>
+
+  <h2>Social listening and engagement</h2>
+  <div class="tw"><table>
+    <tr><th>Vendor</th><th>Pricing</th><th>What it covers</th><th>Limits for this use case</th></tr>
+    <tr><td>Sprout Social Professional</td><td>$299/seat/mo annual ($399 monthly)</td><td>Publishing, Smart Inbox, IG/FB/X competitor reports, paid-social reporting</td><td>3 seats = $897/mo ($10.8K/yr); Listening add-on priced separately (~$999+/mo)</td></tr>
+    <tr><td>Sprout Advanced</td><td>$399/seat/mo annual</td><td>Sentiment in inbox, spike alerts, API access, helpdesk integration</td><td>3 seats = $1,197/mo ($14.4K/yr); required once the message sentiment program starts</td></tr>
+    <tr><td>Meltwater</td><td>Quote; reported $15K–$80K/yr (median contract ~$25.8K)</td><td>Social + news/broadcast/print monitoring in one tool</td><td>Annual contract only; onboarding $2K–$10K; API gated to enterprise tier</td></tr>
+    <tr><td>Brandwatch</td><td>Quote; reported $36K–$100K/yr (median ~$50K)</td><td>Deepest consumer-intelligence analytics and historical archive; best-in-class sentiment</td><td>Enterprise-only positioning; onboarding $5K–$15K; likely overkill before national scale</td></tr>
+    <tr><td>YouTube Data API + custom</td><td>Free (quota-limited; 10K units/day default)</td><td>Comment threads, replies, moderation on owned channels</td><td>Engineering time (~2–4 weeks) to build polling, storage, and triage UI</td></tr>
+  </table></div>
+  <div class="callout info"><div class="callout-title">Recommendation</div><strong>Sprout Advanced, 3 seats, $14.4K/yr</strong> — the sentiment program in <a class="jump" href="#listening">Listening</a> requires the Advanced tier. Add <strong>Meltwater</strong> (~$25K/yr) only when earned-media and broadcast monitoring become requirements. Build the small YouTube API poller in-house — it is the cheapest reliable comment feed available.</div>
+
+  <h2>Exclusive events</h2>
+  <div class="tw"><table>
+    <tr><th>Vendor</th><th>Pricing</th><th>Capacity</th><th>Security features needed here</th></tr>
+    <tr><td>Zoom Webinars (500)</td><td>~$79/mo/license (~$950/yr) on top of Workplace Pro (~$13.32/user/mo)</td><td>500 attendees</td><td>Authenticated join, waiting room, disable local recording, visual + audio watermark</td></tr>
+    <tr><td>Zoom Events 100 / 500</td><td>$990/yr / ~$3,500/yr</td><td>100 / 500 per event, unlimited events</td><td>Adds lobby, registration, and reporting; same watermark stack</td></tr>
+    <tr><td>Webex Webinars</td><td>Bundled with Webex Suite (~$25/user/mo) or quote</td><td>1,000–10,000</td><td>Comparable authentication; watermarking less mature than Zoom</td></tr>
+    <tr><td>Teams Town Hall</td><td>Included in Teams Premium ($10/user/mo add-on)</td><td>10,000</td><td>Good if org already on Microsoft; external-guest friction for advocates</td></tr>
+  </table></div>
+  <div class="callout info"><div class="callout-title">Recommendation</div><strong>Zoom Events 500 at ~$3.5K/yr</strong> plus 3 Workplace Pro hosts (~$480/yr) covers all town-hall formats with the full watermark and authentication stack. Budget ~$4K/yr total.</div>
+
+  <h2>Member portal and community</h2>
+  <div class="tw"><table>
+    <tr><th>Vendor</th><th>Pricing</th><th>Fit</th><th>Watch out for</th></tr>
+    <tr><td>Circle Professional</td><td>$89/mo annual ($1,068/yr)</td><td>Clean spaces for calendar, resources, discussion; unlimited members</td><td>API/workflows require Business tier; 2% transaction fee irrelevant (no paid membership)</td></tr>
+    <tr><td>Circle Business</td><td>$199/mo annual ($2,388/yr)</td><td>Adds workflows, API access, white-label</td><td>The tier you actually want for CRM sync</td></tr>
+    <tr><td>Mighty Networks Launch</td><td>$79/mo ($948/yr)</td><td>Strong native mobile app; courses + events built in</td><td>Heavier than needed; 'hosts vs members' model adds admin overhead</td></tr>
+    <tr><td>Discourse (hosted)</td><td>$20–$100/mo</td><td>Best threaded discussion; open-source escape hatch</td><td>No native events/courses; feels like a forum, not a member hub</td></tr>
+  </table></div>
+  <div class="callout info"><div class="callout-title">Recommendation</div><strong>Circle Business at $2.4K/yr</strong> — the API and workflow tier is what lets membership status sync from the CRM gate access automatically.</div>
+
+  <h2>Automation and integration</h2>
+  <div class="tw"><table>
+    <tr><th>Vendor</th><th>Pricing</th><th>Right for</th><th>Cost reality</th></tr>
+    <tr><td>Make Teams</td><td>$29/mo (10K operations) + ~$9/10K overage</td><td>Webhook intake, CRM ↔ portal sync, dedupe jobs</td><td>~$65/mo at 50K ops; cheapest per-operation by 6–10×</td></tr>
+    <tr><td>Zapier Team</td><td>$69/mo annual (2K shared tasks)</td><td>Non-technical staff building their own flows</td><td>Per-task billing punishes multi-step flows; 50K tasks ≈ $200–300/mo</td></tr>
+    <tr><td>n8n (self-hosted)</td><td>Free + $5–$20/mo VPS</td><td>Token custody, platform webhooks, anything touching credentials</td><td>Requires one engineer; best security posture for OAuth tokens</td></tr>
+    <tr><td>Workato</td><td>Quote; $10K–$25K/yr entry</td><td>Enterprise governance, audit logging, hundreds of flows</td><td>10–50× the cost of Make for this workload; only at national scale</td></tr>
+  </table></div>
+  <div class="callout info"><div class="callout-title">Recommendation</div><strong>Make Teams for business logic (~$800/yr)</strong> plus <strong>self-hosted n8n (~$250/yr)</strong> for anything holding platform tokens. Combined under $1.1K/yr.</div>
+
+  <h2>Analytics — warehouse and BI</h2>
+  <div class="tw"><table>
+    <tr><th>Layer</th><th>Vendor</th><th>Pricing</th><th>Notes</th></tr>
+    <tr><td>Warehouse</td><td>BigQuery on-demand</td><td>$0–$200/mo at this scale (1TB/mo free queries; $6.25/TB after)</td><td>Serverless; no DBA needed; pair with a $500/mo Fivetran-lite ingestion budget only if native connectors fall short</td></tr>
+    <tr><td>Warehouse (alt)</td><td>Snowflake</td><td>$300–$800/mo minimum realistic</td><td>Only if a partner org is already Snowflake-native</td></tr>
+    <tr><td>BI</td><td>Metabase Cloud</td><td>$89/mo (10 users)</td><td>Fastest path to member-funnel and event-attendance dashboards</td></tr>
+    <tr><td>BI (alt)</td><td>Looker Studio Pro</td><td>$9/user/mo</td><td>Nearly free if on Google Workspace; weaker governance</td></tr>
+    <tr><td>BI (enterprise)</td><td>Looker</td><td>$5K/mo bundle entry</td><td>Not before national scale</td></tr>
+  </table></div>
+  <div class="callout info"><div class="callout-title">Recommendation</div><strong>BigQuery + Metabase, ~$3.5K/yr all-in.</strong> Defer the warehouse entirely during the first 60 days if Sprout + CRM reports answer the pilot scorecard questions.</div>
+
+  <h2>Identity and access</h2>
+  <p class="small">Auth0 Essentials starts ~$35/mo for 500 monthly active users; Okta ~$2–$6/user/mo with 25-user minimums (~$1.5K–$3.6K/yr for staff); Microsoft Entra ID is bundled if the organization already pays for M365. Pilot can defer SSO and use each tool's native login — add Auth0 (~$420/yr) when the custom portal launches.</p>
+
+  <h2>Total stack: three budget scenarios (annual)</h2>
+  <div class="tw"><table>
+    <tr><th>Capability</th><th class="num">Pilot (90 days)</th><th class="num">Growth (state-level)</th><th class="num">National program</th></tr>
+    <tr><td>Member CRM</td><td class="num">Action Network — $4K</td><td class="num">EveryAction — $12K</td><td class="num">NGP VAN — $20K</td></tr>
+    <tr><td>Advocate CRM</td><td class="num">GRIN Lite — $4.8K</td><td class="num">GRIN Growth — $13.8K</td><td class="num">CreatorIQ — $60K</td></tr>
+    <tr><td>Listening / engagement</td><td class="num">Sprout Professional ×3 — $10.8K</td><td class="num">Sprout Advanced ×5 — $24K</td><td class="num">Brandwatch + Sprout — $75K</td></tr>
+    <tr><td>Events</td><td class="num">Zoom Webinars — $1.4K</td><td class="num">Zoom Events 500 — $4K</td><td class="num">Zoom Events 3K — $15K</td></tr>
+    <tr><td>Member portal</td><td class="num">Circle Professional — $1.1K</td><td class="num">Circle Business — $2.4K</td><td class="num">Custom portal — $40K</td></tr>
+    <tr><td>Automation</td><td class="num">Make + n8n — $1K</td><td class="num">Make + n8n — $1.5K</td><td class="num">Workato — $15K</td></tr>
+    <tr><td>Analytics</td><td class="num">Native reports — $0</td><td class="num">BigQuery + Metabase — $3.5K</td><td class="num">BigQuery + Metabase — $8K</td></tr>
+    <tr><td>Identity / SSO</td><td class="num">Deferred — $0</td><td class="num">Auth0 — $0.5K</td><td class="num">Okta — $4K</td></tr>
+    <tr><td>Implementation (one-time)</td><td class="num">$5K</td><td class="num">$15K</td><td class="num">$75K</td></tr>
+    <tr><td><strong>Total year one</strong></td><td class="num"><strong>≈ $27K</strong></td><td class="num"><strong>≈ $76K</strong></td><td class="num"><strong>≈ $312K</strong></td></tr>
+    <tr><td>Steady state (yr 2+)</td><td class="num">≈ $22K</td><td class="num">≈ $61K</td><td class="num">≈ $237K</td></tr>
+  </table></div>
+  <div class="callout warning"><div class="callout-title">Excluded from these figures</div>Boosting/ad spend, staff salaries, and legal review. Boost budgets are set per race and per platform — model them live in the <a class="jump" href="#cost">Cost Model</a>. Quote-only vendors (Meltwater, Brandwatch, CreatorIQ, Workato) typically negotiate 10–20% down under competitive pressure or multi-year terms.</div>
+
+  <h2>Canonical member record</h2>
+  <div class="grid g4">
+    <div><p style="font-weight:650;">Identity</p><p class="small">Name, verified email, preferred contact, relationship owner</p></div>
+    <div><p style="font-weight:650;">Declared fit</p><p class="small">Geographies served, topics, languages, formats, availability</p></div>
+    <div><p style="font-weight:650;">Permissions</p><p class="small">Platform tokens, cross-post consent, boost consent, program acknowledgments</p></div>
+    <div><p style="font-weight:650;">Activity</p><p class="small">Invites, attendance, accepted support, URLs, incidents, feedback</p></div>
+  </div>
+  <div class="callout warning"><div class="callout-title">Vendor examples are a shortlist, not an endorsement</div>Run a procurement check for API coverage, political-use terms, security, data export, deletion support, election-law needs, accessibility, and total cost before selection.</div>
+</section>
+
+<!-- ============ COST MODEL ============ -->
+<section class="page" id="cost">
+  <h1>Cost model: what a local, state, or national program costs</h1>
+  <p class="lead">Move the sliders to show donors the difference. Staffing scales with advocate count (1 relationship owner per 25 advocates); the platform layer is a fixed national investment that every level depends on; ad spend is what makes advocates visible beyond their existing audiences.</p>
+
+  <div class="presets">
+    <button data-a="25" data-ad="60000">Local pilot</button>
+    <button data-a="150" data-ad="480000">Statewide</button>
+    <button data-a="1200" data-ad="6000000">National</button>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Inputs <span class="tag">Live model</span></div>
+    <div class="slider-label"><span style="font-weight:650;">Active advocates</span><span class="val" id="adv-val">60</span></div>
+    <input type="range" id="adv" min="10" max="1500" step="5" value="60">
+    <p class="tiny">10 = a single-town pilot · 150 = a statewide network · 1,500 = national scale</p>
+    <div class="slider-label"><span style="font-weight:650;">Annual ad / boosting spend</span><span class="val" id="ad-val">$20K</span></div>
+    <input type="range" id="ad" min="0" max="8000000" step="20000" value="20000">
+    <p class="tiny">Boosting member posts plus awareness ads. $60K/yr sustains a local program; $480K a state; $6M a national cycle.</p>
+  </div>
+
+  <div class="grid g4" style="margin-top:18px;">
+    <div class="stat"><div class="v" id="staff-v">—</div><div class="l" id="staff-l">Staff</div></div>
+    <div class="stat"><div class="v" id="prog-v">—</div><div class="l">Program — $150/advocate/mo</div></div>
+    <div class="stat"><div class="v" id="plat-v">$51K</div><div class="l">Shared platform (national-borne)</div></div>
+    <div class="stat"><div class="v accent" id="tot-v">—</div><div class="l">Total annual</div></div>
+  </div>
+
+  <h2>Line items at current settings</h2>
+  <div class="tw"><table>
+    <tr><th>Line</th><th>Basis</th><th class="num">Annual cost</th></tr>
+    <tr><td>Relationship owners</td><td id="li-owners">—</td><td class="num" id="li-owners-v">—</td></tr>
+    <tr><td>Program lead</td><td id="li-leads">—</td><td class="num" id="li-leads-v">—</td></tr>
+    <tr><td>Member ops</td><td id="li-ops">—</td><td class="num" id="li-ops-v">—</td></tr>
+    <tr><td>Per-advocate program</td><td id="li-prog">—</td><td class="num" id="li-prog-v">—</td></tr>
+    <tr><td>Shared platform</td><td>EveryAction + GRIN + Sprout Advanced + Zoom Events + Circle + Make/n8n + BigQuery/Metabase + Auth0</td><td class="num">$51K</td></tr>
+    <tr><td>Ad / boosting spend</td><td>Slider above — the visibility engine</td><td class="num" id="li-ad-v">—</td></tr>
+    <tr><td><strong>Total</strong></td><td></td><td class="num"><strong id="li-tot-v">—</strong></td></tr>
+  </table></div>
+
+  <div class="callout info"><div class="callout-title">The platform is national's contribution</div>The $51K platform layer (CRM, advocate CRM, listening, events, portal, automation, analytics, SSO) is required even for a 25-advocate local pilot and should be borne by the national organization — local campaigns should never be asked to fund it. Details per vendor in <a class="jump" href="#software">Software</a>.</div>
+
+  <div class="callout warning"><div class="callout-title">Not included</div>Candidate travel and event production, legal retainers, and content production staff. Ad spend figures assume boosting member content and program-awareness ads, not candidate persuasion media — that budget lives with the campaign.</div>
+</section>
+
+<!-- ============ COMPETITIVE LANDSCAPE ============ -->
+<section class="page" id="competitive">
+  <h1>How this compares to the Republican outreach machine</h1>
+  <p class="lead">The right built its advantage over 15 years through four interlocking machines: a campus field army (Turning Point USA), a nonprofit content studio (PragerU), a for-profit media empire (Daily Wire and successors), and a donor venture network (Rockbridge). Figures below are from public reporting — IRS 990 filings, Meta Ad Library, NYT/Washington Post coverage, and Social Blade — checked August 2026.</p>
+
+  <h2>The four machines, documented</h2>
+  <div class="tw"><table>
+    <tr><th>Machine</th><th>Scale (documented)</th><th>Model</th><th>2026 status</th></tr>
+    <tr><td>Turning Point USA / Club America</td><td>~3,400 school chapters; 350K new student signups post-2025; state partnerships in 8+ GOP states</td><td>Campus field army: chapters as activism hubs with official toolkits, field reps, and governor-level backing</td><td>Surging since Kirk's death, but coalition-managing role is contested</td></tr>
+    <tr><td>PragerU</td><td>$245M raised over 5 years; ~$28M spent on Meta ads 2018–24; 1B+ video views</td><td>Nonprofit 'influencer-intellectual' studio: credentialed presenters + mass paid distribution</td><td>Still the content engine; expanding into state curricula</td></tr>
+    <tr><td>Daily Wire / podcast row</td><td>$100M/yr revenue at 2022 peak; Shapiro YouTube down ~70% since Dec 2024 (27M→4M weekly views)</td><td>For-profit subscription media + personality podcasts</td><td>Splintering: Owens, Carlson, and independents now outrank legacy shows; layoffs at Daily Wire</td></tr>
+    <tr><td>Rockbridge Network</td><td>$75M budget in 2024; $100K–$1M donor membership</td><td>Political venture capital: funds media, data, and turnout operations as a portfolio</td><td>Active; financing the 'parallel economy' (Rumble, Carlson's company, Substack)</td></tr>
+  </table></div>
+
+  <h2>Five more machines worth tracking</h2>
+  <p class="small">The four flagship machines above dominate the narrative, but these organizations do the quieter work — doors, data, training, and school boards — that wins down-ballot races.</p>
+  <div class="tw"><table>
+    <tr><th>Machine</th><th>Documented scale</th><th>What it does</th><th>Lesson for us</th></tr>
+    <tr><td>Americans for Prosperity (Koch network)</td><td>36 state chapters, 100+ offices, 616 staff, claims 4M activists; ~$550M spent in 2024 cycle; 525K doors knocked in 2025</td><td>Permanent year-round field operation: paid canvassers, issue advocacy, endorsements</td><td>AFP proves year-round presence beats surge staffing — our network stays active on issues between cycles for the same reason</td></tr>
+    <tr><td>i360 (Koch data firm)</td><td>Wholly owned Koch subsidiary; voter and consumer data on hundreds of millions of Americans</td><td>Data and targeting backbone: canvass apps show issue-based scripts per household</td><td>The machine runs on data integration — our <a class="jump" href="#listening">Listening</a> + CRM stack is the modest, consent-based equivalent</td></tr>
+    <tr><td>Leadership Institute</td><td>Founded 1979; claims 250K+ activists trained; top sponsor of Moms for Liberty summits; Campus Reform pipeline</td><td>Training factory: campaign schools, field reps, media training, campus journalism</td><td>Training is the cheapest durable investment — our onboarding and advocate academies mirror it at 1% of the budget</td></tr>
+    <tr><td>Moms for Liberty</td><td>300+ chapters in 48 states, ~130K members, $2M+ revenue</td><td>Local elected power: school board takeovers, chapter-led candidate recruitment</td><td>Proof that hyperlocal chapters convert online anger into seats — the model our local tier adapts for centrist Dems</td></tr>
+    <tr><td>Faith &amp; Freedom Coalition</td><td>Claims ~2M members; voter guides distributed through churches; tens of millions in cycle spending</td><td>Values-based voter mobilization through trusted community institutions</td><td>They borrow the trust of existing institutions; our version is recruiting through community voices members already follow</td></tr>
+  </table></div>
+
+  <h2>Capability-by-capability comparison</h2>
+  <p class="small">Sorted for the room: <strong style="color:var(--green)">green = our wins</strong>, <strong style="color:var(--amber)">amber = trade-offs</strong>, <strong style="color:var(--red)">red = their wins</strong>.</p>
+  <div class="tw"><table>
+    <tr><th>Capability</th><th>Their machine</th><th>This program</th><th>Verdict</th></tr>
+    <tr class="tone-success"><td>Content engine</td><td>PragerU-style studios with $28M+ in paid distribution behind produced video</td><td>Members make their own content; we amplify with boosting via the tools in the <a class="jump" href="#software">Software</a> stack</td><td>We win on authenticity and cost. Their content is polished but institution-branded; ours is native to each advocate's audience.</td></tr>
+    <tr class="tone-success"><td>Cost per reach</td><td>PragerU pays ~$0.03/view buying ads at scale; Daily Wire needed $100M/yr to hold attention</td><td>Pilot software stack ≈ $27K/yr (<a class="jump" href="#software">Software</a>); boost budgets set per race</td><td>We win on efficiency. Their model requires 9 figures of donor money to sustain; ours is 3 orders of magnitude cheaper per authentic impression.</td></tr>
+    <tr class="tone-success"><td>Coalition breadth</td><td>Post-Kirk splintering: Owens vs. Shapiro vs. Carlson feuds; establishment shows hemorrhaging viewers</td><td>Centrist positioning targets the 80% majority with no factional baggage</td><td>We win on timing. Their machine is fighting itself; the pragmatic lane is open.</td></tr>
+    <tr class="tone-warning"><td>Discipline and message control</td><td>Toolkits, talking points, and chapter handbooks keep 3,400 nodes on-message</td><td>Members write in their own words within an alignment condition</td><td>Trade-off. Their control delivers consistency; our looseness delivers credibility with centrists who distrust scripted content.</td></tr>
+    <tr class="tone-warning"><td>Institutional backing</td><td>Governors, state parties, and 501(c)(3) donor networks writing $250M/yr in checks</td><td>Contracted program with per-race budgets</td><td>They win on resources. Our counter is speed: a pilot launches in 90 days, not 15 years.</td></tr>
+    <tr class="tone-danger"><td>Physical presence</td><td>3,400+ school chapters with state backing — a chapter is a permanent recruiting post</td><td>No chapters; local presence is event-based and member-led</td><td>They win decisively. Chapters are a 15-year head start we cannot buy.</td></tr>
+    <tr class="tone-danger"><td>Talent pipeline</td><td>Chapters produce field reps, spokespeople, and candidates; the ladder starts at age 14</td><td>Network recruits adults only, via DM playbooks and referrals</td><td>They win. Our entry point is 10+ years later in a person's political life.</td></tr>
+    <tr class="tone-danger"><td>Data and voter file</td><td>RNC + state-party voter files, i360/Rockbridge-funded data ops, years of modeled scores</td><td>Self-reported member data only — no purchased voter scores; CRM per the <a class="jump" href="#software">Software</a> stack</td><td>They win on raw voter data. We deliberately trade that for consent-based data that survives privacy scrutiny.</td></tr>
+  </table></div>
+
+  <h2>Where we are better</h2>
+  <div class="grid g3">
+    <div class="card">
+      <div class="card-title">Authenticity at scale</div>
+      <p class="small">Their top-down content is institution-branded and increasingly factional. Member-generated content in our model carries each advocate's existing trust — and the amplification tooling (see <a class="jump" href="#software">Software</a>) costs roughly $27K/yr at pilot scale versus PragerU's tens of millions in annual ad spend.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">Timing the split</div>
+      <p class="small">NYT and Washington Post document the post-2025 splintering: Daily Wire traffic halved, Shapiro down ~70% on YouTube, Owens/Carlson ascendant. The machine is spending energy on internal feuds while the centrist lane — our stated 80% premise — goes uncontested.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">Speed to field</div>
+      <p class="small">TPUSA's chapter network took 14 years. This program fields a measurable pilot in 90 days because it rents infrastructure (GRIN, Sprout, Zoom, Circle — itemized in <a class="jump" href="#software">Software</a>) instead of building institutions.</p>
+    </div>
+  </div>
+
+  <h2>Where we are lacking — and the honest counter</h2>
+  <div class="tw"><table>
+    <tr><th>Gap</th><th>Why it matters</th><th>Our counter (not a fix)</th></tr>
+    <tr><td>No youth pipeline</td><td>Their members arrive at 14 and stay for life; ours arrive as adults with fixed habits</td><td>Recruit community voices with existing local trust rather than trying to form identities; accept the older entry point</td></tr>
+    <tr><td>No chapter permanence</td><td>A chapter outlives any campaign; ours must be designed to persist</td><td>Run issue programming between cycles — there is always a live policy fight; the network peaks in election season but never dissolves</td></tr>
+    <tr><td>1/100th the budget</td><td>$250M/yr in nonprofit media funding on their side; per-race budgets on ours</td><td>Precision over volume: jurisdiction-matched activation instead of national blanket spending</td></tr>
+    <tr><td>No voter-file modeling</td><td>They score 200M+ voters; we know only what members tell us</td><td>Consent-based profiles are smaller but durable under privacy law and platform policy shifts</td></tr>
+    <tr><td>Personality risk</td><td>Their machine survived losing its biggest star; ours depends on candidate availability</td><td>Build the member peer network as the durable asset, so no single candidate departure collapses it</td></tr>
+  </table></div>
+
+  <div class="callout info"><div class="callout-title">Bottom line for the presentation</div>We will not out-build Turning Point's chapters or out-spend PragerU's ad budgets — and the plan does not try. The opening is that their machine is expensive, factional, and optimized for a base that is fighting itself, while this program is cheap, fast, and aimed at the pragmatic majority they ignore.</div>
+
+  <p class="tiny footer-note">Sources: IRS 990 filings via Chaotic Era (Dec 2025); Meta Ad Library via Leeds (Sage, 2026); NYT media analysis (Aug 2026); Washington Post via DNYUZ (May 2026); TPUSA chapter counts via Inquirer, NYT, CBN (Mar–Apr 2026); Rockbridge via FWIW; AFP scale via Influence Watch, AFP year-in-review, and Seattle Times (2026); Moms for Liberty via Fox17/AP and M4L Summit '25 program. All external claims are from public reporting — re-verify before external use of this document.</p>
+</section>
+
+<!-- ============ ROLLOUT ============ -->
+<section class="page" id="rollout">
+  <h1>90-day launch plan</h1>
+  <p class="lead">Tooling referenced below — CRM, listening, events, portal — is priced per tier in <a class="jump" href="#software">Software</a>; pilot year-one stack ≈ $27K.</p>
+  <div class="grid g3">
+    <div class="card">
+      <div class="card-title">Design <span class="tag">Days 1–30</span></div>
+      <ul class="dash">
+        <li>Name executive sponsor and program owner.</li>
+        <li>Choose one state and two contrasting local pilots.</li>
+        <li>Define published membership and access criteria.</li>
+        <li>Approve consent, disclosure, boosting, and event rules.</li>
+        <li>Configure CRM schema and relationship-owner workflow.</li>
+        <li>Recruit 20–30 founding members through warm outreach.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">Pilot <span class="tag dim">Days 31–60</span></div>
+      <ul class="dash">
+        <li>Run orientation and first expert briefing.</li>
+        <li>Connect authorized social accounts and mention feeds.</li>
+        <li>Hold one local and one statewide event.</li>
+        <li>Cross-post with approval; test a small disclosed boost.</li>
+        <li>Review response time, access failures, and member feedback.</li>
+        <li>Conduct tabletop exercise for a leaked recording.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">Scale decision <span class="tag dim">Days 61–90</span></div>
+      <ul class="dash">
+        <li>Compare pilot regions and member lanes.</li>
+        <li>Document repeatable playbooks and service levels.</li>
+        <li>Fix data duplication, token, and consent gaps.</li>
+        <li>Train state and local relationship owners.</li>
+        <li>Set quarterly budget and capacity limits.</li>
+        <li>Approve expansion only if trust and safety gates pass.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>Pilot scorecard</h2>
+  <div class="tw"><table>
+    <tr><th>Objective</th><th>Indicator</th><th>Initial decision threshold</th></tr>
+    <tr><td>Recruit a credible network</td><td>Qualified people who complete onboarding</td><td>At least 20, with local and community-voice representation</td></tr>
+    <tr><td>Deliver real member value</td><td>Members rating access/resources useful</td><td>At least 75% in post-event pulse</td></tr>
+    <tr><td>Build durable participation</td><td>Onboarded members active in 30 days</td><td>At least 50%</td></tr>
+    <tr><td>Respond reliably</td><td>Median time to answer member questions</td><td>Under two business days</td></tr>
+    <tr><td>Amplify transparently</td><td>Supported posts with member authorization on file</td><td>100%</td></tr>
+    <tr><td>Protect trust</td><td>High-severity privacy, access, or undisclosed-support incidents</td><td>Zero</td></tr>
+    <tr><td>Avoid surveillance incentives</td><td>Profiles containing inferred sensitive political traits</td><td>Zero</td></tr>
+  </table></div>
+
+  <div class="callout success"><div class="callout-title">Go / no-go gate</div>Expand when members report value, workflows are reliable, and local teams can sustain relationship quality. High reach alone is not a reason to scale.</div>
+</section>
+
+<!-- ============ GOVERNANCE ============ -->
+<section class="page" id="governance">
+  <h1>Governance, law, and trust</h1>
+  <div class="grid g2">
+    <div>
+      <h2>Non-negotiable controls</h2>
+      <ul class="dash">
+        <li>Written member agreement stating the alignment condition, the member's own-voice rule, and disclosure duties.</li>
+        <li>Clear disclosure standard for access, material support, cross-posting, and paid boosting.</li>
+        <li>Campaign-finance and coordinated-communications review before launch and by jurisdiction.</li>
+        <li>No purchase or enrichment of sensitive political profiles for recruitment.</li>
+        <li>Consent ledger with purpose, timestamp, source, revocation, and deletion workflow.</li>
+        <li>Role-based access; quarterly access review; immediate offboarding.</li>
+        <li>Incident plan for harassment, doxxing, account compromise, leaked events, and false attribution.</li>
+        <li>Comparable-access policy where neutrality or primary-election rules require it.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">Decision rights</div>
+      <div class="tw"><table>
+        <tr><th>Decision</th><th>Accountable</th></tr>
+        <tr><td>Membership criteria</td><td>Program + legal/compliance</td></tr>
+        <tr><td>Individual invitation</td><td>Relationship owner</td></tr>
+        <tr><td>Candidate event approval</td><td>Campaign/program + compliance</td></tr>
+        <tr><td>Boost authorization</td><td>Member + digital lead</td></tr>
+        <tr><td>Public response</td><td>Communications lead</td></tr>
+        <tr><td>Safety escalation</td><td>Trust &amp; safety lead</td></tr>
+        <tr><td>Data deletion</td><td>Privacy owner</td></tr>
+      </table></div>
+    </div>
+  </div>
+
+  <h2>Red lines</h2>
+  <div class="grid g2">
+    <div class="callout danger"><div class="callout-title">Do not</div>Hide funded boosts, present program activity as independent grassroots opinion, share member lists across campaigns without consent, or infer sensitive political traits for individualized persuasion.</div>
+    <div class="callout success"><div class="callout-title">Do</div>Publish the program's purpose and its alignment condition, label every boosted or cross-posted item, distinguish organic and paid reach, document decisions, and give people meaningful control over their data.</div>
+  </div>
+
+  <h2>Verified capability notes</h2>
+  <p class="small">Meta's current Instagram documentation supports professional-account insights, owned-media comments, tags, and specified mention webhooks, with important private content and story limitations.</p>
+  <p class="small">YouTube's Data API supports comment threads, replies, and authorized moderation. TikTok's general Display API centers on authorized profile/video display; broader comment datasets are restricted to approved products such as research access.</p>
+  <p class="small">Zoom documents authenticated attendance, visual watermarking, and audio watermarking. These deter and help attribute leaks; they do not block external recording.</p>
+  <p class="tiny">Sources checked August 2026: Meta Instagram Platform documentation; TikTok for Developers Display and Research API documentation; YouTube Data API comments documentation; Zoom security and watermarking documentation. Platform capabilities and political-use terms change—revalidate during procurement.</p>
+</section>
+
+<!-- ============ CITIZEN JOURNEY ============ -->
+<section class="page" id="citizen">
+<div class="part" id="c-sally">
+  <div class="stamp"><span class="dot"></span>Hypothetical pattern · fictional candidates and people</div>
+  <div class="folio"><span class="no">01</span><span class="nm">What she sees now</span><span class="of">1 of 4</span></div>
+
+  <h1>Meet Sally. She's flooded with attack and defense ads.</h1>
+  <p class="lead">Hollister attacks. Whitaker defends. Neither sounds like anyone she knows.</p>
+
+  <div class="sally">
+    <aside class="profile" aria-label="Sally">
+      <div class="pf-top">
+        <div class="avatar" aria-hidden="true"></div>
+        <div>
+          <div class="pf-name">Meet Sally</div>
+          <div class="pf-sub">Swing voter, mom of three<br>Traverse City, MI</div>
+        </div>
+      </div>
+      <div class="pf-row"><span class="k">Family</span><p>Mother of three. Works part-time now that her youngest is in middle school. Her oldest has an after-school job.</p></div>
+      <div class="pf-row"><span class="k">Faith / Home</span><p>In her second marriage. She and her husband go to church every week.</p></div>
+      <div class="pf-row"><span class="k">How she voted</span><p>Biden in 2020, because she was fed up with the lies. Trump in 2024, because she didn't trust Kamala Harris.</p></div>
+    </aside>
+
+    <div class="ads">
+      <div class="side gop">
+        <header><span>Candidate Greg Hollister (R)</span><div class="tagline">ATTACK · <span>same ad, several times a week</span></div></header>
+        <div class="shots">
+          <figure class="shot"><a href="img/ad-hollister-too-extreme.jpg" target="_blank" rel="noopener"><img src="img/ad-hollister-too-extreme.jpg" alt="Sponsored ad from Greg Hollister for Michigan: Too extreme. Too socialist." loading="lazy" width="1000" height="1250"></a><figcaption class="cap">Video: "Too extreme"</figcaption></figure>
+          <figure class="shot"><a href="img/ad-hollister-socialist-experiment.jpg" target="_blank" rel="noopener"><img src="img/ad-hollister-socialist-experiment.jpg" alt="Sponsored ad from Greg Hollister for Michigan: Don't let Michigan become the next socialist experiment." loading="lazy" width="1000" height="1250"></a><figcaption class="cap">Feed: "Socialist experiment"</figcaption></figure>
+        </div>
+      </div>
+      <div class="side dem">
+        <header><span>Candidate Dana Whitaker (D)</span><div class="tagline">DEFENSE · <span>a rebuttal for every attack</span></div></header>
+        <div class="shots">
+          <figure class="shot"><a href="img/ad-whitaker-it-isnt-true.jpg" target="_blank" rel="noopener"><img src="img/ad-whitaker-it-isnt-true.jpg" alt="Sponsored ad from Dana Whitaker for Michigan: Greg Hollister calls Dana Whitaker a socialist. It isn't true." loading="lazy" width="1000" height="1250"></a><figcaption class="cap">Response: "It isn't true"</figcaption></figure>
+          <figure class="shot"><a href="img/ad-whitaker-fact-check-false.jpg" target="_blank" rel="noopener"><img src="img/ad-whitaker-fact-check-false.jpg" alt="Sponsored ad from Dana Whitaker for Michigan: Fact check, Hollister's ad claim rated false." loading="lazy" width="1000" height="1250"></a><figcaption class="cap">Fact-check: "FALSE"</figcaption></figure>
+          <figure class="shot"><a href="img/ad-whitaker-scare-tactics.jpg" target="_blank" rel="noopener"><img src="img/ad-whitaker-scare-tactics.jpg" alt="Sponsored ad from Dana Whitaker for Michigan: Scare tactics. Again." loading="lazy" width="1000" height="1250"></a><figcaption class="cap">Video: "Scare tactics"</figcaption></figure>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout t"><p><b>All noise, no neighbors.</b> Every ad is about stoking fear or mistrust.</p></div>
+</div>
+
+<div class="part" id="c-jess">
+  <div class="folio"><span class="no">02</span><span class="nm">What she sees from The 80's network</span><span class="of">2 of 4</span></div>
+
+  <h2>Our approach: a local mom she already follows</h2>
+  <p class="lead">Jess isn't a campaign. She's a Traverse City mom with the same problem Sally has.</p>
+
+  <div class="jess">
+    <div class="phone"><img src="img/jess-reel.jpg" alt="Reel from @UpNorthOnABudget: Pickup line car rant. Jed's first paycheck vs. his gas tank." loading="lazy" width="760" height="1351"></div>
+
+    <div class="notecard">
+      <div class="cap-top">Talking points from The80, in her own words</div>
+      <img src="img/jess-talking-points.jpg" alt="Notes: Talking points Jess received. Michigan's minimum wage is $13.73 now, $15 in 2027. State law bars towns like Traverse City from setting their own minimum wage, and Hollister wants to keep it that way. Work should pay. Keep it about your family, not about parties." loading="lazy" width="1000" height="1250">
+    </div>
+
+    <div class="why">
+      <h4>Why it works</h4>
+      <ol>
+        <li><span class="n">1</span><div><b>Someone Sally already follows</b><span class="d">@UpNorthOnABudget is a local mom's account, not a campaign.</span></div></li>
+        <li><span class="n">2</span><div><b>She looks like Sally, with the same problem</b><span class="d">Her own teen's paycheck barely covers gas.</span></div></li>
+        <li><span class="n">3</span><div><b>Her followers are other local parents</b><span class="d">Pickup-line moms, neighbors, people from church.</span></div></li>
+        <li><span class="n">4</span><div><b>It sounds like her normal content</b><span class="d">The 80 gives her talking points but doesn't pay her, so it's in her own words.</span></div></li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="callout a"><p><b>Not a campaign.</b> An account Sally already trusts, with the same problem she has.</p></div>
+</div>
+
+<div class="part" id="c-bridge">
+  <div class="folio"><span class="no">03</span><span class="nm">How it spreads</span><span class="of">3 of 4</span></div>
+
+  <h2>The bridge: from one post to real conversations</h2>
+  <p class="lead">Local followers answer Jess and each other, then carry it into the places Sally already goes.</p>
+
+  <div class="bridge">
+    <div class="stage">
+      <h3><span class="n">1</span>Neighbors reply to Jess, and to each other</h3>
+      <div class="frame"><img src="img/jess-reel-comments.jpg" alt="Comments on @UpNorthOnABudget's Reel: neighbors including linda.on.eighth, meg.pickupline, kara.westside.mom and sam.on.front.st talk about teen paychecks, gas, rent and Traverse City's minimum wage." loading="lazy" width="1400" height="1374"></div>
+    </div>
+
+    <div class="stage">
+      <h3><span class="n">2</span>A local shop posts too</h3>
+      <div class="shop">
+        <div class="frame"><img src="img/bayside-coffee-post.jpg" alt="Post from Bayside Coffee (@BaysideCoffeeTC), Front Street, Traverse City: Rent and gas cost more up here than downstate." loading="lazy" width="1000" height="1250"></div>
+        <div class="who"><b>@BaysideCoffeeTC</b>A Front Street owner on his high-school staff and the cost of living up north.</div>
+        <div class="frame"><img src="img/bayside-comments.jpg" alt="Comments on the Bayside post: meg.pickupline tells kara.westside.mom it's the same thing Jess posted about; kara replies, let's talk at pickup tomorrow; linda.on.eighth says see you after church for coffee." loading="lazy" width="1320" height="724"></div>
+      </div>
+    </div>
+
+    <div class="stage">
+      <h3><span class="n">3</span>It carries into real life</h3>
+      <div class="chat" role="group" aria-label="Conversations Sally has offline">
+        <span class="place">Church coffee hour</span>
+        <div class="bub"><b>Linda:</b> Did you see Jess's post? My grandson's paycheck barely covers his gas.</div>
+        <div class="bub me"><b>Sally:</b> Mine too. Hollister calls it a 'patchwork.' I call it us deciding for ourselves.</div>
+        <div class="bub"><b>Linda:</b> I don't see why Lansing should decide what a kid in Traverse City earns.</div>
+        <span class="place">School pickup line</span>
+        <div class="bub"><b>Kara:</b> Did you see Bayside's post? Same thing Jess said. I don't know what to think.</div>
+        <div class="bub me"><b>Sally:</b> I'm going to talk to Pastor Mike about this on Sunday.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout a"><p><b>One post becomes a neighborhood conversation.</b> Ads repeat and rebut. Neighbors answer each other.</p></div>
+</div>
+
+<div class="part" id="c-why">
+  <div class="folio"><span class="no">04</span><span class="nm">Why it works</span><span class="of">4 of 4</span></div>
+
+  <h2>Why real people beat more ads</h2>
+
+  <div class="tw">
+    <div class="tw"><table>
+      <thead>
+        <tr><th></th><th class="gop">Hollister ads</th><th class="dem">Whitaker ads</th><th class="ours">Our pitch</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="row">Who's talking</td><td>A paid campaign</td><td>A paid campaign</td><td class="ours">People Sally knows and follows</td></tr>
+        <tr><td class="row">What it's about</td><td>Whether Whitaker is a socialist</td><td>Whether Hollister is lying</td><td class="ours">Her kid's paycheck and gas money</td></tr>
+        <tr><td class="row">Tone</td><td>Fear</td><td>Defensive</td><td class="ours">Neighborly, no lecture</td></tr>
+        <tr><td class="row">What it asks of Sally</td><td>Pick a team out of fear</td><td>Pick a team out of distrust</td><td class="ours">Ask a question and let Traverse City decide</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div class="cites">
+    <div class="card"><p>About two-thirds of Americans sit outside the ideological wings and are tired of the fighting</p><span class="src">(More in Common)</span></div>
+    <div class="card"><p>Pew's Pragmatic and Polite Right group places a high value on civility</p><span class="src">(Pew, 2026)</span></div>
+    <div class="card"><p>61% of Americans view their local government favorably, vs. 50% for their state, with little gap by party</p><span class="src">(Pew, 2024)</span></div>
+  </div>
+
+  <div class="closing"><p>The ads argued about a label. Jess and Linda talked about her kid's paycheck.</p></div>
+
+  <p class="tiny sources">Sources: More in Common (moreincommonus.com) · Pew Research Center: 2026 Political Typology; ratings of state and local government, Apr. 2024 (pewresearch.org) · Michigan 2015 PA 105, MCL 123.1385. Hypothetical pattern; fictional candidates.</p>
+</div>
+
+<div class="deeper">
+  <div class="dek">Back to the Prospectus</div>
+  <a class="backlink" href="../#stakes">&larr; Return to the Executive Summary</a>
+</div>
+</section>
+
+</main>
+
+<script>
+(function () {
+  var SECTIONS = [
+    ["brief", "Brief"],
+    ["journey", "Journey"],
+    ["outreach", "Outreach"],
+    ["dm", "DM Playbooks"],
+    ["talking-points", "Talking Points"],
+    ["listening", "Listening"],
+    ["meetings", "Meetings"],
+    ["geography", "Geography"],
+    ["software", "Software"],
+    ["cost", "Cost Model"],
+    ["competitive", "Competitive Landscape"],
+    ["rollout", "Rollout"],
+    ["governance", "Governance"],
+    ["citizen", "The Citizen's View"]
+  ];
+
+  var nav = document.getElementById("nav");
+  SECTIONS.forEach(function (s) {
+    var b = document.createElement("button");
+    b.textContent = s[1];
+    b.setAttribute("data-target", s[0]);
+    b.addEventListener("click", function () { show(s[0]); });
+    nav.appendChild(b);
+  });
+
+  // "Next" button at the foot of every tab (last tab returns to the Prospectus)
+  SECTIONS.forEach(function (sec, i) {
+    var el = document.getElementById(sec[0]);
+    if (!el || i === SECTIONS.length - 1) return;
+    var row = document.createElement("div");
+    row.className = "nextrow";
+    var b = document.createElement("button");
+    b.type = "button";
+    b.textContent = "Next: " + SECTIONS[i + 1][1] + " \u2192";
+    b.addEventListener("click", function () { show(SECTIONS[i + 1][0]); });
+    row.appendChild(b);
+    el.appendChild(row);
+  });
+
+  function show(id) {
+    document.querySelectorAll("section.page").forEach(function (el) {
+      el.classList.toggle("active", el.id === id);
+    });
+    document.querySelectorAll("#nav button").forEach(function (b) {
+      b.classList.toggle("active", b.getAttribute("data-target") === id);
+    });
+    if (history.replaceState) history.replaceState(null, "", "#" + id);
+    window.scrollTo(0, 0);
+  }
+
+  document.querySelectorAll("a.jump").forEach(function (a) {
+    a.addEventListener("click", function (e) {
+      var href = a.getAttribute("href");
+      if (href && href.charAt(0) === "#" && document.getElementById(href.slice(1))) {
+        e.preventDefault();
+        show(href.slice(1));
+      }
+    });
+  });
+
+  // ---- Cost model ----
+  var PLATFORM = 51400;
+  var advEl = document.getElementById("adv");
+  var adEl = document.getElementById("ad");
+
+  function fmt(n) {
+    if (n >= 1000000) return "$" + (n / 1000000).toFixed(2) + "M";
+    return "$" + Math.round(n / 1000) + "K";
+  }
+
+  function recalc() {
+    var advocates = Number(advEl.value);
+    var adSpend = Number(adEl.value);
+    var owners = Math.max(1, Math.ceil(advocates / 25));
+    var leads = Math.max(1, Math.ceil(owners / 6));
+    var ops = Math.max(1, Math.ceil(owners / 2));
+    var staff = owners * 78000 + leads * 110000 + ops * 62000;
+    var program = advocates * 150 * 12;
+    var total = staff + program + PLATFORM + adSpend;
+
+    document.getElementById("adv-val").textContent = advocates;
+    document.getElementById("ad-val").textContent = fmt(adSpend);
+    document.getElementById("staff-v").textContent = fmt(staff);
+    document.getElementById("staff-l").textContent = "Staff — " + owners + " owners, " + leads + " lead, " + ops + " ops";
+    document.getElementById("prog-v").textContent = fmt(program);
+    document.getElementById("tot-v").textContent = fmt(total);
+
+    document.getElementById("li-owners").textContent = owners + " × $78K loaded — each manages ~25 advocates";
+    document.getElementById("li-owners-v").textContent = fmt(owners * 78000);
+    document.getElementById("li-leads").textContent = leads + " × $110K — covers up to 6 owners";
+    document.getElementById("li-leads-v").textContent = fmt(leads * 110000);
+    document.getElementById("li-ops").textContent = ops + " × $62K — 1 per 2 owners";
+    document.getElementById("li-ops-v").textContent = fmt(ops * 62000);
+    document.getElementById("li-prog").textContent = advocates + " × $150/mo — events, materials, portal, tools";
+    document.getElementById("li-prog-v").textContent = fmt(program);
+    document.getElementById("li-ad-v").textContent = fmt(adSpend);
+    document.getElementById("li-tot-v").textContent = fmt(total);
+
+    document.querySelectorAll(".presets button").forEach(function (b) {
+      b.classList.toggle(
+        "active",
+        Number(b.getAttribute("data-a")) === advocates && Number(b.getAttribute("data-ad")) === adSpend
+      );
+    });
+  }
+
+  advEl.addEventListener("input", recalc);
+  adEl.addEventListener("input", recalc);
+  document.querySelectorAll(".presets button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      advEl.value = b.getAttribute("data-a");
+      adEl.value = b.getAttribute("data-ad");
+      recalc();
+    });
+  });
+  recalc();
+
+  // Deep link: open the section in the URL hash if present
+  var hash = (location.hash || "").replace("#", "");
+  var valid = SECTIONS.some(function (s) { return s[0] === hash; });
+  show(valid ? hash : "brief");
+})();
+</script>
+<script>
+/* THE 80 · theme toggle logic — one <script> just before </body> */
+(function(){
+  var KEY='the80-theme', root=document.documentElement, btn=document.getElementById('theme-toggle');
+  if(!btn) return;
+  var mq=window.matchMedia?window.matchMedia('(prefers-color-scheme: dark)'):null;
+  function current(){
+    var t=root.getAttribute('data-theme');
+    if(t==='dark'||t==='light') return t;
+    return (mq&&mq.matches)?'dark':'light';
+  }
+  function paint(){
+    var m=current(), next=(m==='dark')?'light':'dark';
+    btn.setAttribute('data-mode',m);
+    btn.setAttribute('aria-label','Switch to '+next+' mode');
+    btn.setAttribute('title','Switch to '+next+' mode');
+    document.dispatchEvent(new CustomEvent('the80-themechange',{detail:{mode:m}}));
+  }
+  btn.addEventListener('click',function(){
+    var n=(current()==='dark')?'light':'dark';
+    root.setAttribute('data-theme',n);
+    try{localStorage.setItem(KEY,n);}catch(e){}
+    paint();
+  });
+  if(mq&&mq.addEventListener) mq.addEventListener('change',paint);
+  paint();
+})();
+
+</script>
+</body>
+</html>

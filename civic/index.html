@@ -1,0 +1,1353 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- THE 80 · theme init (must sit in <head>, before any CSS, to avoid a flash) -->
+<script>(function(){try{var t=localStorage.getItem('the80-theme');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The 80 Civic &amp; Political</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+  <style>
+/* ===== THE 80 · SHARED DESIGN TOKENS — identical on every page ===== */
+:root{
+  color-scheme:light dark;
+  --ground:#ffffff; --surface:#f7f7f8; --surface-2:#f0f0f2;
+  --border:#e3e3e6; --border-2:#d3d3d8;
+  --ink:#16161a; --ink-2:#55555c; --ink-3:#86868e;
+  --accent:#1a5cff; --dem:#1a5cff; --gop:#c0392b;
+  --accent-soft:#eef3ff; --accent-line:#cfddff;
+  --terra:#a84b2f; --terra-soft:#faf0ec; --terra-line:#e8cdc2;
+  --good:#0e7a3d; --good-soft:#ecf7f0; --good-line:#bfe5cd;
+  --warn:#8a5a00; --warn-soft:#fdf4e3; --warn-line:#f0dcb0;
+  --bad:#b3261e; --bad-soft:#fdeceb; --bad-line:#f3c1be;
+  --gop-soft:#fbeeec; --gop-line:#efc9c3;
+  --zebra:#fbfbfc; --grid:#e6e6ea; --bar-n:#9a9aa4;
+  --r:10px; --maxw:1180px; --prose:66ch; --toggle-gutter:64px;
+  --font-ui:"Libre Franklin",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  --font-body:"Source Serif 4","Iowan Old Style",Georgia,serif;
+}
+:root[data-theme="light"]{color-scheme:light}
+:root[data-theme="dark"]{color-scheme:dark}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#141416; --surface:#1c1c1f; --surface-2:#232327;
+    --border:#2e2e33; --border-2:#3b3b42;
+    --ink:#f2f2f3; --ink-2:#a9a9b1; --ink-3:#7a7a83;
+    --accent:#6f9bff; --dem:#6f9bff; --gop:#e8705f;
+    --accent-soft:#16233f; --accent-line:#2c4478;
+    --terra:#d9805c; --terra-soft:#2c1c16; --terra-line:#5a3325;
+    --good:#4cbc7b; --good-soft:#12261a; --good-line:#245a38;
+    --warn:#d9a441; --warn-soft:#2a2113; --warn-line:#5a4520;
+    --bad:#ee7b72; --bad-soft:#2c1a17; --bad-line:#5a2f29;
+    --gop-soft:#2c1a17; --gop-line:#5a2f29;
+    --zebra:#19191c; --grid:#2b2b31; --bar-n:#7f7f8a;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#141416; --surface:#1c1c1f; --surface-2:#232327;
+  --border:#2e2e33; --border-2:#3b3b42;
+  --ink:#f2f2f3; --ink-2:#a9a9b1; --ink-3:#7a7a83;
+  --accent:#6f9bff; --dem:#6f9bff; --gop:#e8705f;
+  --accent-soft:#16233f; --accent-line:#2c4478;
+  --terra:#d9805c; --terra-soft:#2c1c16; --terra-line:#5a3325;
+  --good:#4cbc7b; --good-soft:#12261a; --good-line:#245a38;
+  --warn:#d9a441; --warn-soft:#2a2113; --warn-line:#5a4520;
+  --bad:#ee7b72; --bad-soft:#2c1a17; --bad-line:#5a2f29;
+  --gop-soft:#2c1a17; --gop-line:#5a2f29;
+  --zebra:#19191c; --grid:#2b2b31; --bar-n:#7f7f8a;
+}
+/* ===== THE 80 · theme toggle (top right, fixed) ===== */
+.theme-toggle{
+  position:fixed;top:calc(env(safe-area-inset-top,0px) + 9px);right:14px;z-index:1000;
+  width:40px;height:40px;padding:0;border-radius:999px;
+  border:1px solid var(--border-2);background:var(--surface);color:var(--ink);
+  display:inline-flex;align-items:center;justify-content:center;cursor:pointer;
+  box-shadow:0 1px 4px rgba(0,0,0,.14);
+}
+.theme-toggle:hover{border-color:var(--accent);color:var(--accent)}
+.theme-toggle:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.theme-toggle svg{width:20px;height:20px;display:block}
+.theme-toggle .i-sun{display:none}
+.theme-toggle[data-mode="dark"] .i-sun{display:block}
+.theme-toggle[data-mode="dark"] .i-moon{display:none}
+@media print{.theme-toggle{display:none}}
+
+/* ===== THE 80 · SHARED TOP BAR (identical look on every page) ===== */
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{background:var(--ground);color:var(--ink);font-family:var(--font-body);font-size:17px;line-height:1.62;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4,nav,th,table,figcaption,.label,.tag,.ui{font-family:var(--font-ui)}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:3px}
+.topbar{
+  position:sticky;top:env(safe-area-inset-top,0px);z-index:60;
+  background:color-mix(in srgb,var(--ground) 92%,transparent);
+  backdrop-filter:saturate(1.6) blur(10px);-webkit-backdrop-filter:saturate(1.6) blur(10px);
+  border-bottom:1px solid var(--border);
+}
+.topbar .inner{max-width:var(--maxw);margin:0 auto;padding:9px var(--toggle-gutter) 9px 24px}
+.topbar .barrow{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.topbar .barrow+.barrow,.topbar .barrow+nav,.topbar nav+.barrow{margin-top:7px;padding-top:7px;border-top:1px solid var(--border)}
+.wordmark{font-family:var(--font-ui);font-weight:800;font-size:13px;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;color:var(--ink);text-decoration:none}
+.wordmark span{color:var(--ink-3);font-weight:600}
+.sitelinks{display:flex;gap:4px;margin-left:auto;flex-wrap:wrap}
+.sitelinks a{font-family:var(--font-ui);font-size:11.5px;font-weight:600;letter-spacing:.03em;color:var(--ink-3);text-decoration:none;padding:4px 9px;border-radius:6px;white-space:nowrap}
+.sitelinks a:hover{color:var(--accent);background:var(--accent-soft)}
+/* section nav pills — same look as the prospectus group tabs */
+.topbar nav{display:flex;gap:4px;flex-wrap:wrap;align-items:center}
+.topbar nav button,.topbar nav a{
+  font-family:var(--font-ui);font-size:12.5px;font-weight:700;letter-spacing:.02em;line-height:1.4;
+  color:var(--ink-2);text-decoration:none;background:transparent;cursor:pointer;
+  padding:5px 11px;border-radius:7px;white-space:nowrap;border:1px solid transparent;
+}
+.topbar nav button:hover,.topbar nav a:hover{color:var(--accent);background:var(--accent-soft)}
+.topbar nav button.active,.topbar nav a.on,.topbar nav button[aria-selected="true"]{background:var(--ink);color:var(--ground);border-color:var(--ink)}
+@media (max-width:640px){.topbar .inner{padding-left:14px}.topbar nav button,.topbar nav a{min-height:36px}}
+
+/* legacy names kept working via aliases */
+:root{--bg:var(--ground);--text:var(--ink);--text-2:var(--ink-2);--text-3:var(--ink-3);--muted:var(--ink-2);--label:var(--ink-3);--green:var(--good);--green-soft:var(--good-soft);--red:var(--bad);--red-soft:var(--bad-soft);--amber:var(--warn);--amber-soft:var(--warn-soft);--radius:var(--r);--font:var(--font-body);--on-accent:#ffffff}
+:root[data-theme="dark"]{--on-accent:#0b0b0d}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--on-accent:#0b0b0d}}
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    button { font: inherit; font-family: var(--font-ui); }
+    .skip { position: absolute; top: -80px; left: 16px; padding: 8px 16px; background: var(--ground); color: var(--ink); z-index: 2000; }
+    .skip:focus { top: 8px; }
+    main { max-width: 1120px; margin: 0 auto; padding: 40px 24px 80px; }
+    @media (min-width:1300px){ main { padding-left: 24px; padding-right: 24px; } }
+    h1 { font-size: 28px; line-height: 1.25; margin: 0 0 16px; font-weight: 700; }
+    .placeholder { color: var(--ink-2); margin: 0; font-size: 20px; max-width: var(--prose); }
+    .deck-next { display:flex; justify-content:center; align-items:center; margin:56px 0 8px; padding-top:28px; border-top:1px solid var(--border); }
+    .deck-next button, .deck-next a { display:inline-flex; align-items:center; gap:12px; min-height:44px; background:var(--surface); border:1px solid var(--border-2); border-radius:var(--r); padding:10px 20px; font-family:var(--font-ui); font-size:13px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--ink); cursor:pointer; text-decoration:none; }
+    .deck-next button:hover, .deck-next a:hover { border-color:var(--accent); color:var(--accent); background:var(--accent-soft); }
+    .deck-next-arrow { display:inline-block; width:24px; height:1px; background:currentColor; position:relative; }
+    .deck-next-arrow::after { content:""; position:absolute; right:-1px; top:-3px; width:7px; height:7px; border-right:1px solid currentColor; border-top:1px solid currentColor; transform:rotate(45deg); }
+    .setup-eyebrow, .setup-card-label, .setup-badge, .setup-pillar-title, .timeline-kicker, .timeline-phase-name, .funding-tag, .timeline-ticks button, .organizing-faq summary, .workflow-examples summary, .state-metric-value, .state-metric-label, .timeline-control-head output, .timeline-jump, .state-list li, .funding-tier-head h2 { font-family:var(--font-ui); }
+    .next-actions { display:flex; flex-wrap:wrap; gap:12px; margin-top:20px; }
+    .next-actions a { display:inline-flex; align-items:center; min-height:44px; padding:10px 20px; border:1px solid var(--border-2); border-radius:var(--r); background:var(--surface); color:var(--ink); font-family:var(--font-ui); font-size:13px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; text-decoration:none; }
+    .next-actions a:hover { border-color:var(--accent); color:var(--accent); background:var(--accent-soft); }
+    .setup-intro { display:grid; grid-template-columns:1.4fr 1fr; gap:24px; align-items:start; }
+    .setup-eyebrow { display:inline-block; padding:2px 10px; margin:0 0 7px; border-radius:999px; background:var(--accent-soft); color:var(--accent); font-size:12px; line-height:1.4; font-weight:700; }
+    .setup-intro h1 { font-size:30px; line-height:1.2; margin:0 0 16px; letter-spacing:.01em; }
+    .setup-headline-intro { display:block; font-size:.75em; line-height:1.2; margin-top:6px; }
+    .setup-headline-main { display:block; }
+    .setup-lead { margin:0; color:var(--muted); font-size:17px; line-height:1.55; }
+    .setup-block { margin-top:36px; }
+    .setup-block h2 { margin:0 0 16px; font-size:20px; line-height:1.35; font-weight:700; }
+    .setup-grid { display:grid; gap:16px; grid-template-columns:repeat(3,minmax(0,1fr)); }
+    .setup-grid.two { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .setup-grid.four { grid-template-columns:repeat(4,minmax(0,1fr)); }
+    .setup-pillar strong { color:var(--text); }
+    .setup-pillar-title { margin:0 0 12px; font-family:inherit; font-size:14px; line-height:1.4; font-weight:700; color:var(--ink-2); text-transform:uppercase; }
+    .setup-card { padding:18px; background:var(--surface); border:1px solid var(--border); border-radius:10px; min-width:0; }
+    .setup-card-label { margin:0 0 12px; font-size:12px; font-weight:700; letter-spacing:.075em; line-height:1.4; color:var(--label); text-transform:uppercase; }
+    .setup-card p:not(.setup-card-label) { margin:0; font-size:14px; line-height:1.55; color:var(--muted); }
+    .setup-summary p:not(.setup-card-label) { font-size:16px; font-weight:650; color:var(--text); line-height:1.5; }
+    .setup-commitment { background:var(--bg); }
+    .setup-commitment h3 { margin:0 0 6px; font-size:16px; line-height:1.45; font-weight:700; color:var(--accent); }
+    .setup-card.setup-commitment p + p { margin-top:12px; }
+    .setup-card-top { display:flex; gap:8px; align-items:baseline; justify-content:space-between; margin-bottom:12px; }
+    .setup-card-top .setup-card-label { margin:0; }
+    .setup-badge { flex-shrink:0; padding:2px 8px; border-radius:999px; color:var(--accent); font-size:11px; font-weight:700; line-height:1.3; }
+    .setup-badge.warm { background:var(--terra-soft); color:var(--terra); }
+    .setup-card.featured { background:var(--accent-soft); border-color:var(--accent-line); }
+    .setup-card.featured .setup-card-label { color:var(--accent); }
+    .setup-note { margin:12px 0 0; font-size:12px; color:var(--label); line-height:1.55; }
+    .setup-card .setup-inline-note { display:block; color:var(--label); font-size:12px; }
+    .setup-table { width:100%; border-collapse:collapse; font-size:14px; line-height:1.45; text-align:left; }
+    .setup-table th { padding:10px 12px; background:var(--surface); color:var(--label); font-size:12px; text-transform:uppercase; letter-spacing:.07em; font-weight:700; }
+    .setup-table th:first-child { width:26%; }
+    .setup-table td { padding:10px 12px; border-block:1px solid var(--border); vertical-align:top; }
+    .setup-table tbody tr:nth-child(even) { background:var(--zebra); }
+    .setup-table a { color:var(--accent); font-weight:650; text-decoration:underline; text-underline-offset:2px; }
+    .organizing-faq { display:grid; gap:8px; }
+    .organizing-faq details { padding:12px 14px; background:var(--surface); border:1px solid var(--border); border-radius:12px; }
+    .organizing-faq summary { cursor:pointer; color:var(--text); font-size:15px; font-weight:700; line-height:1.5; }
+    .organizing-faq summary::marker { font-size:12px; }
+    .organizing-faq p { margin:12px 0 0; color:var(--muted); font-size:14px; line-height:1.6; }
+    .organizing-faq a { color:var(--accent); text-decoration:underline; text-underline-offset:2px; }
+    .glossary-intro { margin:0 0 24px; color:var(--muted); font-size:17px; line-height:1.55; }
+    .organizing-glossary { width:100%; border-collapse:collapse; table-layout:fixed; font-size:14px; line-height:1.55; text-align:left; }
+    .organizing-glossary thead th { padding:10px 12px; background:var(--surface); color:var(--label); font-size:12px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; }
+    .organizing-glossary thead th:first-child { width:26%; }
+    .organizing-glossary tbody th, .organizing-glossary td { padding:10px 12px; border-block:1px solid var(--border); vertical-align:top; overflow-wrap:break-word; }
+    .organizing-glossary tbody th { font-weight:500; }
+    .organizing-glossary tbody tr:nth-child(even) { background:var(--zebra); }
+    .state-lead { max-width:760px; margin:0 0 22px; font-size:17px; line-height:1.55; color:var(--muted); }
+    .state-metrics { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:24px; margin:0 0 18px; }
+    .state-metric-value { margin:0 0 3px; font-size:28px; font-weight:750; line-height:1.2; }
+    .state-metric:first-child .state-metric-value { color:var(--accent); }
+    .state-metric-label { margin:0; font-size:12px; color:var(--muted); }
+    .state-overview { display:grid; grid-template-columns:1.1fr 1fr; gap:16px; }
+    .state-card { padding:18px; border:1px solid var(--border); border-radius:12px; background:var(--surface); }
+    .state-card h2, .state-pilot-card h3 { margin:0 0 12px; font-size:12px; line-height:1.45; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:var(--ink-2); }
+    .state-card.outcomes { background:var(--good-soft); border-color:var(--good-line); }
+    .state-card.outcomes h2 { color:var(--good); }
+    .state-list { list-style:none; padding:0; margin:0; }
+    .state-list li { position:relative; padding-left:21px; margin:0 0 8px; font-size:14px; line-height:1.55; }
+    .state-list li::before { content:""; position:absolute; left:2px; top:9px; width:5px; height:5px; border-radius:50%; background:var(--ink-3); }
+    .state-list.roles li::before { top:6px; width:5px; height:10px; border-radius:0; background:none; border-right:2px solid var(--good); border-bottom:2px solid var(--good); transform:rotate(40deg); }
+    .state-list li:last-child { margin-bottom:0; }
+    .state-card-note { margin:14px 0 0; font-size:12px; color:var(--muted); line-height:1.6; }
+    .state-link { color:var(--accent); text-decoration:underline; text-underline-offset:2px; }
+    .state-pilot { margin-top:36px; }
+    .state-pilot > h2 { margin:0 0 12px; font-size:21px; line-height:1.3; }
+    .state-pilot > p { margin:0 0 16px; color:var(--muted); font-size:14px; line-height:1.6; }
+    .state-pilot-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }
+    .state-pilot-card { padding:18px; border:1px solid var(--border); border-radius:12px; background:var(--ground); }
+    .state-callout { margin-top:18px; padding:18px; border:1px solid var(--accent-line); border-radius:12px; background:var(--accent-soft); }
+    .state-callout h2 { margin:0 0 7px; color:var(--accent); font-size:14px; font-weight:700; }
+    .state-callout p { margin:0; font-size:14px; line-height:1.6; }
+    .timeline-lead { margin:0 0 18px; color:var(--muted); font-size:17px; line-height:1.55; }
+    .timeline-control { border:1px solid var(--border); border-radius:12px; background:var(--surface); padding:18px; margin-bottom:16px; scroll-margin-top:130px; }
+    .timeline-control-head { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:12px; }
+    .timeline-kicker { margin:0 0 12px; font-size:12px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:var(--ink-2); }
+    .timeline-control-head label { margin:0; }
+    .timeline-control-head output { padding:3px 9px; border-radius:999px; background:var(--accent-soft); color:var(--accent); font-size:12px; font-weight:700; }
+    .timeline-range { display:block; width:100%; margin:0; min-height:24px; accent-color:var(--accent); cursor:pointer; }
+    .timeline-ticks { display:flex; justify-content:space-between; gap:8px; }
+    .timeline-ticks button { border:0; padding:8px 6px; min-width:32px; background:none; color:var(--muted); font-size:12px; cursor:pointer; }
+    .timeline-ticks button[aria-pressed="true"] { color:var(--accent); font-weight:700; }
+    .timeline-status { display:grid; grid-template-columns:1fr 2.2fr; gap:16px; margin-bottom:16px; }
+    .timeline-phase, .timeline-position { border:1px solid var(--border); border-radius:12px; padding:18px; }
+    .timeline-phase { background:var(--surface); }
+    .timeline-phase h2 { margin:0 0 8px; font-size:30px; line-height:1.2; }
+    .timeline-phase-name { display:inline-block; margin:0; padding:4px 9px; border-radius:999px; font-size:11px; line-height:1.4; font-weight:700; letter-spacing:.03em; text-transform:uppercase; background:var(--accent); color:var(--on-accent); }
+    .timeline-position p:last-child { margin:0; font-size:14px; line-height:1.6; }
+    .timeline-work { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    .timeline-gate { margin:14px 0 0; color:var(--muted); font-size:13px; line-height:1.6; }
+    .timeline-short { margin-top:32px; }
+    .timeline-short h2 { margin:0 0 16px; font-size:21px; }
+    .timeline-short .setup-table th:first-child { width:17%; }
+    .timeline-short tbody tr { cursor:pointer; }
+    .timeline-short tbody tr:hover, .timeline-short tbody tr:focus-within { background:var(--good-soft); }
+    .timeline-short tbody tr[data-current="true"] { background:var(--good-soft); }
+    .timeline-short tbody tr[data-current="true"] td:first-child { box-shadow:inset 3px 0 var(--good); }
+    .timeline-jump { border:0; background:none; padding:0; color:var(--text); font-size:inherit; font-weight:700; text-align:left; cursor:pointer; }
+    .timeline-note { margin:12px 0 0; color:var(--muted); font-size:12px; line-height:1.6; }
+    .how-section { margin-top:30px; }
+    .how-section > h2 { margin:0 0 12px; font-size:21px; line-height:1.3; }
+    .how-section > p { margin:0 0 14px; color:var(--muted); font-size:14px; line-height:1.6; }
+    .how-overview { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:16px; }
+    .how-overview article { padding:18px; border:1px solid var(--border); border-radius:10px; }
+    .how-overview h3 { margin:0 0 10px; color:var(--accent); font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; line-height:1.4; }
+    .how-overview p { margin:0; color:var(--muted); font-size:14px; line-height:1.6; }
+    .how-cycle { margin-top:16px; padding:18px; border:1px solid var(--terra-line); border-radius:12px; background:var(--terra-soft); }
+    .how-cycle h2 { margin:0 0 8px; color:var(--terra); font-size:14px; font-weight:700; }
+    .how-cycle p { margin:0; font-size:14px; line-height:1.6; }
+    .how-cycle p + p { margin-top:8px; }
+    .workflow-steps { list-style:none; padding:0; margin:0; counter-reset:workflow; display:grid; gap:18px; }
+    .workflow-steps li { position:relative; padding-left:42px; counter-increment:workflow; }
+    .workflow-steps li::before { content:counter(workflow); position:absolute; left:0; top:0; width:28px; height:28px; border-radius:50%; display:grid; place-items:center; color:var(--on-accent); background:var(--accent); font-size:12px; font-weight:700; }
+    .workflow-steps h3 { margin:0 0 5px; font-size:16px; font-weight:700; }
+    .workflow-steps p { margin:0; font-size:14px; color:var(--muted); line-height:1.6; }
+    .workflow-steps .workflow-meta { margin-top:4px; font-size:12px; }
+    .how-note { margin:12px 0 0; color:var(--muted); font-size:12px; line-height:1.6; }
+    .workflow-examples { display:grid; gap:8px; }
+    .workflow-examples details { padding:12px 14px; border:1px solid var(--border); border-radius:12px; background:var(--surface); }
+    .workflow-examples summary { font-size:15px; font-weight:700; cursor:pointer; }
+    .workflow-examples p { margin:12px 0 0; font-size:14px; line-height:1.6; color:var(--muted); }
+    .funding-tier { margin-top:24px; }
+    .funding-tier-head { border-left:3px solid var(--accent); padding-left:12px; margin-bottom:10px; }
+    .funding-tier-head h2 { margin:0 0 3px; color:var(--accent); font-size:12px; line-height:1.4; font-weight:700; letter-spacing:.07em; text-transform:uppercase; }
+    .funding-tier-head p { margin:0; color:var(--muted); font-size:14px; line-height:1.55; }
+    .funding-capability { padding:18px; border:1px solid var(--border); border-radius:12px; background:var(--surface); }
+    .funding-capability h3 { margin:0 0 12px; color:var(--ink-2); font-size:12px; font-weight:700; line-height:1.45; letter-spacing:.05em; text-transform:uppercase; }
+    .funding-capability p { margin:0; color:var(--muted); font-size:14px; line-height:1.6; }
+    .funding-operations { display:grid; grid-template-columns:1fr; gap:16px; }
+    .funding-pair { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    .funding-pair .state-card > p { margin:0 0 12px; font-size:14px; line-height:1.6; color:var(--muted); }
+    .funding-pair .state-card > p:last-child { margin-bottom:0; }
+    .funding-tag { display:inline-block; margin-left:8px; padding:2px 8px; border-radius:999px; color:var(--terra); background:var(--terra-soft); font-size:11px; font-weight:700; white-space:nowrap; }
+    .accountability-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }
+    .accountability-note { margin:0 0 18px; color:var(--muted); font-size:12px; line-height:1.6; }
+    .accountability-targets { margin-top:18px; padding:18px; border:1px solid var(--warn-line); border-radius:12px; background:var(--warn-soft); }
+    .accountability-targets h2 { margin:0 0 9px; color:var(--warn); font-size:14px; font-weight:700; }
+    .accountability-targets p { margin:0; font-size:14px; line-height:1.6; }
+    .accountability-targets .funding-tag { color:var(--warn); background:var(--warn-line); }
+    @media(max-width:860px) { .accountability-grid { grid-template-columns:1fr; } }
+    @media(max-width:860px) { .funding-operations, .funding-pair { grid-template-columns:1fr; } }
+    @media(max-width:860px) { .how-overview { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+    @media(max-width:500px) { .how-overview { grid-template-columns:1fr; } .workflow-examples summary { min-height:44px; align-content:center; } }
+    @media(max-width:700px) {
+      .timeline-status, .timeline-work { grid-template-columns:1fr; }
+      .timeline-ticks button { min-height:44px; }
+      .timeline-short .setup-table th:first-child { width:26%; }
+      .timeline-jump { min-height:44px; }
+    }
+    @media (max-width:860px) { .state-overview, .state-pilot-grid { grid-template-columns:1fr; } }
+    @media (max-width:500px) { .state-metrics { gap:12px; } .state-metric-value { font-size:25px; } }
+    @media (max-width:700px) {
+      .organizing-glossary { font-size:13px; }
+      .organizing-glossary thead th:first-child { width:34%; }
+      .organizing-glossary tbody th, .organizing-glossary td, .organizing-glossary thead th { padding:10px 8px; }
+    }
+    @media (max-width:700px) { .organizing-faq summary { min-height:44px; align-content:center; } }
+    [hidden] { display: none !important; }
+    @media (max-width:640px) { .topbar { position: static; } }
+    @media (max-width: 860px) {
+      .setup-grid.four { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .setup-intro { grid-template-columns:1fr; }
+      .setup-grid { grid-template-columns:1fr; }
+      .setup-grid.two { grid-template-columns:1fr; }
+    }
+    @media (max-width: 700px) {
+      main { padding: 28px 20px 64px; }
+      h1 { font-size: 26px; }
+      .setup-intro h1 { font-size:26px; }
+      .setup-grid.four { grid-template-columns:1fr; }
+      .setup-lead { font-size:16px; }
+      .setup-block { margin-top:28px; }
+      .setup-table { font-size:13px; }
+      .setup-table th:first-child { width:36%; }
+      .setup-table td, .setup-table th { padding:10px 8px; }
+    }
+  </style>
+<link rel="stylesheet" href="./budget.css">
+</head>
+<body>
+<!-- THE 80 · theme toggle: place immediately after <body> -->
+<button type="button" class="theme-toggle" id="theme-toggle" data-mode="light" aria-label="Switch to dark mode" title="Switch to dark mode">
+  <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+  <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+</button>
+  <a class="skip" href="#content">Skip to content</a>
+  <header class="topbar"><div class="inner">
+    <div class="barrow">
+      <a class="wordmark" href="../#book">The 80 <span>/ Civic &amp; Political</span></a>
+      <span class="sitelinks"><a href="../#book">&larr; Prospectus</a><a href="../#godeeper">Go Deeper</a></span>
+    </div>
+    <nav role="tablist" aria-label="Civic and Political sections">
+      <button type="button" role="tab" id="tab-setup" aria-controls="panel-setup" aria-selected="true">The Setup</button>
+      <button type="button" role="tab" id="tab-budget" aria-controls="panel-budget" aria-selected="false" tabindex="-1">The Budget</button>
+      <button type="button" role="tab" id="tab-funding" aria-controls="panel-funding" aria-selected="false" tabindex="-1">What You're Funding</button>
+      <button type="button" role="tab" id="tab-state" aria-controls="panel-state" aria-selected="false" tabindex="-1">Invest in a State</button>
+      <button type="button" role="tab" id="tab-when" aria-controls="panel-when" aria-selected="false" tabindex="-1">What Happens When</button>
+      <button type="button" role="tab" id="tab-how" aria-controls="panel-how" aria-selected="false" tabindex="-1">How It Works</button>
+      <button type="button" role="tab" id="tab-accountability" aria-controls="panel-accountability" aria-selected="false" tabindex="-1">Accountability</button>
+      <button type="button" role="tab" id="tab-questions" aria-controls="panel-questions" aria-selected="false" tabindex="-1">Questions</button>
+      <button type="button" role="tab" id="tab-glossary" aria-controls="panel-glossary" aria-selected="false" tabindex="-1">Glossary</button>
+      <button type="button" role="tab" id="tab-next" aria-controls="panel-next" aria-selected="false" tabindex="-1">Next Steps</button>
+    </nav>
+  </div></header>
+  <main id="content">
+    <section role="tabpanel" id="panel-setup" aria-labelledby="tab-setup" tabindex="0">
+      <p class="setup-eyebrow">The Setup</p>
+      <div class="setup-intro">
+        <div>
+          <h1><span class="setup-headline-main">Sustained Civic &amp; Political Organizing</span> <span class="setup-headline-intro">Filling the Center-Left message and infrastructure gap</span></h1>
+          <p class="setup-lead">The American right did not out-organize the Center-Left in a single election cycle. It built infrastructure across six decades &mdash; institutions, talent pipelines, media, and capital &mdash; that outlasts every candidate, every cycle, and every news cycle. The 80 Civic &amp; Political is building organizing infrastructure in the states where elections matter the most - focusing on constant winning within and beyond election cycles. This is the infrastructure the Party should be building, but, with rare State exceptions, isn&rsquo;t.</p>
+        </div>
+        <aside class="setup-card setup-summary">
+          <p class="setup-card-label">The model in one sentence</p>
+          <p>Long-horizon, state-by-state political organizing powered by seasoned, regionally rooted, multi-cycle campaign leaders who are committed, self-sufficient, and proven winners.</p>
+        </aside>
+      </div>
+
+      <section class="setup-block" aria-labelledby="setup-section-one">
+        <h2 id="setup-section-one">What this is</h2>
+        <div class="setup-grid four">
+          <article class="setup-card setup-pillar">
+            <h3 class="setup-pillar-title">BOTTOM TO TOP</h3>
+            <p><strong>Bench-building at every level.</strong> Recruit and train down-ballot candidates so no seat goes uncontested and future statewide leaders emerge from local ranks.</p>
+          </article>
+          <article class="setup-card setup-pillar">
+            <h3 class="setup-pillar-title">GO LOCAL, EVERYWHERE</h3>
+            <p><strong>Refocus on local parties and local candidates.</strong> Strengthen every county and municipal party unit with the tools to grow sustainably between cycles.</p>
+          </article>
+          <article class="setup-card setup-pillar">
+            <h3 class="setup-pillar-title">DEEP TRAINING</h3>
+            <p><strong>Retrain local leadership and grassroots activists.</strong> Volunteers trained in canvassing, VAN / voter-file use, and voter engagement, backed by full-time regional staff.</p>
+          </article>
+          <article class="setup-card setup-pillar">
+            <h3 class="setup-pillar-title">BRAND REHAB</h3>
+            <p><strong>Rebuild the Democratic brand.</strong> Amplify a consistent, credible message in underrepresented communities year-round &mdash; not just in campaign season.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="setup-block" aria-labelledby="setup-section-two">
+        <h2 id="setup-section-two">Four commitments</h2>
+        <div class="setup-grid two">
+          <article class="setup-card setup-commitment">
+            <h3>01 &middot; Beachhead</h3>
+            <p><strong>Field staff placed in the highest-leverage counties only (competitiveness-weighted, not evenly distributed).</strong></p>
+            <p>We invest first where the results are most achievable &mdash; holding and solidifying an existing base, then activating and expanding it. Prove the model and generate the first visible wins.</p>
+          </article>
+          <article class="setup-card setup-commitment">
+            <h3>02 &middot; Expansion</h3>
+            <p><strong>Coverage extends to secondary-priority counties as the pilot demonstrates results and unlocks the next round of capital.</strong></p>
+            <p>Make sure we have Democrats on the ballot in target regions in every race. Recruiting and training center-left candidates to run at all levels builds the bench. Asking someone whether they'd consider running often locks them in as an avid Democratic supporter and voter.</p>
+          </article>
+          <article class="setup-card setup-commitment">
+            <h3>03 &middot; Full Coverage</h3>
+            <p><strong>The 80 commits up front to providing the essential organizing tools our talent needs.</strong></p>
+            <p>Statewide, permanent presence &mdash; The 80 end-state &mdash; sustained by a mix of national investment and state party self-sufficiency built during Phases 1 and 2. Key to success: Coordination across regions; Measure capacity; Build toward self-sufficiency.</p>
+          </article>
+          <article class="setup-card setup-commitment">
+            <h3>04 &middot; Drive to Scale</h3>
+            <p><strong>Give donors a visible, fundable proof point before committing to full-state cost. Give activists and organizers a reason to dig in more.</strong></p>
+            <p>Mirror success practices of the Colorado Blueprint and Project 83. We've spent decades standing up programs in the summer and shutting them down in November, and that boom-and-bust cycle has cost us. Make it clear the job will still be funded after the election and the work doesn't stop, and you'll see a very different caliber of donors and organizers step forward.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="setup-block" aria-labelledby="setup-section-three">
+        <h2 id="setup-section-three">Three parts, one system</h2>
+        <div class="setup-grid">
+          <article class="setup-card featured">
+            <div class="setup-card-top"><h3 class="setup-card-label">The 80 Civic &amp; Political</h3><span class="setup-badge">This section</span></div>
+            <p><strong>Permanent on-the-ground organizing power.</strong> Seasoned, regionally rooted leaders, authentic candidates, strong Center-Left Message, and engaged donors always on before, during, and after elections.</p>
+          </article>
+          <article class="setup-card">
+            <div class="setup-card-top"><h3 class="setup-card-label">The 80 Engine</h3></div>
+            <p><strong>Creates and sharpens the story.</strong> The content, media, and technology that amplify center-left messaging and rebuild the Democratic Party brand.</p>
+          </article>
+          <article class="setup-card">
+            <div class="setup-card-top"><h3 class="setup-card-label">Influencer Network</h3></div>
+            <p><strong>Carries the story through trusted voices.</strong> The advocate and creator network. It takes its direction from the Engine and operates as its own program.</p>
+          </article>
+        </div>
+        <p class="setup-note">The Engine shapes the message. The Influencer Network carries it through trusted voices. Civic &amp; Political turns it into sustained organizing power on the ground.</p>
+      </section>
+
+      <section class="setup-block" aria-labelledby="setup-section-four">
+        <h2 id="setup-section-four">How to read this donor book</h2>
+        <table class="setup-table" aria-labelledby="setup-section-four">
+          <thead><tr><th scope="col">Tab</th><th scope="col">What it covers</th></tr></thead>
+          <tbody>
+            <tr><td><a href="#panel-budget" data-tab-target="tab-budget">1. The Budget</a></td><td>State and multi-state staffing costs, roles, benefits, and what the model excludes.</td></tr>
+            <tr><td><a href="#panel-funding" data-tab-target="tab-funding">2. What You're Funding</a></td><td>Eight organizing capabilities, the permanent team, flexible field capacity, and stakeholder engagement.</td></tr>
+            <tr><td><a href="#panel-state" data-tab-target="tab-state">3. Invest in a State</a></td><td>A year in one state: the team, intended outcomes, and how the pilot earns expansion.</td></tr>
+            <tr><td><a href="#panel-when" data-tab-target="tab-when">4. What Happens When</a></td><td>The proposed first 24 months, with milestones, expected outputs, and decisions about the next investment.</td></tr>
+            <tr><td><a href="#panel-how" data-tab-target="tab-how">5. How It Works</a></td><td>How state insight becomes a funded plan, local organizing, measurable capacity, and continuous learning.</td></tr>
+            <tr><td><a href="#panel-accountability" data-tab-target="tab-accountability">6. Accountability</a></td><td>The year-one scorecard, financial discipline, donor stewardship, and how underperformance is addressed.</td></tr>
+            <tr><td><a href="#panel-questions" data-tab-target="tab-questions">7. Questions</a></td><td>The questions donors ask about permanent organizing, and the honest answers.</td></tr>
+            <tr><td><a href="#panel-glossary" data-tab-target="tab-glossary">8. Glossary</a></td><td>The organizing terms, roles, funding concepts, and operating phases in plain English.</td></tr>
+            <tr><td><a href="#panel-next" data-tab-target="tab-next">9. Next Steps</a></td><td>The decisions and commitments needed to launch the first state build. To come.</td></tr>
+          </tbody>
+        </table>
+      </section>
+    </section>
+    <section role="tabpanel" id="panel-budget" aria-labelledby="tab-budget" tabindex="0" hidden>
+<section class="page" id="organizing">
+  <p class="budget-eyebrow">The budget</p>
+  <h1 style="font-size: 34px; line-height: 1.2; margin-bottom: 10px;">What it costs to build The 80 National Organizing</h1>
+  <p class="lead" style="margin-bottom: 28px; font-size: 21px; max-width: none;">Move the slider to build the organization one step at a time. Each state has an executive director and a full organizing team. The last step adds the national team that runs across all of them. These figures are people only &mdash; salaries and benefits.</p>
+
+  <div class="inf-presets" style="margin-bottom: 20px;">
+    <button class="inf-preset active" data-org-view="nothing" type="button">Nothing yet</button>
+    <button class="inf-preset" data-org-view="single" type="button">One state</button>
+    <button class="inf-preset" data-org-view="national" type="button">Full National Deployment</button>
+  </div>
+
+  <div class="org-model" id="org-model">
+    <div class="org-inputs">
+      <div class="org-inputs-head">
+        <span class="org-inputs-kicker">Inputs</span>
+        <span class="org-inputs-live">Live model</span>
+      </div>
+
+      <div class="org-slider-row">
+        <div class="org-slider-label">
+          <span>State Executive Director</span>
+          <span class="org-slider-value" id="org-ed-value">0</span>
+        </div>
+        <input type="range" min="0" max="1" step="1" value="0" id="org-ed" class="org-slider">
+        <p class="org-slider-hint">From the state; runs campaigns; former donor-table director. Competing against state-party ED, donor table, and state-focused operational lead.</p>
+      </div>
+
+      <div class="org-slider-row">
+        <div class="org-slider-label">
+          <span>Regional Directors</span>
+          <span class="org-slider-value" id="org-rd-value">0</span>
+        </div>
+        <input type="range" min="0" max="25" step="1" value="0" id="org-rd" class="org-slider">
+        <p class="org-slider-hint">Not entry-level: multi-cycle campaign managers, mature, self-sufficient, from the region or nearby.</p>
+      </div>
+
+      <div class="org-reset-row">
+        <button id="org-reset" class="org-reset-btn" type="button">Snap to zero</button>
+        <button id="org-fill" class="org-fill-btn" type="button">Snap to full</button>
+      </div>
+    </div>
+
+    <div class="org-kpis">
+      <div class="org-kpi">
+        <p class="org-kpi-value" id="org-kpi-ed">$0</p>
+        <p class="org-kpi-label">State Executive Director &mdash; $175K &times; count</p>
+      </div>
+      <div class="org-kpi">
+        <p class="org-kpi-value" id="org-kpi-rd">$0</p>
+        <p class="org-kpi-label">Regional Directors &mdash; $60K &times; count</p>
+      </div>
+      <div class="org-kpi">
+        <p class="org-kpi-value" id="org-kpi-hc">$0</p>
+        <p class="org-kpi-label">Healthcare &amp; benefits &mdash; 25% loaded on base salary</p>
+      </div>
+      <div class="org-kpi org-kpi-total">
+        <p class="org-kpi-value" id="org-kpi-total">$0</p>
+        <p class="org-kpi-label">Total annual staff cost</p>
+      </div>
+    </div>
+
+    <div class="org-table-wrap">
+      <table class="org-table">
+        <thead>
+          <tr><th>Line</th><th>Basis</th><th class="num">Annual cost</th></tr>
+        </thead>
+        <tbody id="org-table-body">
+          <tr>
+            <th scope="row">State Executive Director</th>
+            <td><span id="org-ed-basis">0</span> &times; $175K &mdash; from the state; hard-side political ops</td>
+            <td class="num" id="org-ed-line">$0</td>
+          </tr>
+          <tr>
+            <th scope="row">Regional Directors</th>
+            <td><span id="org-rd-basis">0</span> &times; $60K &mdash; multi-cycle campaign managers</td>
+            <td class="num" id="org-rd-line">$0</td>
+          </tr>
+          <tr>
+            <th scope="row">Healthcare &amp; benefits</th>
+            <td>25% of base salary &mdash; medical, dental, vision, employer taxes, etc.</td>
+            <td class="num" id="org-hc-line">$0</td>
+          </tr>
+          <tr class="org-table-total">
+            <th scope="row">Total</th>
+            <td></td>
+            <td class="num" id="org-total-line">$0</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <section class="budget-people">
+      <h2>Who the people are in each state, and what they do</h2>
+      <p>Each state team combines an Executive Director and Regional Directors as W-2 employees with contracted field staff who scale with local organizing needs.</p>
+      <div class="budget-people-table-wrap" role="region" aria-label="State team roles and annual costs" tabindex="0">
+        <table class="budget-people-table">
+          <thead><tr><th scope="col">Role</th><th scope="col">What they do</th><th scope="col">Basis</th><th scope="col">Annual</th></tr></thead>
+          <tbody><tr>
+            <th scope="row">Executive Director</th>
+            <td>Leads statewide strategy, manages regional teams, and builds the candidate, party, and donor relationships needed to win across election cycles.</td>
+            <td>W-2 &middot;<br>$175,000 annual salary</td>
+            <td>$175,000</td>
+          </tr><tr>
+            <th scope="row">Regional Directors</th>
+            <td>Lead regional organizing, strengthen local parties, recruit and train candidates and volunteers, and coordinate field teams across priority counties.</td>
+            <td>W-2 &middot;<br>$60,000 salary each</td>
+            <td>$60,000</td>
+          </tr><tr>
+            <th scope="row">Field staff</th>
+            <td>Conduct canvassing, voter contact, volunteer recruitment, and local event support under Regional Directors. Team is flexed up as plans firm up.</td>
+            <td>1099 &middot;<br>Contract rate TBD</td>
+            <td>TBD</td>
+          </tr></tbody>
+          <tfoot><tr>
+            <th scope="row">Total per state</th>
+            <td colspan="2">13 W-2 staff: 1 Executive Director and 12 Regional Directors, including 25% benefits.</td>
+            <td>$1,120,000</td>
+          </tr></tfoot>
+        </table>
+      </div>
+      <p class="budget-people-total-note">One-state deployment total; excludes contracted field staff, whose rate is TBD. Estimated costs are between $100k and $500k per year.</p>
+    </section>
+
+    <div class="org-callout org-callout-info">
+      <p class="org-callout-title">The talent thesis</p>
+      <p>Decades of scorched-earth, burn-it-all-down organizing have left deep scars on this profession. The organizer candidate pool changes dramatically once applicants believe the position will still be funded after November. Long-horizon political organizing is a different skill set: an organizer who knows they&rsquo;ll own a region for years builds programs that are intentional relationship-building, not band-aids to get through one cycle. They chart and list-build thoroughly, because from cycle to cycle they rely on their own prior work. And as our tools keep evolving, our organizers know The 80 will back them to test and learn new methods &mdash; nothing has blown more close elections than a &ldquo;we&rsquo;ve always done it this way&rdquo; mentality. A local organizer mapping the potential in their area is, at the same time, building the credibility that becomes the lifeline pulling our candidates through and improving performance cycle after cycle.</p>
+    </div>
+
+    <div class="org-callout org-callout-note">
+      <p class="org-callout-title">Not included</p>
+      <p>Field organizers reporting to Regional Directors, candidate travel and event production, and program spend per organizer (materials, travel, events, portal, tools). Model shows salary plus a 25% healthcare-and-benefits load only.</p>
+    </div>
+  </div>
+
+</section>
+<section class="page" id="organizing-national" hidden>
+  <p class="budget-eyebrow">The budget</p>
+  <h1 style="font-size: 34px; line-height: 1.2; margin-bottom: 10px;">What it costs to build The 80 National Organizing</h1>
+  <p class="lead" style="margin-bottom: 28px; font-size: 21px; max-width: none;">Move the slider to build the organization one step at a time. Each state has an executive director and a full organizing team. The last step adds the national team that runs across all of them. These figures are people only &mdash; salaries and benefits.</p>
+
+  <div class="inf-presets" style="margin-bottom: 20px;">
+    <button class="inf-preset" data-org-view="nothing" type="button">Nothing yet</button>
+    <button class="inf-preset" data-org-view="single" type="button">One state</button>
+    <button class="inf-preset active" data-org-view="national" type="button">Full National Deployment</button>
+  </div>
+
+  <div class="org-model">
+    <div class="org-inputs">
+      <div class="org-inputs-head">
+        <span class="org-inputs-kicker" id="orgn-inputs-kicker">Inputs</span>
+        <span class="org-inputs-live">Live model</span>
+      </div>
+
+      <div class="org-slider-row">
+        <div class="org-slider-label">
+          <span>State Executive Directors <span id="orgn-states" style="color: var(--text-3); font-weight: 400;"></span></span>
+          <span class="org-slider-value" id="orgn-ed-value">0</span>
+        </div>
+        <input type="range" min="0" max="6" step="1" value="0" id="orgn-ed" class="org-slider">
+        <p class="org-slider-hint">One State ED per focus state. Six EDs represents full 2027 national deployment across AZ, IA, GA, MI, NC, TX.</p>
+      </div>
+
+      <div class="org-slider-row">
+        <div class="org-slider-label">
+          <span>Regional Directors</span>
+          <span class="org-slider-value" id="orgn-rd-value">0</span>
+        </div>
+        <input type="range" min="0" max="12" step="1" value="0" id="orgn-rd" class="org-slider" disabled aria-readonly="true">
+        <p class="org-slider-hint">Base full deployment is 12 Regional Directors per State ED (72 RDs across six states). Past 72, slider unlocks with 12-RD enhancement steps up to 144 &mdash; an additional 72 RDs on top of base.</p>
+      </div>
+
+      <div class="org-reset-row">
+        <button id="orgn-reset" class="org-reset-btn" type="button">Snap to zero</button>
+        <button id="orgn-fill" class="org-fill-btn" type="button">Snap to full</button>
+      </div>
+    </div>
+
+    <div class="org-kpis">
+      <div class="org-kpi">
+        <p class="org-kpi-value" id="orgn-kpi-ed">$0</p>
+        <p class="org-kpi-label">State Executive Directors &mdash; $175K &times; count</p>
+      </div>
+      <div class="org-kpi">
+        <p class="org-kpi-value" id="orgn-kpi-rd">$0</p>
+        <p class="org-kpi-label">Regional Directors &mdash; $60K &times; count</p>
+      </div>
+      <div class="org-kpi">
+        <p class="org-kpi-value" id="orgn-kpi-hc">$0</p>
+        <p class="org-kpi-label">Healthcare &amp; benefits &mdash; 25% loaded on base salary</p>
+      </div>
+      <div class="org-kpi org-kpi-total">
+        <p class="org-kpi-value" id="orgn-kpi-total">$0</p>
+        <p class="org-kpi-label">Total annual staff cost</p>
+      </div>
+    </div>
+
+    <div class="org-table-wrap">
+      <table class="org-table">
+        <thead>
+          <tr><th>Line</th><th>Basis</th><th class="num">Annual cost</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">State Executive Directors</th>
+            <td><span id="orgn-ed-basis">0</span> &times; $175K &mdash; from the state; hard-side political ops</td>
+            <td class="num" id="orgn-ed-line">$0</td>
+          </tr>
+          <tr>
+            <th scope="row">Regional Directors</th>
+            <td><span id="orgn-rd-basis">0</span> &times; $60K &mdash; multi-cycle campaign managers</td>
+            <td class="num" id="orgn-rd-line">$0</td>
+          </tr>
+          <tr>
+            <th scope="row">Healthcare &amp; benefits</th>
+            <td>25% of base salary &mdash; medical, dental, vision, employer taxes, etc.</td>
+            <td class="num" id="orgn-hc-line">$0</td>
+          </tr>
+          <tr class="org-table-total">
+            <th scope="row">Total</th>
+            <td></td>
+            <td class="num" id="orgn-total-line">$0</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <section class="budget-people">
+      <h2>Who the people are in each state, and what they do</h2>
+      <p>Each state team combines an Executive Director and Regional Directors as W-2 employees with contracted field staff who scale with local organizing needs.</p>
+      <div class="budget-people-table-wrap" role="region" aria-label="State team roles and annual costs" tabindex="0">
+        <table class="budget-people-table">
+          <thead><tr><th scope="col">Role</th><th scope="col">What they do</th><th scope="col">Basis</th><th scope="col">Annual</th></tr></thead>
+          <tbody><tr>
+            <th scope="row">Executive Director</th>
+            <td>Leads statewide strategy, manages regional teams, and builds the candidate, party, and donor relationships needed to win across election cycles.</td>
+            <td>W-2 &middot;<br>$175,000 annual salary</td>
+            <td>$175,000</td>
+          </tr><tr>
+            <th scope="row">Regional Directors</th>
+            <td>Lead regional organizing, strengthen local parties, recruit and train candidates and volunteers, and coordinate field teams across priority counties.</td>
+            <td>W-2 &middot;<br>$60,000 salary each</td>
+            <td>$60,000</td>
+          </tr><tr>
+            <th scope="row">Field staff</th>
+            <td>Conduct canvassing, voter contact, volunteer recruitment, and local event support under Regional Directors. Team is flexed up as plans firm up.</td>
+            <td>1099 &middot;<br>Contract rate TBD</td>
+            <td>TBD</td>
+          </tr></tbody>
+          <tfoot><tr>
+            <th scope="row">Total per state</th>
+            <td colspan="2">13 W-2 staff: 1 Executive Director and 12 Regional Directors, including 25% benefits.</td>
+            <td>$1,120,000</td>
+          </tr></tfoot>
+        </table>
+      </div>
+      <p class="budget-people-total-note">One-state deployment total; excludes contracted field staff, whose rate is TBD. Estimated costs are between $100k and $500k per year.</p>
+    </section>
+
+    <div class="org-callout org-callout-info">
+      <p class="org-callout-title">The talent thesis</p>
+      <p>Decades of scorched-earth, burn-it-all-down organizing have left deep scars on this profession. The organizer candidate pool changes dramatically once applicants believe the position will still be funded after November. Long-horizon political organizing is a different skill set: an organizer who knows they&rsquo;ll own a region for years builds programs that are intentional relationship-building, not band-aids to get through one cycle. They chart and list-build thoroughly, because from cycle to cycle they rely on their own prior work. And as our tools keep evolving, our organizers know The 80 will back them to test and learn new methods &mdash; nothing has blown more close elections than a &ldquo;we&rsquo;ve always done it this way&rdquo; mentality. A local organizer mapping the potential in their area is, at the same time, building the credibility that becomes the lifeline pulling our candidates through and improving performance cycle after cycle.</p>
+    </div>
+
+    <div class="org-callout org-callout-note">
+      <p class="org-callout-title">Not included</p>
+      <p>Field organizers reporting to Regional Directors, candidate travel and event production, and program spend per organizer (materials, travel, events, portal, tools). Model shows salary plus a 25% healthcare-and-benefits load only.</p>
+    </div>
+  </div>
+</section>
+</section>
+    <section role="tabpanel" id="panel-funding" aria-labelledby="tab-funding" tabindex="0" hidden>
+      <p class="setup-eyebrow">What you&rsquo;re funding</p>
+      <h1>Local leadership, stronger connections, and organizing that endures</h1>
+      <p class="state-lead">Eight capabilities in five tiers. Together, The 80 turns patient capital into people, relationships, and local capacity wins before, during, and across election cycles.</p>
+
+      <section class="funding-tier">
+        <div class="funding-tier-head"><h2>Intelligence</h2><p>What is already working, what is missing, and where investment can make a difference.</p></div>
+        <article class="funding-capability">
+          <h3>01 · State assessment &amp; local intelligence</h3>
+          <p>Read electoral trends, local party health, candidate gaps, volunteer capacity, and partner relationships. Establish the baseline, identify credible local leadership, and map where a beachhead can produce useful proof before committing to statewide coverage.</p>
+        </article>
+      </section>
+
+      <section class="funding-tier">
+        <div class="funding-tier-head"><h2>Strategy</h2><p>The state plan, the priorities, and the discipline to sequence the build.</p></div>
+        <article class="funding-capability">
+          <h3>02 · State strategy &amp; investment planning</h3>
+          <p>Translate the assessment into a phased plan with priority regions, defined responsibilities, a staffing map, a costed budget, and measurable capacity goals. Work through Beachhead, Expansion, and Full Coverage at the pace that evidence, leadership, and committed funding support.</p>
+        </article>
+      </section>
+
+      <section class="funding-tier">
+        <div class="funding-tier-head"><h2>Talent</h2><p>People with local standing, the judgment to lead, and a reason to stay.</p></div>
+        <article class="funding-capability">
+          <h3>03 · Local leadership &amp; candidate development</h3>
+          <p>Recruit and retain seasoned, regionally rooted organizers while building a pipeline of authentic down-ballot candidates. Provide training and mentoring so leadership develops locally, targeted races have candidates, and experience is carried forward rather than lost after each election.</p>
+        </article>
+      </section>
+
+      <section class="funding-tier">
+        <div class="funding-tier-head"><h2>Operations</h2><p>Local organizations, field capacity, and the systems that make the work durable.</p></div>
+        <div class="funding-operations">
+          <article class="funding-capability">
+            <h3>04 · Local parties &amp; volunteer networks</h3>
+            <p>Strengthen county and municipal organizations, recruit and train active volunteers, and sustain recurring community work. Build relationships and local participation between elections, not only when a campaign needs a turnout push.</p>
+          </article>
+          <article class="funding-capability">
+            <h3>05 · Field execution &amp; flexible capacity</h3>
+            <p>Turn the state plan into canvassing, voter contact, candidate outreach, and local events under accountable regional leadership. Add contracted field staff as plans firm up, scaling delivery capacity without confusing a temporary surge with the permanent organization.</p>
+          </article>
+          <article class="funding-capability">
+            <h3>06 · Shared tools, learning &amp; sustainability</h3>
+            <p>Provide organizing records, communications tools, training, regional coordination, and performance review. Capture what works in usable playbooks and help regions build local fundraising so knowledge and capacity survive personnel changes and election results.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="funding-tier">
+        <div class="funding-tier-head"><h2>Stakeholders</h2><p>The donor and political relationships that sustain the work, connect priorities, and build durable support.</p></div>
+        <div class="funding-operations">
+          <article class="funding-capability">
+            <h3>07 · Donor engagement &amp; management</h3>
+            <p>Build and steward national, state, and local donor relationships around a clear investment plan. Track commitments, maintain reliable records, and report honestly on spending, progress, and setbacks. Connect renewals and new commitments to demonstrated capacity so funding sustains the organization between elections and supports responsible expansion.</p>
+          </article>
+          <article class="funding-capability">
+            <h3>08 · Elected leader &amp; party official engagement</h3>
+            <p>Build sustained relationships with local, state, and national elected leaders and political party officials. Listen to their priorities, identify gaps in organizing capacity, and connect relevant partners to the state plan. Maintain clear points of contact, regular briefings, and documented follow-through while preserving The 80&rsquo;s independent judgment and observing applicable coordination rules.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="how-section">
+        <h2>A permanent core, with field capacity that can flex</h2>
+        <p>The ongoing team holds the plan, the relationships, and accountability. Additional field capacity follows the work. Both matter, but they are not the same funding commitment.</p>
+        <div class="funding-pair">
+          <section class="state-card">
+            <h2>The permanent core</h2>
+            <p><strong>The state Executive Director and Regional Directors</strong> provide year-round leadership, candidate and volunteer development, local party support, and regional coordination.</p>
+            <ul class="state-list roles">
+              <li>A named owner for the state plan and each funded region.</li>
+              <li>Local relationships and institutional knowledge that stay in place.</li>
+              <li>Training, mentoring, and a regular operating rhythm.</li>
+              <li>Accountability for spending, execution, and growing capacity.</li>
+            </ul>
+          </section>
+          <section class="state-card">
+            <h2>Flexible field capacity <span class="funding-tag">Additional cost</span></h2>
+            <p><strong>Contracted field staff</strong> expand delivery under the regional team as specific plans, priorities, and funding are established.</p>
+            <ul class="state-list">
+              <li>Canvassing and approved voter-contact programs.</li>
+              <li>Volunteer recruitment and support for local activity.</li>
+              <li>Event staffing and additional capacity around key moments.</li>
+              <li>Defined assignments, supervision, and a separate cost plan.</li>
+            </ul>
+          </section>
+        </div>
+      </section>
+
+      <section class="how-section">
+        <h2>What the current budget does and does not cover</h2>
+        <table class="setup-table">
+          <thead><tr><th scope="col">Funding layer</th><th scope="col">How it is treated</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Core state staffing</strong></td><td>The <a class="state-link" href="#panel-budget" data-section-tab="tab-budget">Budget tab</a> models Executive Director and Regional Director salaries plus a 25% benefits load. The one-state illustration is 1 Executive Director and 12 Regional Directors, displayed at $1.12M annually.</td></tr>
+            <tr><td><strong>Contracted field staff</strong></td><td>Additional to the core staffing total. The current planning estimate is $100k&ndash;$500k per state per year; deployment, duration, rates, and assignments must be costed in the state plan.</td></tr>
+            <tr><td><strong>Tools and program delivery</strong></td><td>Travel, events, materials, organizing platforms, and other program costs need separate budgets; they are not included in the salary-and-benefits calculator.</td></tr>
+            <tr><td><strong>Shared national support</strong></td><td>Research, messaging, technology, operations, and other shared support must be allocated transparently. The current state-staffing illustration does not price the full national operating model.</td></tr>
+          </tbody>
+        </table>
+        <p class="how-note">The eight capabilities describe the work to be built, not eight fully funded line items in the current calculator. Each state requires its own phased plan and complete budget before a funding commitment is finalized.</p>
+      </section>
+
+      <section class="how-section">
+        <h2>Who owns the work</h2>
+        <div class="funding-pair">
+          <section class="state-card">
+            <h2>State Executive Director</h2>
+            <p>Owns the state plan, the leadership team, the major relationships, and accountability for execution. Connects local needs to national support and makes sure the work is coordinated rather than a collection of disconnected regional efforts.</p>
+            <p><strong>Profile:</strong> a seasoned operator with state credibility, campaign experience, sound judgment, and the ability to build and manage a durable organization.</p>
+          </section>
+          <section class="state-card">
+            <h2>Regional Directors</h2>
+            <p>Own the day-to-day organizing relationships in their regions, develop candidates and volunteers, support local parties, and coordinate field staff. Share knowledge and capacity with colleagues across the state.</p>
+            <p><strong>Profile:</strong> mature, self-sufficient, multi-cycle campaign leaders from the region or nearby, able to build trust and train others rather than simply supervise a short campaign push.</p>
+          </section>
+        </div>
+      </section>
+      <aside class="state-callout">
+        <h2>One organizing function, connected to the wider system</h2>
+        <p>The Engine develops research, messages, content, and shared communications support. The Influencer Network carries the message through trusted voices. Civic &amp; Political builds the local relationships, candidate pipeline, party capacity, and field execution that turn that support into sustained organizing power. <a class="state-link" href="#panel-state" data-section-tab="tab-state">See what a year in one state looks like.</a></p>
+      </aside>
+    </section>
+    <section role="tabpanel" id="panel-state" aria-labelledby="tab-state" tabindex="0" hidden>
+      <p class="setup-eyebrow">Invest in a state</p>
+      <h1>What a year in one state looks like</h1>
+      <p class="state-lead">A concrete picture of where investment goes: one state leader, a regionally rooted organizing team, and a year of continuous work that strengthens the next election and the one after it.</p>
+      <div class="state-metrics" aria-label="Illustrative one-state deployment">
+        <div class="state-metric"><p class="state-metric-value">$1.12M</p><p class="state-metric-label">Illustrative annual core staffing cost</p></div>
+        <div class="state-metric"><p class="state-metric-value">~13+</p><p class="state-metric-label">Core W-2 staff; 100+ 1099 field staff for full state deployment</p></div>
+        <div class="state-metric"><p class="state-metric-value">12</p><p class="state-metric-label">Months of continuous organizing</p></div>
+      </div>
+      <div class="state-overview">
+        <section class="state-card">
+          <h2>Who your investment puts on the ground</h2>
+          <ul class="state-list roles">
+            <li><strong>1 Executive Director:</strong> leads the state strategy, manages regional teams, and holds the key party, candidate, partner, and donor relationships.</li>
+            <li><strong>12 Regional Directors:</strong> build local organizations, recruit and train candidates and volunteers, and coordinate work across priority counties.</li>
+            <li><strong>Contracted field staff:</strong> support canvassing, voter contact, volunteer recruitment, and local events as plans firm up.</li>
+          </ul>
+          <p class="state-card-note">The 13-person illustration covers W-2 salaries plus a 25% benefits load. Contracted field staff are additional, currently estimated at $100k&ndash;$500k per year; tools, travel, events, and other excluded program costs require separate budgeting. See the assumptions and exclusions in <a class="state-link" href="#panel-budget" data-section-tab="tab-budget">The Budget</a>.</p>
+          <p class="state-card-note">This is a planning illustration, not a promise to hire the full team on day one or a fixed price for every state.</p>
+        </section>
+        <section class="state-card outcomes">
+          <h2>What the year should leave behind</h2>
+          <ul class="state-list">
+            <li>A written state plan with priority regions, partners, and a phased budget.</li>
+            <li>A baseline of local party health and organizing capacity.</li>
+            <li>Accountable local leaders with relationships that survive election day.</li>
+            <li>A candidate pipeline for targeted down-ballot races.</li>
+            <li>A trained, active volunteer network with measurable capacity.</li>
+            <li>Usable organizing records and centrally supported tools.</li>
+            <li>A local fundraising plan and evidence of growing participation.</li>
+            <li>A documented playbook, with results and lessons for the next state.</li>
+          </ul>
+          <p class="state-card-note">These are planning and review objectives. The state plan must set the specific milestones and measures.</p>
+        </section>
+      </div>
+      <section class="state-pilot">
+        <h2>The pilot: prove the model before expanding it</h2>
+        <p>Start in a priority state where a credible partnership can be built and an early result can demonstrate the value of permanent organizing. Fund the beachhead first, then decide what earns expansion.</p>
+        <div class="state-pilot-grid">
+          <article class="state-pilot-card">
+            <h3>Establish the beachhead</h3>
+            <ul class="state-list">
+              <li>Assess existing party capacity and identify the highest-leverage counties.</li>
+              <li>Recruit the state lead and initial regional team from local or nearby talent.</li>
+              <li>Agree responsibilities with existing parties and civic partners.</li>
+              <li>Put core tools, a costed plan, and baseline measures in place.</li>
+            </ul>
+          </article>
+          <article class="state-pilot-card">
+            <h3>Build local capacity</h3>
+            <ul class="state-list">
+              <li>Recruit candidates for targeted races and develop the local bench.</li>
+              <li>Train volunteers and strengthen county and municipal organizations.</li>
+              <li>Maintain regular regional coordination and in-person training.</li>
+              <li>Build community relationships and local fundraising between elections.</li>
+            </ul>
+          </article>
+          <article class="state-pilot-card">
+            <h3>Decide what earns expansion</h3>
+            <ul class="state-list">
+              <li>Review capacity, candidate recruitment, local fundraising, and spending against the plan.</li>
+              <li>Gather feedback from organizers, volunteers, and partners.</li>
+              <li>Correct underperformance and document what worked.</li>
+              <li>Expand to additional counties when evidence, leadership, and funding support it.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+      <aside class="state-callout">
+        <h2>Why states are sized to the work</h2>
+        <p>Every state starts with a different map and a different level of existing capacity. County count, population density, electoral leverage, and the health of local organizations shape the staffing and rollout. The framework is consistent; the allocation is not uniform. Build from Beachhead to Expansion to Full Coverage, protect continuity, and fund growth on evidence rather than ambition.</p>
+      </aside>
+    </section>
+    <section role="tabpanel" id="panel-when" aria-labelledby="tab-when" tabindex="0" hidden>
+      <p class="setup-eyebrow">What happens when</p>
+      <h1>The first 24 months</h1>
+      <p class="timeline-lead">A proposed sequence for building permanent organizing capacity: what gets established, what is tested, and what earns the next investment.</p>
+      <div class="timeline-control">
+        <div class="timeline-control-head">
+          <label for="organizing-timeline" class="timeline-kicker">Month</label>
+          <output for="organizing-timeline" id="timeline-selected" aria-live="polite">By month 3</output>
+        </div>
+        <input class="timeline-range" id="organizing-timeline" type="range" min="0" max="4" step="1" value="0" aria-valuetext="By month 3">
+        <div class="timeline-ticks" aria-label="Choose a milestone">
+          <button type="button" data-timeline-step="0" aria-label="Show month 3" aria-pressed="true">3</button>
+          <button type="button" data-timeline-step="1" aria-label="Show month 6" aria-pressed="false">6</button>
+          <button type="button" data-timeline-step="2" aria-label="Show month 12" aria-pressed="false">12</button>
+          <button type="button" data-timeline-step="3" aria-label="Show month 18" aria-pressed="false">18</button>
+          <button type="button" data-timeline-step="4" aria-label="Show month 24" aria-pressed="false">24</button>
+        </div>
+      </div>
+      <div class="timeline-status">
+        <section class="timeline-phase"><h2 id="timeline-month">Month 3</h2><p class="timeline-phase-name" id="timeline-phase">Stand up the beachhead</p></section>
+        <section class="timeline-position"><h2 class="timeline-kicker">Where things stand</h2><p id="timeline-status-copy"></p></section>
+      </div>
+      <div class="timeline-work">
+        <section class="state-card">
+          <h2>What&rsquo;s happening</h2>
+          <ul class="state-list" id="timeline-activity"></ul>
+        </section>
+        <section class="state-card outcomes">
+          <h2>What should exist by now</h2>
+          <ul class="state-list roles" id="timeline-outcomes"></ul>
+        </section>
+      </div>
+      <p class="timeline-gate"><strong>Decision gate:</strong> <span id="timeline-gate-copy"></span></p>
+      <section class="timeline-short">
+        <h2>The short version</h2>
+        <table class="setup-table">
+          <thead><tr><th scope="col">By</th><th scope="col">Where things stand</th></tr></thead>
+          <tbody>
+            <tr data-timeline-row="0" data-current="true"><td><button type="button" class="timeline-jump" data-timeline-step="0">3 months</button></td><td>The pilot state has accountable leadership, a costed beachhead plan, shared tools, and an initial regional presence.</td></tr>
+            <tr data-timeline-row="1"><td><button type="button" class="timeline-jump" data-timeline-step="1">6 months</button></td><td>Early organizing results, costs, and lessons are documented; the team decides what to improve and what is ready to expand.</td></tr>
+            <tr data-timeline-row="2"><td><button type="button" class="timeline-jump" data-timeline-step="2">12 months</button></td><td>Proven practices reach additional priority counties where funding and leadership support them, with a first-year capacity and spending review.</td></tr>
+            <tr data-timeline-row="3"><td><button type="button" class="timeline-jump" data-timeline-step="3">18 months</button></td><td>Regions operate as a coordinated network, local fundraising develops, and the state model is prepared for selective replication.</td></tr>
+            <tr data-timeline-row="4"><td><button type="button" class="timeline-jump" data-timeline-step="4">24 months</button></td><td>The organization carries its people, relationships, and learning into the next cycle, with a costed path toward durable statewide coverage.</td></tr>
+          </tbody>
+        </table>
+        <p class="timeline-note">Draft planning milestones, not fixed launch commitments. Month 1 begins once pilot-state selection, initial funding, and leadership approval are in place. Expansion depends on evidence and committed capital; full statewide coverage may require more than one election cycle.</p>
+      </section>
+    </section>
+    <section role="tabpanel" id="panel-how" aria-labelledby="tab-how" tabindex="0" hidden>
+      <p class="setup-eyebrow">How it works</p>
+      <h1>From state insight to permanent organizing power</h1>
+      <p class="state-lead">How priorities become people, tools, and sustained local work, and how what we learn shapes the next investment.</p>
+      <section class="how-section">
+        <h2>End to end</h2>
+        <div class="how-overview">
+          <article><h3>1 · Read the map</h3><p>Understand the state, the local organizations already there, and where added capacity can make a difference.</p></article>
+          <article><h3>2 · Build the team</h3><p>Recruit rooted leadership, agree the state plan, and provide the tools and training to execute it.</p></article>
+          <article><h3>3 · Organize continuously</h3><p>Develop candidates, volunteers, relationships, and local fundraising before, during, and after elections.</p></article>
+          <article><h3>4 · Measure and reinvest</h3><p>Review capacity and results, correct what is weak, and expand what the evidence and funding support.</p></article>
+        </div>
+      </section>
+      <aside class="how-cycle">
+        <h2>How capacity builds from one cycle to the next</h2>
+        <p><strong>Listen → Build relationships → Recruit → Train → Organize → Measure → Learn → Organize again.</strong></p>
+        <p>Candidate outreach also surfaces volunteers and donors. Training turns participation into usable capacity. Local work strengthens relationships, and shared records and debriefs keep that knowledge inside the organization rather than losing it after election day.</p>
+      </aside>
+      <section class="how-section">
+        <h2>The full workflow</h2>
+        <p>Eight steps, each with an accountable owner and a concrete output. This is the proposed operating model for each state build.</p>
+        <ol class="workflow-steps">
+          <li>
+            <h3>Assess the state</h3>
+            <p>Review electoral trends, existing party capacity, partner relationships, candidate gaps, volunteer strength, and the practical cost of coverage.</p>
+            <p class="workflow-meta"><strong>Owner:</strong> State Executive Director with national research support. <strong>Output:</strong> A state assessment and baseline.</p>
+          </li>
+          <li>
+            <h3>Choose the beachhead</h3>
+            <p>Prioritize counties and regions by leverage, readiness, and capacity; decide what can be funded and managed now rather than dividing resources evenly.</p>
+            <p class="workflow-meta"><strong>Owner:</strong> State Executive Director and national leadership. <strong>Output:</strong> An approved geographic focus and initial scope.</p>
+          </li>
+          <li>
+            <h3>Agree the plan and partnerships</h3>
+            <p>Set objectives, responsibilities, staffing, tools, budget, and capacity goals with local partners, strengthening existing organizations rather than duplicating them.</p>
+            <p class="workflow-meta"><strong>Owner:</strong> State Executive Director with national operations and relevant partners. <strong>Output:</strong> A costed state plan with named responsibilities.</p>
+          </li>
+          <li>
+            <h3>Recruit and train</h3>
+            <p>Bring in regionally rooted leadership, develop volunteers and potential candidates, and use mentoring where a promising local organizer needs support.</p>
+            <p class="workflow-meta"><strong>Owner:</strong> Executive Director and Regional Directors. <strong>Output:</strong> An initial team and active training pipeline.</p>
+          </li>
+          <li>
+            <h3>Equip and coordinate</h3>
+            <p>Provide centrally supported voter records, email, texting, calling, and meeting tools; establish access, shared records, and a regular cross-region rhythm.</p>
+            <p class="workflow-meta"><strong>Owner:</strong> National operations with the state and regional leads. <strong>Output:</strong> A working toolset and documented operating practices.</p>
+          </li>
+          <li>
+            <h3>Put the plan to work</h3>
+            <p>Run candidate recruitment, volunteer training, local party development, community activity, and approved voter-contact programs, adding contracted field capacity as plans firm up.</p>
+            <p class="workflow-meta"><strong>Owner:</strong> Regional Directors and field teams under the Executive Director. <strong>Output:</strong> Ongoing local programs and reliable activity records.</p>
+          </li>
+          <li>
+            <h3>Measure and review</h3>
+            <p>Compare spending and activity with the plan; assess active volunteer capacity, candidate recruitment, partner health, local fundraising, and electoral outcomes when available.</p>
+            <p class="workflow-meta"><strong>Owner:</strong> Executive Director with national operations and finance. <strong>Output:</strong> A clear capacity, performance, and spending review.</p>
+          </li>
+          <li>
+            <h3>Learn, correct, and expand</h3>
+            <p>Debrief staff and volunteers, document what works, address underperformance, and recommend the next investment without sacrificing continuity in existing regions.</p>
+            <p class="workflow-meta"><strong>Owner:</strong> State and national leadership. <strong>Output:</strong> An updated playbook and a funded decision to sustain, redesign, or expand.</p>
+          </li>
+        </ol>
+      </section>
+      <aside class="state-callout">
+        <h2>How this connects to the Engine and Influencer Network</h2>
+        <p>State organizers bring local intelligence, candidate needs, and partner feedback into the shared system. The Engine supports research, messaging, content, and tools; the Influencer Network carries the message through trusted voices. Civic &amp; Political owns the organizing execution and feeds the results back into the next round of work.</p>
+      </aside>
+      <section class="how-section">
+        <h2>How work gets chosen</h2>
+        <p>One state plan, four kinds of work. Priorities must fit the objective, available leadership, approved funding, and legal requirements.</p>
+        <table class="setup-table">
+          <thead><tr><th scope="col">Workstream</th><th scope="col">What it covers</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Permanent local capacity</strong></td><td>Local party development, relationship-building, volunteer training, organizing records, and recurring community activity.</td></tr>
+            <tr><td><strong>Candidate and election readiness</strong></td><td>Recruitment and training for targeted races, volunteer readiness, and planning approved field work around the election calendar.</td></tr>
+            <tr><td><strong>Emerging local needs</strong></td><td>Responding to a leadership vacancy, a partner request, a sudden organizing opportunity, or a setback without abandoning the long-term plan.</td></tr>
+            <tr><td><strong>Tools, learning, and sustainability</strong></td><td>Shared systems, mentoring, cross-region support, debriefs, performance review, and local fundraising.</td></tr>
+          </tbody>
+        </table>
+        <p class="how-note">Capacity allocations and final approval paths are set through the state plan. Counsel must review applicable restrictions before candidate-related or other regulated activity is undertaken.</p>
+      </section>
+      <section class="how-section">
+        <h2>What this looks like in practice</h2>
+        <div class="workflow-examples">
+          <details>
+            <summary>Launching a beachhead in a new state</summary>
+            <p><strong>Assess and prioritize:</strong> map existing capacity, identify credible partners, and choose the initial regions where the investment has a clear purpose.</p>
+            <p><strong>Plan and equip:</strong> appoint the state lead, approve a phased budget, recruit the initial regional team, and establish tools and baseline measures.</p>
+            <p><strong>Organize and review:</strong> begin local programs, document candidate and volunteer development, and use the first review to decide whether to improve the beachhead or expand.</p>
+          </details>
+          <details>
+            <summary>Rebuilding a weak local organization</summary>
+            <p><strong>Listen first:</strong> distinguish a lack of resources from a leadership or relationship problem, and learn what existing volunteers and partners can contribute.</p>
+            <p><strong>Build practical capacity:</strong> provide mentoring, training, shared tools, and a manageable program of recurring work; where a county structure is stuck, assess whether a multi-county or municipal effort is more effective.</p>
+            <p><strong>Review progress:</strong> look for active participation, functioning relationships, reliable records, and growing local support, not simply more meetings.</p>
+          </details>
+          <details>
+            <summary>Building the candidate bench</summary>
+            <p><strong>Identify gaps:</strong> review targeted races and ask local leaders and partners who could credibly represent their communities.</p>
+            <p><strong>Recruit and develop:</strong> invite prospective candidates into training and support; people who do not run may still become volunteers, donors, or future campaign staff.</p>
+            <p><strong>Keep the pipeline alive:</strong> track recruitment and readiness, learn from each cycle, and continue developing local leadership after the election.</p>
+          </details>
+          <details>
+            <summary>Keeping the organization working between elections</summary>
+            <p><strong>Weekly:</strong> regional leads share successes, challenges, and immediate support needs through a coordinated call.</p>
+            <p><strong>Monthly:</strong> organizers meet in person around the state, train together, and strengthen working relationships across regions.</p>
+            <p><strong>Continuously:</strong> recruit candidates and volunteers, support community activities, maintain tools and records, build local fundraising, and debrief the people doing the work.</p>
+          </details>
+        </div>
+      </section>
+    </section>
+    <section role="tabpanel" id="panel-accountability" aria-labelledby="tab-accountability" tabindex="0" hidden>
+      <p class="setup-eyebrow">Accountability</p>
+      <h1>The year-one scorecard</h1>
+      <p class="state-lead">The questions to ask at the twelve-month mark: what did the investment build, what changed on the ground, and what will still be there next cycle?</p>
+      <p class="accountability-note">Draft review framework, not a report of completed results. Each state should be assessed against its approved starting baseline, funded scope, and agreed milestones.</p>
+      <div class="accountability-grid">
+        <section class="state-card">
+          <h2>Did we build it?</h2>
+          <ul class="state-list roles">
+            <li>An accountable state Executive Director and funded regional leadership.</li>
+            <li>An approved beachhead plan, staffing map, and phased budget.</li>
+            <li>Clear responsibilities and working relationships with local partners.</li>
+            <li>Shared organizing tools, usable records, and appropriate access controls.</li>
+            <li>Training, weekly coordination, and monthly in-person meetings in operation.</li>
+            <li>A baseline and practical capacity goals for each funded region.</li>
+          </ul>
+        </section>
+        <section class="state-card">
+          <h2>Did it work in a state?</h2>
+          <ul class="state-list roles">
+            <li>Active regional coverage in the counties the plan prioritizes.</li>
+            <li>Candidates recruited and prepared for targeted down-ballot races.</li>
+            <li>Trained volunteers who participate repeatedly and complete assigned work.</li>
+            <li>Stronger local organizations and documented partner feedback.</li>
+            <li>Evidence that approved field programs can be staffed and delivered.</li>
+            <li>Electoral results reviewed when available, alongside the wider political context.</li>
+          </ul>
+        </section>
+        <section class="state-card">
+          <h2>Did the organization get stronger?</h2>
+          <ul class="state-list roles">
+            <li>Local relationships and candidate pipelines that continue after election day.</li>
+            <li>Leadership continuity and a plan for vacancies or regional setbacks.</li>
+            <li>Working knowledge and tested practices shared across regions.</li>
+            <li>Progress toward local fundraising and recurring community participation.</li>
+            <li>A written account of lessons, underperformance, and corrective action.</li>
+            <li>An evidence-based decision to sustain, redesign, or expand the next phase.</li>
+          </ul>
+        </section>
+      </div>
+
+      <section class="how-section">
+        <h2>The evidence behind the scorecard</h2>
+        <p>Measure usable capacity and responsible execution, not just a large contact list or a busy calendar. A meeting count is not a substitute for a functioning local organization.</p>
+        <div class="funding-pair">
+          <section class="state-card">
+            <h2>Organizing capacity &amp; local durability</h2>
+            <ul class="state-list roles">
+              <li>Active volunteer participation, retention, and training completion.</li>
+              <li>Candidate recruitment and readiness against the target-race list.</li>
+              <li>Regional coverage, leadership stability, and partner participation.</li>
+              <li>Completion and quality of defined organizing assignments.</li>
+              <li>Local fundraising, repeat donors, and support for recurring activities.</li>
+              <li>Reliable records and practical evidence that the next team will not start at zero.</li>
+            </ul>
+          </section>
+          <section class="state-card">
+            <h2>Financial discipline &amp; donor stewardship</h2>
+            <ul class="state-list roles">
+              <li>Approved budget compared with actual spending and outstanding commitments.</li>
+              <li>Clear separation of core salaries, benefits, contracted field staff, and program costs.</li>
+              <li>Transparent allocation of shared national support and tools.</li>
+              <li>Funding available to sustain the existing team before expansion is approved.</li>
+              <li>Plain-English reporting on progress, setbacks, changed assumptions, and decisions.</li>
+              <li>A named owner for each corrective action and the next review.</li>
+            </ul>
+          </section>
+        </div>
+      </section>
+
+      <aside class="state-callout">
+        <h2>What happens when the evidence is weak?</h2>
+        <p>Identify whether the problem is the plan, leadership, tools, funding, or execution. Set a corrective action with an accountable owner, then review it. A weak result can mean retraining, redesigning a region, replacing leadership, or stopping a particular activity; it does not automatically mean abandoning every durable relationship the investment has built. Expansion should wait until the evidence and resources support it.</p>
+      </aside>
+
+      <aside class="accountability-targets">
+        <h2>Performance targets <span class="funding-tag">To be set in state plans</span></h2>
+        <p>Numeric thresholds, reporting cadence, and review dates need to be approved with each state&rsquo;s baseline, budget, and staffing plan. Define what counts as an active volunteer, a prepared candidate, functioning regional coverage, and progress toward local self-sufficiency before assessing performance. The <a class="state-link" href="#panel-when" data-section-tab="tab-when">24-month timeline</a> is a planning sequence, not evidence that milestones have already been achieved.</p>
+      </aside>
+      <p class="how-note">We cannot guarantee an election result or attribute every change to our work alone. We can be accountable for how capital is used, what capacity is built, how honestly results are reported, and what changes when performance falls short.</p>
+    </section>
+    <section role="tabpanel" id="panel-questions" aria-labelledby="tab-questions" tabindex="0" hidden>
+      <p class="setup-eyebrow">Questions</p>
+      <h1>The questions we get, and the honest answers</h1>
+      <div class="organizing-faq">
+        <details>
+          <summary>Why a permanent organizing operation? Why not just fund campaigns?</summary>
+          <p>Because a campaign should inherit an organization, not rebuild one. Local relationships, trained volunteers, candidate pipelines, and institutional knowledge take years to develop. Defunding them after every election means paying to start over. The 80 is designed to keep that capacity working before, during, and after elections, so each cycle begins with a stronger base than the last.</p>
+        </details>
+        <details>
+          <summary>Is this another organization competing with state and local parties?</summary>
+          <p>The point is to strengthen what works and fill what is missing, not duplicate it. A state party with capable leadership and limited resources may need investment and operational support; a weaker environment may require a deeper rebuild. The state plan starts with existing parties, civic organizations, local leaders, and organizing networks, then defines where The 80 can add durable capacity.</p>
+        </details>
+        <details>
+          <summary>What makes us believe this model can work?</summary>
+          <p>The framework draws on two complementary precedents: Michigan&rsquo;s Project 83 for permanent, locally rooted field organizing, and the Colorado Blueprint for coordinated donor investment across an ecosystem of organizations. The 80 seeks to combine the two: standing field infrastructure supported by patient capital and shared capabilities.</p>
+          <p>Neither precedent guarantees a win or proves that infrastructure alone determines an election. The lesson is durability: after a difficult cycle, the relationships, trained people, local organizations, and candidate pipeline should still be there.</p>
+        </details>
+        <details>
+          <summary>Where do we start, and when do we expand?</summary>
+          <p>State selection weighs electoral leverage, the condition of existing infrastructure, the cost of building coverage, and the value of an early proof point. Within a state, the sequence is Beachhead, Expansion, then Full Coverage: establish a presence in the highest-leverage counties, demonstrate results, and extend coverage as evidence and funding support it.</p>
+          <p>This is not an equal allocation to every county or the same staffing formula in every state. Regional boundaries, organizer coverage, and phased budgets must reflect the state&rsquo;s geography, competitiveness, and existing capacity.</p>
+        </details>
+        <details>
+          <summary>Who does the organizing, and what do they do between elections?</summary>
+          <p>A state Executive Director leads strategy, partnerships, and accountability. Regionally rooted Directors strengthen local parties, recruit and train candidates and volunteers, and coordinate field work. Contracted field staff can expand capacity as plans firm up.</p>
+          <p>Between elections, the work continues: maintain local relationships, develop candidates for down-ballot races, train volunteers, keep organizing records current, support community activities, and build local fundraising. The objective is a functioning local organization, not a dormant campaign list.</p>
+        </details>
+        <details>
+          <summary>How does organizing fit with The 80 Engine and the Influencer Network?</summary>
+          <p>The Engine supplies shared research, message development, content, media, and technology. The Influencer Network carries that work through trusted voices. Civic &amp; Political turns it into sustained local organizing, candidate development, and stronger party capacity. State-level experience should also inform the national work, so shared strategy stays grounded in what organizers encounter locally.</p>
+        </details>
+        <details>
+          <summary>What does the budget cover, and is every state the same price?</summary>
+          <p>The current <a href="#panel-budget" data-faq-tab="tab-budget">Budget tab</a> models Executive Director and Regional Director salaries plus a 25% benefits load. Its one-state illustration is 1 Executive Director and 12 Regional Directors, displayed at approximately $1.12 million annually. Contracted field staff and other excluded program costs are additional; the field-staff estimate is preliminary, not a fixed allocation.</p>
+          <p>That illustration is not a fully costed state plan. Each proposed build still needs a state-specific staffing map, rollout schedule, tools and program budget, and clear allocation of shared national costs. The framework calls for comparable spending categories, not identical spending in every state.</p>
+        </details>
+        <details>
+          <summary>Why patient capital? What stops the organization from becoming bloated?</summary>
+          <p>Continuity changes who will take these jobs and how they do them. An organizer who expects to own a region across cycles can invest in relationships and systems that a short-term campaign cannot. Patient capital supports that continuity; it does not mean funding unlimited growth without evidence.</p>
+          <p>Expansion should follow a costed state plan, committed funding, capable leadership, and demonstrated progress. Shared national tools avoid repeated setup costs, contracted field capacity can flex with demand, and local fundraising should gradually support more of the region&rsquo;s own activity. Permanent does not mean unaccountable.</p>
+        </details>
+        <details>
+          <summary>Why a 501(c)(4)?</summary>
+          <p>The framework proposes a 501(c)(4) vehicle for patient, multi-state infrastructure investment within a social-welfare mission. It gives the effort an institutional home beyond any one candidate or election cycle. That structure is not blanket permission for every activity: counsel must establish the permitted activities, funding sources, approvals, and records before execution.</p>
+          <p>Contributions to a 501(c)(4) are not deductible as charitable gifts for federal income-tax purposes. Donors should receive the applicable entity-specific terms and disclosures; final operating rules and any state-specific restrictions require legal review.</p>
+        </details>
+        <details>
+          <summary>How will we know whether the organizing is actually working?</summary>
+          <p>Measure capacity as well as election results: active volunteers, training completion, candidate recruitment, coverage of target races, functioning local organizations, reliable organizing records, and local fundraising. Set concrete operating tests, such as whether a region can staff and complete a defined voter-contact program, rather than treating activity alone as success.</p>
+          <p>Pair those measures with regular regional coordination, staff and volunteer debriefs, and review of the centrally provided tools. Electoral outcomes matter, but so does whether the organization becomes more capable, less dependent on emergency rebuilding, and better able to sustain itself over time.</p>
+        </details>
+        <details>
+          <summary>What happens after a loss, and what are we trying to build over time?</summary>
+          <p>A loss calls for an honest review of strategy, leadership, and execution, not automatic abandonment of the infrastructure. The test is whether trained people, local relationships, candidate pipelines, and operating knowledge survive and improve. Specific programs or personnel may need to change; the next cycle should not begin at zero.</p>
+          <p>Over time, the goal is a repeatable state-building model: visible early proof points, progressively broader coverage, stronger local leadership, and regions increasingly able to fund their own activity. The next planning step is to turn that framework into individual, fully costed state builds, not promise a uniform rollout before those plans exist.</p>
+        </details>
+        <details>
+          <summary>What is The 80&rsquo;s responsibility to donors?</summary>
+          <p>Steward their capital with discipline and tell them the truth: where the money goes, what it achieves, and what needs to change. We cannot promise election results. We are accountable for our decisions, honest reporting, and building durable organizing capacity.</p>
+        </details>
+      </div>
+    </section>
+    <section role="tabpanel" id="panel-glossary" aria-labelledby="tab-glossary" tabindex="0" hidden>
+      <p class="setup-eyebrow">Glossary</p>
+      <h1>Terms, in plain English</h1>
+      <p class="glossary-intro">Organizing runs on shorthand. Here&rsquo;s what the terms in this donor book actually mean.</p>
+      <table class="organizing-glossary" aria-label="Organizing terms and definitions">
+        <thead><tr><th scope="col">Term</th><th scope="col">What it means</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">The 80 Civic &amp; Political</th><td>The organizing function that builds lasting local leadership, candidate pipelines, party capacity, and relationships before, during, and after elections.</td></tr>
+          <tr><th scope="row">Permanent infrastructure</th><td>The people, relationships, records, tools, and local organizations that remain in place after a campaign ends.</td></tr>
+          <tr><th scope="row">Multi-cycle organizing</th><td>Work planned across several elections, so each cycle builds on the people and knowledge developed in the last.</td></tr>
+          <tr><th scope="row">Patient capital</th><td>Funding committed for long enough to build durable capacity, with accountability for progress rather than an expectation of instant results.</td></tr>
+          <tr><th scope="row">State build</th><td>A state-specific plan for leadership, regional coverage, staffing, tools, partnerships, costs, and timing.</td></tr>
+          <tr><th scope="row">Electoral leverage</th><td>The potential for stronger infrastructure to affect control of a legislative chamber, statewide office, or congressional delegation.</td></tr>
+          <tr><th scope="row">Pilot / proof state</th><td>An initial state where a workable partnership and visible early results can demonstrate the model before it expands elsewhere.</td></tr>
+          <tr><th scope="row">Priority replication state</th><td>A state with strong electoral leverage and workable but underfunded infrastructure where the model can be adapted and expanded.</td></tr>
+          <tr><th scope="row">Watch-list state</th><td>A promising longer-term opportunity whose cost or readiness argues for waiting until more funding and proof points are available.</td></tr>
+          <tr><th scope="row">Beachhead</th><td>The first phase: establish a focused presence in the highest-leverage counties rather than staff the whole state at once.</td></tr>
+          <tr><th scope="row">Expansion</th><td>The second phase: extend coverage into additional priority counties as early results and committed funding support growth.</td></tr>
+          <tr><th scope="row">Full Coverage</th><td>The third phase: a coordinated, permanent statewide presence sustained by national investment and growing local capacity.</td></tr>
+          <tr><th scope="row">Drive to Scale</th><td>The donor book&rsquo;s commitment to turn visible proof points into broader participation and investment, not a substitute for the three-phase state-build sequence.</td></tr>
+          <tr><th scope="row">Proof point</th><td>A concrete result that demonstrates progress and gives donors and organizers a reason to support the next stage.</td></tr>
+          <tr><th scope="row">Executive Director</th><td>The state-level leader accountable for strategy, regional teams, key relationships, and execution.</td></tr>
+          <tr><th scope="row">Regional Director</th><td>A locally rooted leader who strengthens parties, develops candidates and volunteers, and coordinates organizing across a defined region.</td></tr>
+          <tr><th scope="row">Field staff</th><td>The people carrying out canvassing, voter contact, volunteer recruitment, and local event support under regional leadership.</td></tr>
+          <tr><th scope="row">W-2 / 1099</th><td>Shorthand here for employee and independent-contractor arrangements; the correct classification depends on the actual working relationship, not simply the label.</td></tr>
+          <tr><th scope="row">Benefits load</th><td>The amount added to base salaries for employer costs such as healthcare, benefits, and payroll taxes; the current staffing model assumes 25%.</td></tr>
+          <tr><th scope="row">Run-rate</th><td>What the current staffing or operating setup would cost over a full year if maintained at that level.</td></tr>
+          <tr><th scope="row">Program spend</th><td>Delivery costs beyond salaries and benefits, such as travel, materials, events, and organizing tools.</td></tr>
+          <tr><th scope="row">Bench-building / candidate pipeline</th><td>Finding, recruiting, training, and supporting local candidates who can compete now and grow into larger leadership roles over time.</td></tr>
+          <tr><th scope="row">Down-ballot</th><td>Offices below the top statewide or national races, including local boards, municipal offices, county positions, and state legislative seats.</td></tr>
+          <tr><th scope="row">Full ticket</th><td>Recruiting candidates for every targeted race so opponents do not go unchallenged simply because no one was asked to run.</td></tr>
+          <tr><th scope="row">Volunteer capacity</th><td>The trained, active people a region can reliably mobilize to complete defined organizing work, not just the size of its contact list.</td></tr>
+          <tr><th scope="row">Canvassing</th><td>Direct conversations in neighborhoods, often door to door, used to listen, build relationships, and engage voters.</td></tr>
+          <tr><th scope="row">VAN / voter file</th><td>The voter records and organizing software used to plan outreach, record contacts, and carry useful knowledge from one cycle to the next.</td></tr>
+          <tr><th scope="row">Predictive dialer</th><td>Calling software that dials numbers and connects answered calls to available organizers or volunteers.</td></tr>
+          <tr><th scope="row">Shared tools / playbook</th><td>Centrally supported systems and documented practices that let each state learn from prior work instead of starting from scratch.</td></tr>
+          <tr><th scope="row">Baseline / capacity goal</th><td>The starting measurement and the concrete capability a team aims to reach, so improvement can be demonstrated rather than asserted.</td></tr>
+          <tr><th scope="row">Regional coordination</th><td>Organizers sharing knowledge, skills, and staff support across regions so the statewide organization works as a team.</td></tr>
+          <tr><th scope="row">Local self-sufficiency</th><td>A region&rsquo;s growing ability to support its own activities through local fundraising and participation, alongside national investment.</td></tr>
+          <tr><th scope="row">Project 83</th><td>The Michigan organizing precedent used in the framework: permanent regional staff strengthening county parties, volunteers, and the candidate pipeline.</td></tr>
+          <tr><th scope="row">Colorado Blueprint</th><td>The framework&rsquo;s capital-and-institution precedent: coordinated donors sustaining aligned organizations, shared strategy, and local leadership over time.</td></tr>
+          <tr><th scope="row">The 80 Engine</th><td>The shared communications and content operation supporting states with research, message development, media, creative work, and technology.</td></tr>
+          <tr><th scope="row">Influencer Network</th><td>The advocates and creators who carry the shared message through trusted relationships and audiences.</td></tr>
+          <tr><th scope="row">501(c)(4)</th><td>The social-welfare nonprofit structure proposed in the organizing framework; contributions are not charitable tax deductions, and permitted activities require legal oversight.</td></tr>
+        </tbody>
+      </table>
+    </section>
+    <section role="tabpanel" id="panel-next" aria-labelledby="tab-next" tabindex="0" hidden><h1>Next Steps</h1><p class="placeholder">The decisions and commitments needed to launch the first state build will be set out here. In the meantime, the Prospectus and Go Deeper remain the places to continue.</p><div class="next-actions"><a href="../#ask">Back to the Prospectus</a><a href="../#godeeper">Go Deeper</a></div></section>
+  </main>
+  <script>
+    (() => {
+      const tabs = Array.from(document.querySelectorAll('[role="tab"]'));
+      function select(tab, focus = false) {
+        tabs.forEach(item => {
+          const active = item === tab;
+          item.setAttribute('aria-selected', String(active));
+          item.tabIndex = active ? 0 : -1;
+          document.getElementById(item.getAttribute('aria-controls')).hidden = !active;
+        });
+        if (focus) tab.focus();
+      }
+      tabs.forEach((tab, index) => {
+        const panel = document.getElementById(tab.getAttribute('aria-controls'));
+        const nextTab = tabs[index + 1];
+        if (!nextTab) { tab.addEventListener('click', () => select(tab)); tab.addEventListener('keydown', event => {
+          let target;
+          if (event.key === 'ArrowRight') target = 0;
+          if (event.key === 'ArrowLeft') target = index - 1;
+          if (event.key === 'Home') target = 0;
+          if (event.key === 'End') target = tabs.length - 1;
+          if (target !== undefined) { event.preventDefault(); select(tabs[target], true); }
+        }); return; }
+        const pageTurn = document.createElement('div');
+        pageTurn.className = 'deck-next';
+        const nextButton = document.createElement('button');
+        nextButton.type = 'button';
+        nextButton.textContent = 'Next ';
+        nextButton.setAttribute('aria-label', 'Next: ' + nextTab.textContent.trim());
+        nextButton.title = nextTab.textContent.trim();
+        const arrow = document.createElement('span');
+        arrow.className = 'deck-next-arrow';
+        arrow.setAttribute('aria-hidden', 'true');
+        nextButton.append(arrow);
+        nextButton.addEventListener('click', () => {
+          select(nextTab);
+          document.getElementById(nextTab.getAttribute('aria-controls')).focus({preventScroll:true});
+          window.scrollTo({top:0, behavior:'instant'});
+        });
+        pageTurn.append(nextButton);
+        panel.append(pageTurn);
+        tab.addEventListener('click', () => select(tab));
+        tab.addEventListener('keydown', event => {
+          let target;
+          if (event.key === 'ArrowRight') target = (index + 1) % tabs.length;
+          if (event.key === 'ArrowLeft') target = (index - 1 + tabs.length) % tabs.length;
+          if (event.key === 'Home') target = 0;
+          if (event.key === 'End') target = tabs.length - 1;
+          if (target !== undefined) { event.preventDefault(); select(tabs[target], true); }
+        });
+      });
+      document.querySelectorAll('[data-tab-target]').forEach((link, index) => {
+        link.textContent = `${index + 1}. ${document.getElementById(link.dataset.tabTarget).textContent.trim()}`;
+        link.addEventListener('click', event => {
+          event.preventDefault();
+          select(document.getElementById(link.dataset.tabTarget), true);
+          window.scrollTo({top:0, behavior:'instant'});
+        });
+      });
+      document.querySelectorAll('[data-faq-tab], [data-section-tab]').forEach(link => {
+        link.addEventListener('click', event => {
+          event.preventDefault();
+          select(document.getElementById(link.dataset.faqTab || link.dataset.sectionTab), true);
+          window.scrollTo({top:0, behavior:'instant'});
+        });
+      });
+    })();
+  </script>
+<script>
+/* THE 80 · theme toggle logic — one <script> just before </body> */
+(function(){
+  var KEY='the80-theme', root=document.documentElement, btn=document.getElementById('theme-toggle');
+  if(!btn) return;
+  var mq=window.matchMedia?window.matchMedia('(prefers-color-scheme: dark)'):null;
+  function current(){
+    var t=root.getAttribute('data-theme');
+    if(t==='dark'||t==='light') return t;
+    return (mq&&mq.matches)?'dark':'light';
+  }
+  function paint(){
+    var m=current(), next=(m==='dark')?'light':'dark';
+    btn.setAttribute('data-mode',m);
+    btn.setAttribute('aria-label','Switch to '+next+' mode');
+    btn.setAttribute('title','Switch to '+next+' mode');
+    document.dispatchEvent(new CustomEvent('the80-themechange',{detail:{mode:m}}));
+  }
+  btn.addEventListener('click',function(){
+    var n=(current()==='dark')?'light':'dark';
+    root.setAttribute('data-theme',n);
+    try{localStorage.setItem(KEY,n);}catch(e){}
+    paint();
+  });
+  if(mq&&mq.addEventListener) mq.addEventListener('change',paint);
+  paint();
+})();
+
+</script>
+<script src="./budget-state.js"></script>
+<script src="./budget.js"></script>
+<script src="./timeline.js"></script>
+</body>
+</html>
