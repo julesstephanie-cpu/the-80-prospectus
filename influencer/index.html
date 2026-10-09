@@ -334,9 +334,10 @@ td.ours{background:var(--good-soft);color:var(--ink);font-weight:600}
 .sitelinks a:hover{color:var(--accent);background:var(--accent-soft)}
 @media (max-width:900px){.topbar{padding-left:14px}}
 @media (max-width:640px){nav button{min-height:36px}}
-.nextrow{margin:42px 0 0;padding-top:16px;border-top:1px solid var(--border);display:flex;justify-content:flex-end}
-.nextrow button{font-family:"Libre Franklin",sans-serif;font-size:13px;font-weight:700;color:var(--accent);background:transparent;border:1px solid var(--border-2);border-radius:8px;padding:9px 16px;cursor:pointer}
-.nextrow button:hover{border-color:var(--accent);background:var(--accent-soft)}
+.nextrow{margin:42px 0 0;padding-top:16px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap}
+.nextrow .prevbtn{margin-right:auto}
+.nextrow button,.nextrow a.prevbtn{font-family:"Libre Franklin",sans-serif;font-size:13px;font-weight:700;color:var(--accent);background:transparent;border:1px solid var(--border-2);border-radius:8px;padding:9px 16px;cursor:pointer}
+.nextrow button:hover,.nextrow a.prevbtn:hover{border-color:var(--accent);background:var(--accent-soft)}
 /* ===== THE 80 · theme toggle (top right, fixed) ===== */
 .theme-toggle{
   position:fixed;top:calc(env(safe-area-inset-top,0px) + 9px);right:14px;z-index:1000;
@@ -1378,17 +1379,32 @@ td.ours{background:var(--good-soft);color:var(--ink);font-weight:600}
     nav.appendChild(b);
   });
 
-  // "Next" button at the foot of every tab (last tab returns to the Prospectus)
+  // "Previous" and "Next" buttons at the foot of every tab
   SECTIONS.forEach(function (sec, i) {
     var el = document.getElementById(sec[0]);
-    if (!el || i === SECTIONS.length - 1) return;
+    if (!el) return;
     var row = document.createElement("div");
     row.className = "nextrow";
-    var b = document.createElement("button");
-    b.type = "button";
-    b.textContent = "Next: " + SECTIONS[i + 1][1] + " \u2192";
-    b.addEventListener("click", function () { show(SECTIONS[i + 1][0]); });
-    row.appendChild(b);
+    var p;
+    if (i === 0) {
+      p = document.createElement("a");
+      p.href = "../#godeeper";
+      p.textContent = "\u2190 Back to Go Deeper";
+    } else {
+      p = document.createElement("button");
+      p.type = "button";
+      p.textContent = "\u2190 Previous: " + SECTIONS[i - 1][1];
+      p.addEventListener("click", function () { show(SECTIONS[i - 1][0]); });
+    }
+    p.className = "prevbtn";
+    row.appendChild(p);
+    if (i < SECTIONS.length - 1) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.textContent = "Next: " + SECTIONS[i + 1][1] + " \u2192";
+      b.addEventListener("click", function () { show(SECTIONS[i + 1][0]); });
+      row.appendChild(b);
+    }
     el.appendChild(row);
   });
 

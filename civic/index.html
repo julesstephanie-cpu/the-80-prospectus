@@ -119,9 +119,10 @@ a{color:var(--accent)}
     @media (min-width:1300px){ main { padding-left: 24px; padding-right: 24px; } }
     h1 { font-size: 28px; line-height: 1.25; margin: 0 0 16px; font-weight: 700; }
     .placeholder { color: var(--ink-2); margin: 0; font-size: 20px; max-width: var(--prose); }
-    .deck-next { display:flex; justify-content:center; align-items:center; margin:56px 0 8px; padding-top:28px; border-top:1px solid var(--border); }
+    .deck-next { display:flex; justify-content:flex-end; align-items:center; gap:12px; flex-wrap:wrap; margin:56px 0 8px; padding-top:28px; border-top:1px solid var(--border); }
     .deck-next button, .deck-next a { display:inline-flex; align-items:center; gap:12px; min-height:44px; background:var(--surface); border:1px solid var(--border-2); border-radius:var(--r); padding:10px 20px; font-family:var(--font-ui); font-size:13px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--ink); cursor:pointer; text-decoration:none; }
     .deck-next button:hover, .deck-next a:hover { border-color:var(--accent); color:var(--accent); background:var(--accent-soft); }
+    .deck-next .deck-prev { margin-right:auto !important; }
     .deck-next-arrow { display:inline-block; width:24px; height:1px; background:currentColor; position:relative; }
     .deck-next-arrow::after { content:""; position:absolute; right:-1px; top:-3px; width:7px; height:7px; border-right:1px solid currentColor; border-top:1px solid currentColor; transform:rotate(45deg); }
     .setup-eyebrow, .setup-card-label, .setup-badge, .setup-pillar-title, .timeline-kicker, .timeline-phase-name, .funding-tag, .timeline-ticks button, .organizing-faq summary, .workflow-examples summary, .state-metric-value, .state-metric-label, .timeline-control-head output, .timeline-jump, .state-list li, .funding-tier-head h2 { font-family:var(--font-ui); }
@@ -1261,6 +1262,28 @@ a{color:var(--accent)}
         });
         if (focus) tab.focus();
       }
+      function prevControl(index) {
+        let el;
+        if (index === 0) {
+          el = document.createElement('a');
+          el.href = '../#godeeper';
+          el.textContent = '\u2190 Back to Go Deeper';
+        } else {
+          const prevTab = tabs[index - 1];
+          el = document.createElement('button');
+          el.type = 'button';
+          el.textContent = '\u2190 Previous';
+          el.setAttribute('aria-label', 'Previous: ' + prevTab.textContent.trim());
+          el.title = prevTab.textContent.trim();
+          el.addEventListener('click', () => {
+            select(prevTab);
+            document.getElementById(prevTab.getAttribute('aria-controls')).focus({preventScroll:true});
+            window.scrollTo({top:0, behavior:'instant'});
+          });
+        }
+        el.className = 'deck-prev';
+        return el;
+      }
       tabs.forEach((tab, index) => {
         const panel = document.getElementById(tab.getAttribute('aria-controls'));
         const nextTab = tabs[index + 1];
@@ -1271,7 +1294,7 @@ a{color:var(--accent)}
           if (event.key === 'Home') target = 0;
           if (event.key === 'End') target = tabs.length - 1;
           if (target !== undefined) { event.preventDefault(); select(tabs[target], true); }
-        }); return; }
+        }); const lastTurn = document.createElement('div'); lastTurn.className = 'deck-next'; lastTurn.append(prevControl(index)); panel.append(lastTurn); return; }
         const pageTurn = document.createElement('div');
         pageTurn.className = 'deck-next';
         const nextButton = document.createElement('button');
@@ -1288,7 +1311,7 @@ a{color:var(--accent)}
           document.getElementById(nextTab.getAttribute('aria-controls')).focus({preventScroll:true});
           window.scrollTo({top:0, behavior:'instant'});
         });
-        pageTurn.append(nextButton);
+        pageTurn.append(prevControl(index), nextButton);
         panel.append(pageTurn);
         tab.addEventListener('click', () => select(tab));
         tab.addEventListener('keydown', event => {
