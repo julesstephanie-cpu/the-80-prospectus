@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<!-- THE 80 · theme init (must sit in <head>, before any CSS, to avoid a flash) -->
+<script>(function(){try{var t=localStorage.getItem('the80-theme');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
 <meta name="description" content="The 80 — Executive Summary. The front matter of the prospectus: the case, two proof points, the operating model, and the ask.">
@@ -108,7 +110,7 @@ img,svg{max-width:100%}
   max-width:var(--maxw);margin:0 auto;padding:9px 24px;
   display:flex;align-items:center;gap:18px;flex-wrap:wrap;
 }
-.wordmark{font-weight:800;font-size:13px;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap}
+.wordmark{font-family:"Libre Franklin",sans-serif;font-weight:800;font-size:13px;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap}
 .wordmark span{color:var(--ink-3);font-weight:600}
 .pager{display:flex;gap:2px;flex-wrap:wrap;margin-left:auto}
 .pager a{
@@ -653,9 +655,58 @@ a.chap:hover .arwx{color:var(--accent)}
   font-family:"Libre Franklin",sans-serif;font-size:11.5px;line-height:1.55;color:var(--ink-3);
   border-top:1px solid var(--border);margin-top:30px;padding-top:14px;
 }
+
+/* ===== added: shared toggle, on-accent, dark-mode fixes, Go Deeper ===== */
+:root{--on-accent:#ffffff;--toggle-gutter:64px}
+:root[data-theme="dark"]{--on-accent:#0b0b0d}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--on-accent:#0b0b0d}}
+.topbar .inner{padding-right:var(--toggle-gutter)}
+.locked button,#gate button{color:var(--on-accent)!important}
+.totop{color:var(--ground)}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]) .stile{background:var(--surface-2)!important;color:var(--ink)}
+  :root:not([data-theme="light"]) .sname{color:var(--ink)}
+  :root:not([data-theme="light"]) .svoters{color:var(--ink-2)}
+  :root:not([data-theme="light"]) .sreg{color:var(--ink-3)}
+  :root:not([data-theme="light"]) .smap path{stroke:var(--ink-3)}
+}
+:root[data-theme="dark"] .stile{background:var(--surface-2)!important;color:var(--ink)}
+:root[data-theme="dark"] .sname{color:var(--ink)}
+:root[data-theme="dark"] .svoters{color:var(--ink-2)}
+:root[data-theme="dark"] .sreg{color:var(--ink-3)}
+:root[data-theme="dark"] .smap path{stroke:var(--ink-3)}
+/* Go Deeper */
+.dgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin:22px 0}
+.dcard{display:flex;flex-direction:column;gap:6px;padding:18px 20px;border:1px solid var(--border);border-radius:var(--r);background:var(--surface);text-decoration:none;color:var(--ink)}
+.dcard:hover{border-color:var(--accent);background:var(--accent-soft)}
+.dcard .dk{font-family:"Libre Franklin",sans-serif;font-size:10.5px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3)}
+.dcard .dt{font-family:"Libre Franklin",sans-serif;font-size:17px;font-weight:800;letter-spacing:-.01em}
+.dcard .dd{font-size:15px;color:var(--ink-2);line-height:1.5}
+.dcard .go{margin-top:auto;padding-top:8px;font-family:"Libre Franklin",sans-serif;font-size:12.5px;font-weight:700;color:var(--accent)}
+/* ===== THE 80 · theme toggle (top right, fixed) ===== */
+.theme-toggle{
+  position:fixed;top:calc(env(safe-area-inset-top,0px) + 9px);right:14px;z-index:1000;
+  width:40px;height:40px;padding:0;border-radius:999px;
+  border:1px solid var(--border-2);background:var(--surface);color:var(--ink);
+  display:inline-flex;align-items:center;justify-content:center;cursor:pointer;
+  box-shadow:0 1px 4px rgba(0,0,0,.14);
+}
+.theme-toggle:hover{border-color:var(--accent);color:var(--accent)}
+.theme-toggle:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.theme-toggle svg{width:20px;height:20px;display:block}
+.theme-toggle .i-sun{display:none}
+.theme-toggle[data-mode="dark"] .i-sun{display:block}
+.theme-toggle[data-mode="dark"] .i-moon{display:none}
+@media print{.theme-toggle{display:none}}
+
 </style>
 </head>
 <body>
+<!-- THE 80 · theme toggle: place immediately after <body> -->
+<button type="button" class="theme-toggle" id="theme-toggle" data-mode="light" aria-label="Switch to dark mode" title="Switch to dark mode">
+  <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+  <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+</button>
 
 <div id="gate">
   <div class="box">
@@ -685,6 +736,7 @@ a.chap:hover .arwx{color:var(--accent)}
           <a href="#stakes" data-g="exec">Executive Summary</a>
           <a href="#modelstate" data-g="model">A Model State</a>
           <a href="#focus" data-g="research">Research &amp; Policy</a>
+          <a href="#godeeper" data-g="deeper">Go Deeper</a>
         </nav>
     </div>
     <div class="barrow" style="width:100%">
@@ -796,6 +848,13 @@ a.chap:hover .arwx{color:var(--accent)}
         <span class="cn">04</span>
         <span><span class="tt">The Team</span><span class="td">The senior team, the operators, and the advisers accountable for the build.</span></span>
         <span class="cs">In this book</span>
+      </a>
+    </li>
+    <li class="live">
+      <a href="#godeeper">
+        <span class="cn">05</span>
+        <span><span class="tt">Go Deeper</span><span class="td">The full working sites behind this book: Civic &amp; Political, the 80 Engine, and the Influencer Network. Access phrase required.</span></span>
+        <span class="cs">Access phrase</span>
       </a>
     </li>
   </ul>
@@ -1992,6 +2051,52 @@ a.chap:hover .arwx{color:var(--accent)}
     <p>If you want the detail behind any section of this book — the line-item budget, a specific state model, or the people named above — ask The 80 directly.</p>
   </div>
 
+  <div class="nextbar"><span class="endmark">End of section</span><button class="nextbtn" type="button" data-next="godeeper"><span class="nlabel">Next</span> 05 Go Deeper <span class="arw"></span></button></div>
+  <div class="pagebreak" aria-hidden="true"></div></section>
+
+<!-- ══════════════════════ 05 · GO DEEPER (access phrase) ══════════════════════ -->
+<section class="wrap page" id="godeeper">
+  <div class="folio"><span class="no">05</span><span class="nm">Go Deeper</span><span class="of">The working sites behind this book</span></div>
+
+  <div class="dek">Go deeper</div>
+  <h2>The working detail behind every section</h2>
+  <p class="lead prose">The prospectus makes the case. These three companion sites carry the line-item budgets, the state-by-state model, and the programs the money builds.</p>
+
+  <div class="locked" id="deeper-lock" data-reveals="deeper-open" data-code="godeeper">
+    <div class="lk">Access phrase required</div>
+    <h4>Enter the access phrase to go deeper</h4>
+    <p>If you were given a second phrase for the detail sites, enter it below. If not, contact The 80 and we will send it.</p>
+    <form autocomplete="off">
+      <input type="password" placeholder="Access phrase" aria-label="Access phrase for Go Deeper" autocomplete="off">
+      <button type="submit">Unlock</button>
+    </form>
+    <div class="lerr" role="status" aria-live="polite"></div>
+  </div>
+
+  <div id="deeper-open" hidden>
+    <div class="dgrid">
+      <a class="dcard" href="https://julesstephanie-cpu.github.io/civicandpolitical/">
+        <span class="dk">Direction 01</span><span class="dt">Civic &amp; Political</span>
+        <span class="dd">The national organizing budget, what you are funding, and how a state build unfolds.</span>
+        <span class="go">Open the site &rarr;</span>
+      </a>
+      <a class="dcard" href="https://julesstephanie-cpu.github.io/the80-engine/">
+        <span class="dk">Direction 02</span><span class="dt">The 80 Engine</span>
+        <span class="dd">Media, research and technology: what the permanent team costs and what a year in one state looks like.</span>
+        <span class="go">Open the site &rarr;</span>
+      </a>
+      <a class="dcard" href="https://julesstephanie-cpu.github.io/eighty-influencer/">
+        <span class="dk">Program</span><span class="dt">The Influencer Network</span>
+        <span class="dd">The member-network briefing: journey, outreach playbooks, cost model and rollout.</span>
+        <span class="go">Open the site &rarr;</span>
+      </a>
+    </div>
+    <div class="callout a">
+      <div class="ct">Talk to us</div>
+      <p>Each site links back here. If you want a walk-through of any of them, ask The 80 directly.</p>
+    </div>
+  </div>
+
   <div class="nextbar"><span class="endmark">End of the prospectus</span><button class="nextbtn" type="button" data-next="cover"><span class="nlabel">Back to</span> the beginning <span class="arw"></span></button></div>
   <div class="pagebreak" aria-hidden="true"></div></section>
 </main>
@@ -2015,7 +2120,8 @@ var DETAIL_CODE = "boilerroom";
     { g:"exec", label:"Executive Summary", items:[["stakes","01 Stakes"], ["gap","02 Gap"], ["proof","03 Proof of Concept"], ["solution","04 What We Are Building"], ["states","05 Where We Build"], ["build","06 Operating Model"], ["ask","07 Ask"]] },
     { g:"model", label:"A Model State", items:[["modelstate","What Drives the Budget"]] },
     { g:"research", label:"Research &amp; Policy", items:[["focus","Six Focus States"], ["agenda","The 80% Agenda"], ["brand","Polling &amp; Data"]] },
-    { g:"team", label:"The Team", items:[["team","Who Is Behind This"]] }
+    { g:"team", label:"The Team", items:[["team","Who Is Behind This"]] },
+    { g:"deeper", label:"Go Deeper", items:[["godeeper","Detail sites"]] }
   ];
 
   var prog   = document.getElementById("prog");
@@ -2298,11 +2404,47 @@ var ACCESS_PHRASE = "theeightyengine";
       if (e.key === "ArrowLeft"  && pages[cur-1]) show(pages[cur-1].id);
     });
 
+    /* browser back/forward and in-page #links follow the hash */
+    window.addEventListener("hashchange", function(){
+      var h = (location.hash || "").slice(1);
+      var cur = pages.filter(function(p){ return p.classList.contains("onpage"); })[0];
+      if (h && (!cur || cur.id !== h)) show(h, false);
+    });
+
     var start = (location.hash || "").slice(1);
     if (!show(start, false)) show(pages[0].id, false);
   })();
 
 })();
+</script>
+<script>
+/* THE 80 · theme toggle logic — one <script> just before </body> */
+(function(){
+  var KEY='the80-theme', root=document.documentElement, btn=document.getElementById('theme-toggle');
+  if(!btn) return;
+  var mq=window.matchMedia?window.matchMedia('(prefers-color-scheme: dark)'):null;
+  function current(){
+    var t=root.getAttribute('data-theme');
+    if(t==='dark'||t==='light') return t;
+    return (mq&&mq.matches)?'dark':'light';
+  }
+  function paint(){
+    var m=current(), next=(m==='dark')?'light':'dark';
+    btn.setAttribute('data-mode',m);
+    btn.setAttribute('aria-label','Switch to '+next+' mode');
+    btn.setAttribute('title','Switch to '+next+' mode');
+    document.dispatchEvent(new CustomEvent('the80-themechange',{detail:{mode:m}}));
+  }
+  btn.addEventListener('click',function(){
+    var n=(current()==='dark')?'light':'dark';
+    root.setAttribute('data-theme',n);
+    try{localStorage.setItem(KEY,n);}catch(e){}
+    paint();
+  });
+  if(mq&&mq.addEventListener) mq.addEventListener('change',paint);
+  paint();
+})();
+
 </script>
 
 </body>
